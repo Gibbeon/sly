@@ -78,7 +78,7 @@ def build(path):
 
 	log = open("msbuild_" + os.path.basename(path) + '.tlog', 'w')
 
-	p = subprocess.Popen(["msbuild", "/nologo","/p:Configuration=Debug","/p:Platform=x64","/m:8","/v:d",os.path.join(os.path.abspath(path), "build/win64/" + os.path.basename(path) + ".vcxproj")], cwd=path, shell=True, stdout=log, stderr=log, stdin=log, )
+	p = subprocess.Popen(["msbuild", "/nologo","/p:Configuration=Debug","/p:Platform=x64","/m:8","/v:m",os.path.join(os.path.abspath(path), "build/win64/" + os.path.basename(path) + ".vcxproj")], cwd=path, shell=True, stdout=log, stderr=log, stdin=log, )
 	p.wait()
 	if not p.returncode == 0:
 		thread_print("A msbuild error code=" + str(p.returncode) + " has occurred while building " + os.path.basename(path))
