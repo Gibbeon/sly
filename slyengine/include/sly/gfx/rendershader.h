@@ -4,17 +4,18 @@
 #include "sly/builder.h"
 
 namespace sly {
+    namespace gfx {
     
-    struct RenderShaderDesc {
-    public:
-    };
+        struct ShaderDesc {
+        public:
+        };
 
-    class RenderShaderDescBuilder : public Builder<RenderShaderDesc> {
-    public:
-    };
+        class ShaderBuilder : public Builder<ShaderDesc> {
+        public:
+        };
 
-    class IRenderShader {
-    public:
-    };
-
+        class IShader {
+        public:
+        };
+    }
 }

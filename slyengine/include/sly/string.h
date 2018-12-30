@@ -15,10 +15,10 @@ namespace sly {
         public:
             String();
             String(const TChar* data);
-            String(const TChar* data, s32 length);
+            String(const TChar* data, size_t length);
             String(const String<TChar>& copy);
 
-            String<TChar> substring(s32 offset, s32 length) const;
+            String<TChar> substring(size_t offset, size_t length) const;
 
             bool_t operator ==(const String<TChar> &rhs) const;
             bool_t operator !=(const String<TChar> &rhs) const;
@@ -32,11 +32,11 @@ namespace sly {
 
             explicit operator const TChar*() const;
             
-            s32 copy(TChar* buf) const;
+            size_t copy(TChar* buf) const;
 
-            static s32 strlen(const TChar* str);
-            static s32 copy(const String<TChar>& src, String<TChar>& dest);
-            static s32 compare(const String<TChar>& lhs, const String<TChar>& rhs);
+            static size_t strlen(const TChar* str);
+            static size_t copy(const String<TChar>& src, String<TChar>& dest);
+            static size_t compare(const String<TChar>& lhs, const String<TChar>& rhs);
         private:
             
     };

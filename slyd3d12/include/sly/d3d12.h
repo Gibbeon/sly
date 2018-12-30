@@ -1,6 +1,7 @@
 #pragma once 
 
-#include "te/win32/global.h"
+#include "sly/global.h"
+//#include "sly/win32/global.h"
 
 #include <initguid.h>
 #include <d3d12.h>

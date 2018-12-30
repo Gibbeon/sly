@@ -24,7 +24,7 @@
             TItemType& operator[](const TKeyType key);
 
             void clear();
-            s32 count() const;
+            size_t count() const;
         
         protected:
             virtual Pair<TKeyType, TItemType> read(ptr_t state) const;
@@ -32,7 +32,7 @@
         private:
             TCollectionType list_;
 
-            s32 indexOf(TKeyType key) const;
+            size_t indexOf(TKeyType key) const;
     };
 
     #include "sly/collections/map.hpp"

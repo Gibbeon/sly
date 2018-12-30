@@ -4,32 +4,34 @@
 #include "sly/builder.h"
 
 namespace sly {
+    namespace gfx {
     
-    struct RenderDeviceDesc {
-    public:
-    };
+        struct DeviceDesc {
+        public:
+        };
 
-    class RenderDeviceDescBuilder : public Builder<RenderDeviceDesc> {
-    };
+        class DeviceBuilder : public Builder<DeviceDesc> {
+        };
 
-    class IRenderWindow;
-    class IRenderCommandList;
-    class IRenderBuffer;
-    class IRenderShader;
-    class IRenderTexture;
+        class IWindow;
+        class ICommandList;
+        class IDataBuffer;
+        class IShader;
+        class ITexture;
 
-    struct RenderWindowDesc;
-    struct RenderCommandListDesc;
-    struct RenderBufferDesc;
-    struct RenderShaderDesc;
-    struct RenderTextureDesc;
+        struct WindowDesc;
+        struct CommandListDesc;
+        struct DataBufferDesc;
+        struct ShaderDesc;
+        struct TextureDesc;
 
-    class IRenderDevice {
-    public:
-        void CreateRenderWindow(out_ptr_t<IRenderWindow> ppWindow, ref_t<RenderWindowDesc> desc);
-        void CreateRenderCommandList(out_ptr_t<IRenderCommandList> ppWindow, ref_t<RenderCommandListDesc> desc);
-        void CreateRenderBuffer(out_ptr_t<IRenderBuffer> ppWindow, ref_t<RenderBufferDesc> desc);
-        void CreateRenderShader(out_ptr_t<IRenderShader> ppWindow, ref_t<RenderShaderDesc> desc);
-        void CreateRenderTexture(out_ptr_t<IRenderTexture> ppWindow, ref_t<RenderTextureDesc> desc);
-    };
+        class IDevice {
+        public:
+            void createWindow(out_ptr_t<IWindow> ppWindow, ref_t<WindowDesc> desc);
+            void createCommandList(out_ptr_t<ICommandList> ppWindow, ref_t<CommandListDesc> desc);
+            void createDataBuffer(out_ptr_t<IDataBuffer> ppWindow, ref_t<DataBufferDesc> desc);
+            void createShader(out_ptr_t<IShader> ppWindow, ref_t<ShaderDesc> desc);
+            void createTexture(out_ptr_t<ITexture> ppWindow, ref_t<TextureDesc> desc);
+        };
+    }
 }

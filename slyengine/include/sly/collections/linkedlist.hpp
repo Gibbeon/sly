@@ -14,7 +14,7 @@ LinkedList<TItemType>::~LinkedList()
 }
 
 template <typename TItemType>
-s32 LinkedList<TItemType>::add(const TItemType item)
+size_t LinkedList<TItemType>::add(const TItemType item)
 {
     ListNode* newNode = createNode();
     newNode->value = item;
@@ -34,7 +34,7 @@ s32 LinkedList<TItemType>::add(const TItemType item)
 }
 
 template <typename TItemType>
-void LinkedList<TItemType>::addRange(const TItemType* array, s32 count)
+void LinkedList<TItemType>::addRange(const TItemType* array, size_t count)
 {
     for(int i = 0; i < count; i++)
     {
@@ -43,7 +43,7 @@ void LinkedList<TItemType>::addRange(const TItemType* array, s32 count)
 }
 
 template <typename TItemType>
-void LinkedList<TItemType>::insert(s32 index, const TItemType item)
+void LinkedList<TItemType>::insert(size_t index, const TItemType item)
 {
     BOUNDS_CHECK(count_ + 1, index);
 
@@ -72,7 +72,7 @@ void LinkedList<TItemType>::insert(s32 index, const TItemType item)
 }
 
 template <typename TItemType>
-void LinkedList<TItemType>::remove(s32 index)
+void LinkedList<TItemType>::remove(size_t index)
 {
     BOUNDS_CHECK(count_, index);
 
@@ -106,7 +106,7 @@ void LinkedList<TItemType>::remove(s32 index)
 }
 
 template <typename TItemType>
-void LinkedList<TItemType>::set(s32 index, const TItemType item)
+void LinkedList<TItemType>::set(size_t index, const TItemType item)
 {
     BOUNDS_CHECK(count_, index);
 
@@ -114,7 +114,7 @@ void LinkedList<TItemType>::set(s32 index, const TItemType item)
 }
 
 template <typename TItemType>
-TItemType LinkedList<TItemType>::get(s32 index) const
+TItemType LinkedList<TItemType>::get(size_t index) const
 {
     BOUNDS_CHECK(count_, index);
 
@@ -122,7 +122,7 @@ TItemType LinkedList<TItemType>::get(s32 index) const
 }
 
 template <typename TItemType>
-TItemType& LinkedList<TItemType>::operator[](const s32 index)
+TItemType& LinkedList<TItemType>::operator[](const size_t index)
 {
     return nodeAt(index)->value;
 }
@@ -135,13 +135,13 @@ void LinkedList<TItemType>::clear()
 }
 
 template <typename TItemType>       
-s32 LinkedList<TItemType>::count() const
+size_t LinkedList<TItemType>::count() const
 {
     return count_;
 }
 
 template <typename TItemType>       
-typename LinkedList<TItemType>::ListNode* LinkedList<TItemType>::nodeAt(s32 index) const
+typename LinkedList<TItemType>::ListNode* LinkedList<TItemType>::nodeAt(size_t index) const
 {
     BOUNDS_CHECK(count_, index);
 

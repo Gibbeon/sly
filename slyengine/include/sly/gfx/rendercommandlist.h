@@ -4,28 +4,30 @@
 #include "sly/builder.h"
 
 namespace sly {
-    struct RenderCommandListDesc {
-    public:
-    };
+    namespace gfx {
+        struct CommandListDesc {
+        public:
+        };
 
-    class RenderCommandListDescBuilder : public Builder<RenderCommandListDesc> {
-    public:
-    };
+        class CommandListBuilder : public Builder<CommandListDesc> {
+        public:
+        };
 
-    class IRenderCommandList {
-    public:
-        void Begin();
-        void End();
+        class ICommandList {
+        public:
+            void begin();
+            void end();
 
-        void SetViewport();
-        void SetCamera();
-        void SetProjection();
-        void SetScissorRect();
-        void SetVSShader();
-        void SetPSShader();
-        void SetVertexBuffer();
-        void SetIndexBuffer();
-        void SetTexture();
-        void DrawIndexed();
-    };
+            void setViewport();
+            void setCamera();
+            void setProjection();
+            void setScissorRect();
+            void setVSShader();
+            void setPSShader();
+            void setVertexBuffer();
+            void setIndexBuffer();
+            void setTexture();
+            void drawIndexed();
+        };
+    }
 }

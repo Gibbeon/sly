@@ -11,26 +11,26 @@ namespace sly {
     class Array: public Collection<TItemType>
     {
         public:
-            Array(TItemType* items, s32 count);
-            Array(const TItemType* items, s32 count);
+            Array(TItemType* items, size_t count);
+            Array(const TItemType* items, size_t count);
             
             Array(const Array<TItemType>& copy);
             Array(const Array<TItemType>&& copy);
 
-            TItemType get(s32 index) const;
-            void set(s32 index, const TItemType item);
+            TItemType get(size_t index) const;
+            void set(size_t index, const TItemType item);
 
-            TItemType& operator[](const s32 index);
+            TItemType& operator[](const size_t index);
 
-            s32 count() const;
+            size_t count() const;
 
             TItemType* ptr() const;
         private:
             TItemType* items_;
-            s32 count_;
+            size_t count_;
 
         protected:
-            void init(TItemType* items, s32 count);
+            void init(TItemType* items, size_t count);
 
         protected:
             virtual TItemType read(ptr_t state) const;

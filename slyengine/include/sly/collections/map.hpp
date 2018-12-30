@@ -41,15 +41,15 @@ void Map<TKeyType, TItemType, TCollectionType>::clear()
 }
 
 template <typename TKeyType, typename TItemType, typename TCollectionType>
-s32 Map<TKeyType, TItemType, TCollectionType>::count() const
+size_t Map<TKeyType, TItemType, TCollectionType>::count() const
 {
     return list_.count();
 }
 
 template <typename TKeyType, typename TItemType, typename TCollectionType>
-s32 Map<TKeyType, TItemType, TCollectionType>::indexOf(TKeyType key) const
+size_t Map<TKeyType, TItemType, TCollectionType>::indexOf(TKeyType key) const
 {
-    for(s32 i = 0; i < list_.count(); i++)
+    for(size_t i = 0; i < list_.count(); i++)
     {
         if(list_[i].key == key)
             return i;
@@ -68,5 +68,5 @@ bool_t Map<TKeyType, TItemType, TCollectionType>::next(ptr_t* state) const
 template <typename TKeyType, typename TItemType, typename TCollectionType>
 Pair<TKeyType, TItemType> Map<TKeyType, TItemType, TCollectionType>::read(ptr_t state) const
 {
-    return list_.get((s32)reinterpret_cast<size_t>(state) - 1);
+    return list_.get((size_t)reinterpret_cast<size_t>(state) - 1);
 }

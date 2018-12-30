@@ -1,4 +1,4 @@
-#include "te/d3d12/commandqueue.h"
+/* #include "te/d3d12/commandqueue.h"
 #include "te/d3d12/commandlist.h"
 
 using namespace te;
@@ -38,3 +38,4 @@ bool_t D3D12CommandQueue::Flush() {
 
 
 
+ */

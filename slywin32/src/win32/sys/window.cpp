@@ -1,18 +1,21 @@
-#include "sly/win32/window.h"
+#include "sly/win32/sys/window.h"
 
-Win32Window::Win32Window(ptr_t<> hInstance, uint_t width, uint_t height, string_t pszTitle) :
+using namespace sly::sys;
+
+Win32Window::Win32Window(uint_t width, uint_t height, string_t pszTitle) :
     m_width(width),
     m_height(height),
     m_title(pszTitle)
 {
+    HINSTANCE hInstance= GetModuleHandle(NULL);
     // Initialize the window class.
     WNDCLASSEX windowClass = { 0 }; 
     windowClass.cbSize = sizeof(WNDCLASSEX);
     windowClass.style = CS_HREDRAW | CS_VREDRAW;
     windowClass.lpfnWndProc = WindowProc;
-    windowClass.hInstance = reinterpret_cast<HINSTANCE>(hInstance.ptr());
+    windowClass.hInstance = hInstance;
     windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-    windowClass.lpszClassName = "Win32Window";
+    windowClass.lpszClassName =  "Win32Window";
     RegisterClassEx(&windowClass);
 
     ::RECT windowRect = { 0, 0, static_cast<LONG>(m_width), static_cast<LONG>(m_height) };
@@ -29,7 +32,7 @@ Win32Window::Win32Window(ptr_t<> hInstance, uint_t width, uint_t height, string_
         windowRect.bottom - windowRect.top,
         nullptr,        // We have no parent window.
         nullptr,        // We aren't using menus.
-        reinterpret_cast<HINSTANCE>(hInstance.ptr()),
+        hInstance,
         this));
 
     ShowWindow(m_hWND, SW_SHOWDEFAULT);

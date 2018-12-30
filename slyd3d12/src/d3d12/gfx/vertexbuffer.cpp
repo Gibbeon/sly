@@ -1,4 +1,4 @@
-#include "te/d3d12/dxh.h"
+/* #include "te/d3d12/dxh.h"
 #include "te/d3d12/vertexbuffer.h"
 
 using namespace te;
@@ -34,4 +34,4 @@ bool_t D3D12VertexBuffer::Write(void* data, ulong_t offset, ulong_t size) {
     _vertexBufferView.SizeInBytes = vertexBufferSize;
     
     return true;
-}
+} */

@@ -7,21 +7,21 @@
 
 namespace sly {
     
-    template <typename TItemType, s32 Length>
+    template <typename TItemType, size_t Length>
     class FixedArray: public Collection<TItemType>
     {
         public:
             FixedArray(const TItemType* items);
             FixedArray(TItemType* items);
 
-            TItemType get(s32 index) const;
-            void set(s32 index, const TItemType item);
+            TItemType get(size_t index) const;
+            void set(size_t index, const TItemType item);
 
-            TItemType& operator[](const s32 index);
+            TItemType& operator[](const size_t index);
 
-            s32 count() const;
+            size_t count() const;
 
-            s32 LENGTH = Length;
+            size_t LENGTH = Length;
 
             TItemType* ptr() const;
         private:

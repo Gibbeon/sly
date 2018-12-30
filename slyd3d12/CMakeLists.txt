@@ -22,9 +22,21 @@ include_directories(./include)
 include_directories(./../slyengine/include)
 include_directories(./../slywin32/include)
  
+link_directories(./../slywin32/lib)
+
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
+find_library(SLYENGINE_LIB slyengine HINTS ./../slyengine/lib)
+find_library(SLYWIN32_LIB slywin32 HINTS ./../slywin32/lib)
+
+target_link_libraries(${PROJECT_NAME} ${SLYENGINE_LIB})
+target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
+target_link_libraries(${PROJECT_NAME} d3d12.lib)
+target_link_libraries(${PROJECT_NAME} dxgi.lib)
+target_link_libraries(${PROJECT_NAME} d3dcompiler.lib)
 
 if (MSVC)
 # For MSVC, CMake sets certain flags to defaults we want to override.

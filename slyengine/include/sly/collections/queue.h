@@ -13,7 +13,7 @@ namespace sly {
             TItemType dequeue();
             TItemType peek() const;
 
-            s32 count() const;
+            size_t count() const;
         
         protected:
             virtual TItemType read(ptr_t state) const;

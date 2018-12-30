@@ -15,12 +15,15 @@ struct local_ptr_t
 		TType& get() const;
         TType* ptr() const;
 
-		operator out_ptr_t<TType>() {	return out_ptr_t<TType>(&ptr_); }
-		operator ref_t<TType>() {	return ref_t<TType>(ptr_); }
+		//operator out_ptr_t<TType>() { return out_ptr_t<TType>(&ptr_); }
+		operator ref_t<TType>() { return ref_t<TType>(ptr_); }
 		TType* operator->() { return reinterpret_cast<TType*>(ptr_); };
 		
 	private:
 		ptr_t ptr_;
+
+	template<typename TType>
+	friend struct out_ptr_t;
 };
 
 #include "sly/local_ptr.hpp"

@@ -6,39 +6,38 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 {   
     // initialize the platform and configuration
+    sly::Platform::initialize();
+
     // builder patterns are designed to pass sets of variables into the underlying systems
-    sly::ApplicationDescBuilder applicationDescBuilder;
+    sly::ApplicationBuilder applicationBuilder;
     local_ptr_t<sly::IApplication> application = nullptr;
-    sly::Platform::CreateApplication(application, applicationDescBuilder.Build());
-
-    sly::Platform::SetApplication(application);
+    sly::Platform::createApplication(application, applicationBuilder.Build());
     
-    sly::RenderSystemDescBuilder rsDescBuilder;
-    local_ptr_t<sly::IRenderSystem> renderSystem = nullptr;
-    sly::Platform::CreateRenderSystem(renderSystem, rsDescBuilder.Build());
+    
+    sly::gfx::RenderSystemBuilder rsBuilder;
+    local_ptr_t<sly::gfx::IRenderSystem> renderSystem = nullptr;
+    sly::Platform::createRenderSystem(renderSystem, rsBuilder.Build());
 
-    sly::Platform::SetRenderSystem(renderSystem);
+    /* // can specify which adapter you use, or which rendering system to use if more than one is present
+    sly::gfx::DeviceBuilder rdBuilder;
+    local_ptr_t<sly::gfx::IDevice> renderDevice = nullptr;
+    renderSystem->createDevice(renderDevice, rdBuilder.Build());
 
-    // can specify which adapter you use, or which rendering system to use if more than one is present
-    sly::RenderDeviceDescBuilder rdDescBuilder;
-    local_ptr_t<sly::IRenderDevice> renderDevice = nullptr;
-    renderSystem->CreateRenderDevice(renderDevice, rdDescBuilder.Build());
-
-    sly::RenderWindowDescBuilder winDescBuilder;
-    sly::IRenderWindow* window = nullptr;
-    //winDescBuilder.SetBounds(Rect(0, 0, 1024, 768))
+    sly::gfx::WindowBuilder winBuilder;
+    local_ptr_t<sly::gfx::IWindow> window = nullptr;
+    //winBuilder.SetBounds(Rect(0, 0, 1024, 768))
     //            .SetColorDepth(32)
     //            .SetBufferCount(2)
     //            .SetFullscreen(false);
 
     // this will come with a swapchain and a command queue
-    renderDevice->CreateRenderWindow(&window, winDescBuilder.Build());
+    renderDevice->createWindow(window, winBuilder.Build());
 
-    sly::RenderCommandListDescBuilder rclBuilder;
-    sly::IRenderCommandList* list = nullptr;
-    renderDevice->CreateRenderCommandList(&list, rclBuilder.Build());
+    sly::gfx::CommandListBuilder rclBuilder;
+    local_ptr_t<sly::gfx::ICommandList> list = nullptr;
+    renderDevice->createCommandList(list, rclBuilder.Build());
 
-    sly::RenderBufferDescBuilder vbBuilder;
+    sly::gfx::DataBufferBuilder vbBuilder;
     
     //D3D11_BUFFER_DESC bufferDesc;
     //bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
@@ -66,14 +65,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
     //    { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
     //};
-    sly::IRenderBuffer* vertexBuffer = nullptr;
-    renderDevice->CreateRenderBuffer(&vertexBuffer, vbBuilder.Build());
+    local_ptr_t<sly::gfx::IDataBuffer> vertexBuffer = nullptr;
+    renderDevice->createDataBuffer(&vertexBuffer, vbBuilder.Build());
 
-    sly::RenderBufferDescBuilder ibBuilder;
-    sly::IRenderBuffer* indexBuffer = nullptr;
-    renderDevice->CreateRenderBuffer(&indexBuffer, ibBuilder.Build());
+    sly::gfx::DataBufferBuilder ibBuilder;
+    local_ptr_t<sly::gfx::IDataBuffer> indexBuffer = nullptr;
+    renderDevice->createDataBuffer(&indexBuffer, ibBuilder.Build());
 
-    sly::RenderTextureDescBuilder txtBuilder;
+    sly::gfx::TextureBuilder txtBuilder;
     //D3D11_TEXTURE2D_DESC desc;
     //desc.Width = 256;
     //desc.Height = 256;
@@ -84,16 +83,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
     //desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     //desc.MiscFlags = 0;
-    sly::IRenderTexture* texture = nullptr;
-    renderDevice->CreateRenderTexture(&texture, txtBuilder.Build());
+    local_ptr_t<sly::gfx::ITexture> texture = nullptr;
+    renderDevice->createTexture(&texture, txtBuilder.Build());
 
-    sly::RenderShaderDescBuilder vsspBuilder;
-    sly::IRenderShader* vsshader = nullptr;
-    renderDevice->CreateRenderShader(&vsshader, vsspBuilder.Build());
+    sly::gfx::ShaderBuilder vsspBuilder;
+    local_ptr_t<sly::gfx::IShader> vsshader = nullptr;
+    renderDevice->createShader(&vsshader, vsspBuilder.Build());
 
-    sly::RenderShaderDescBuilder psspBuilder;
-    sly::IRenderShader* psshader = nullptr;
-    renderDevice->CreateRenderShader(&psshader, psspBuilder.Build());
+    sly::gfx::ShaderBuilder psspBuilder;
+    local_ptr_t<sly::gfx::IShader> psshader = nullptr;
+    renderDevice->createShader(&psshader, psspBuilder.Build());
 
     //D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
     //psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
@@ -110,30 +109,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     //psoDesc.SampleDesc.Count = 1;
 
-    list->Begin();
-    list->SetViewport();
-    list->SetCamera();
-    list->SetProjection();
-    list->SetScissorRect();
-    list->SetVSShader();
-    list->SetPSShader();
-    list->SetVertexBuffer();
-    list->SetIndexBuffer();
-    list->SetTexture();
-    list->DrawIndexed();
-    list->End();
-
-    while(application->IsRunning())
+    list->begin();
+    list->setViewport();
+    list->setCamera();
+    list->setProjection();
+    list->setScissorRect();
+    list->setVSShader();
+    list->setPSShader();
+    list->setVertexBuffer();
+    list->setIndexBuffer();
+    list->setTexture();
+    list->drawIndexed();
+    list->end();
+ */
+    while(application->isRunning())
     {
-        application->ProcessEvents();
-        window->ProcessEvents();
+        //application->processEvents();
+        //window->processEvents();
         
         // read input state
         // read network state
         // update scenes
-        sly::Array<sly::IRenderCommandList*> batch(&list, 1);
-        window->GetRenderQueue()->ExecuteCommandList(batch);
-        window->SwapBuffers();
+        //sly::Array<sly::gfx::ICommandList> batch((sly::gfx::ICommandList*)list.ptr(), 1);
+        //window->getRenderQueue()->executeCommandList(batch);
+        //window->swapBuffers();
     }
 
     
@@ -175,7 +174,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //should we follow the builder pattern here as well?
     ENSURE(app.Init(hInstance, pszArgs), "Failed to initialize platform");
 
-    te::GfxSystemDescBuilder gfxSystemBuilder;
+    te::GfxSystemBuilder gfxSystemBuilder;
 
     // is there really a difference between a system and a device?
     // which is the api? device?

@@ -10,9 +10,9 @@ namespace sly {
     class Memory
     {
         public:
-            static inline void* allocate(s32 size) { return ::malloc(size); }
+            static inline void* allocate(size_t size) { return ::malloc(size); }
             static inline void free(void* ptr) { ::free(ptr); }
-            static inline void copy(const void* src, void* dest, s32 size) { ::memcpy(dest, src, size); }
+            static inline void copy(const void* src, void* dest, size_t size) { ::memcpy(dest, src, size); }
     };
 
 }

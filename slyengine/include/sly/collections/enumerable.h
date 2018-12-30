@@ -40,7 +40,7 @@ namespace sly {
             template<typename TConvertType, typename UnaryFunction>
             SelectIterator<TItemType, TConvertType, UnaryFunction> select(UnaryFunction lambda) const;
 
-            s32 count() const;
+            size_t count() const;
 
             TItemType sum() const;
             
@@ -52,8 +52,8 @@ namespace sly {
 
             bool_t any() const;
 
-            void copy(TItemType* destination, s32 count) const;
-            static void copy(const Enumerable<TItemType>& src, TItemType* destination, s32 count);
+            void copy(TItemType* destination, size_t count) const;
+            static void copy(const Enumerable<TItemType>& src, TItemType* destination, size_t count);
 
             template <typename UnaryFunction>
             bool_t any(UnaryFunction lambda) const;
@@ -61,9 +61,9 @@ namespace sly {
             template <typename UnaryFunction>
             bool_t all(UnaryFunction lambda) const;
 
-            RangeIterator<TItemType> skip(s32 count) const;
+            RangeIterator<TItemType> skip(size_t count) const;
 
-            RangeIterator<TItemType> take(s32 count) const;
+            RangeIterator<TItemType> take(size_t count) const;
 
             // sort, reverse, union?, zip?, groupBy?
 

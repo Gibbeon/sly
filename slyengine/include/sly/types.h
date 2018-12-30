@@ -42,8 +42,8 @@ typedef void* ptr_t;
 #define TRUE true
 
 #include "sly/ref.h"
-#include "sly/out_ptr.h"
 #include "sly/local_ptr.h"
+#include "sly/out_ptr.h"
 #include "sly/string.h"
 #include "sly/pair.h"
 #include "sly/exception.h"

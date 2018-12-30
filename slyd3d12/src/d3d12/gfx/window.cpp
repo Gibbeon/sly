@@ -1,4 +1,4 @@
-#include "te/d3d12/window.h"
+/* #include "te/d3d12/window.h"
 #include "te/d3d12/device.h"
 #include "te/d3d12/commandqueue.h"
 #include "te/win32/window.h"
@@ -140,3 +140,4 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3D12Window::GetActiveHandle() {
 }
 
 
+ */

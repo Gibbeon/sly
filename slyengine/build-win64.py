@@ -16,4 +16,4 @@ for var in vars.splitlines():
 os.chdir("build/win64")
 os.system("cmake ../../ -G \"Visual Studio 15 2017\" -A x64 -T host=x64")
 os.chdir("../../")
-os.system("msbuild /nologo /v:m /p:Configuration=Release /p:Platform=\"x64\" ./build/win64/" + os.path.basename(os.getcwd()) + ".sln")
+os.system("msbuild /nologo /v:m /p:Configuration=Debug /p:Platform=\"x64\" ./build/win64/" + os.path.basename(os.getcwd()) + ".sln")

@@ -64,9 +64,9 @@ SelectIterator<TItemType, TConvertType, UnaryFunction> Enumerable<TItemType>::se
 }
 
 template <typename TItemType>
-s32  Enumerable<TItemType>::count() const
+size_t  Enumerable<TItemType>::count() const
 {
-    s32 result = 0;
+    size_t result = 0;
     auto iter = getIterator();
     while(++iter)
     {
@@ -157,7 +157,7 @@ TItemType Enumerable<TItemType>::average() const
     return avg.value();
 
     /*TItemType   accumulator = 0;
-    s32 count = 0;
+    size_t count = 0;
     auto iter = getIterator();
     while(++iter)
     {
@@ -174,9 +174,9 @@ bool_t Enumerable<TItemType>::any() const
 }
 
 template <typename TItemType>
-void Enumerable<TItemType>::copy(const Enumerable<TItemType>& src, TItemType* destination, s32 count)
+void Enumerable<TItemType>::copy(const Enumerable<TItemType>& src, TItemType* destination, size_t count)
 {
-    s32 index = 0;
+    size_t index = 0;
     auto iter = src.getIterator();
     while(++iter && index < count)
     {
@@ -186,7 +186,7 @@ void Enumerable<TItemType>::copy(const Enumerable<TItemType>& src, TItemType* de
 }
 
 template <typename TItemType>
-void Enumerable<TItemType>::copy(TItemType* destination, s32 count) const
+void Enumerable<TItemType>::copy(TItemType* destination, size_t count) const
 {
     Enumerable<TItemType>::copy(*this, destination, count);
 }

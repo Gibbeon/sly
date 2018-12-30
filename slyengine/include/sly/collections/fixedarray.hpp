@@ -17,7 +17,7 @@ void FixedArray<TItemType>::init(TItemType* items)
 }
 
 template <typename TItemType>
-void FixedArray<TItemType>::set(s32 index, const TItemType item)
+void FixedArray<TItemType>::set(size_t index, const TItemType item)
 {
     BOUNDS_CHECK(Length, index);
 
@@ -25,7 +25,7 @@ void FixedArray<TItemType>::set(s32 index, const TItemType item)
 }
 
 template <typename TItemType>
-TItemType FixedArray<TItemType>::get(s32 index) const
+TItemType FixedArray<TItemType>::get(size_t index) const
 {
     BOUNDS_CHECK(Length, index);
 
@@ -33,13 +33,13 @@ TItemType FixedArray<TItemType>::get(s32 index) const
 }
 
 template <typename TItemType>       
-s32 FixedArray<TItemType>::count() const
+size_t FixedArray<TItemType>::count() const
 {
     return Length;
 }
 
 template <typename TItemType>
-TItemType& FixedArray<TItemType>::operator[](s32 index)
+TItemType& FixedArray<TItemType>::operator[](size_t index)
 {
     BOUNDS_CHECK(Length, index);
     return items_[index];
@@ -54,12 +54,12 @@ TItemType* FixedArray<TItemType>::ptr() const
 template <typename TItemType>
 bool_t FixedArray<TItemType>::next(ptr_t* state) const
 {
-    *state = reinterpret_cast<ptr_t>(reinterpret_cast<s32>(*state) + 1);
-    return reinterpret_cast<s32>(*state) <= Length;
+    *state = reinterpret_cast<ptr_t>(reinterpret_cast<size_t>(*state) + 1);
+    return reinterpret_cast<size_t>(*state) <= Length;
 }
 
 template <typename TItemType>
 TItemType FixedArray<TItemType>::read(ptr_t state) const
 {
-    return get(reinterpret_cast<s32>(state) - 1);
+    return get(reinterpret_cast<size_t>(state) - 1);
 }

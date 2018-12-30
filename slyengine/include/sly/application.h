@@ -8,14 +8,20 @@ namespace sly {
     public:
     };
 
-    class ApplicationDescBuilder : public Builder<ApplicationDesc> {
+    class ApplicationBuilder : public Builder<ApplicationDesc> {
     public:
     };
 
     class IApplication {
     public:
-        bool_t IsRunning();
-        bool_t ProcessEvents();
+        virtual bool_t isRunning() = 0;
+        virtual bool_t processEvents() = 0;
+    };
+
+    class SlyApplication : public IApplication {
+    public:
+        virtual bool_t isRunning();
+        virtual bool_t processEvents();
     };
 }
 

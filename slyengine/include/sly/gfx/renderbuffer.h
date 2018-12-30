@@ -4,15 +4,17 @@
 #include "sly/builder.h"
 
 namespace sly {
-    struct RenderBufferDesc {
-    public:
-    };
+    namespace gfx {
+        struct DataBufferDesc {
+        public:
+        };
 
-    class RenderBufferDescBuilder : public Builder<RenderBufferDesc> {
-    public:
-    };
+        class DataBufferBuilder : public Builder<DataBufferDesc> {
+        public:
+        };
 
-    class IRenderBuffer {
-    public:
-    };
+        class IDataBuffer {
+        public:
+        };
+    }
 }

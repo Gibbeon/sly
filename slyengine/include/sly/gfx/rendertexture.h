@@ -4,17 +4,18 @@
 #include "sly/builder.h"
 
 namespace sly {
-        
-    struct RenderTextureDesc {
-    public:
-    };
+    namespace gfx {
+        struct TextureDesc {
+        public:
+        };
 
-    class RenderTextureDescBuilder : public Builder<RenderTextureDesc> {
-    public:
-    };
+        class TextureBuilder : public Builder<TextureDesc> {
+        public:
+        };
 
-    class IRenderTexture {
-    public:
-    };
+        class ITexture {
+        public:
+        };
+    }
 }
 

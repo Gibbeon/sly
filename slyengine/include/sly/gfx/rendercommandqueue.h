@@ -5,19 +5,20 @@
 #include "sly/collections/array.h"
 
 namespace sly {
-    
-    struct RenderCommandQueueDesc {
-    public:
-    };
+    namespace gfx {
+        
+        struct CommandQueueDesc {
+        public:
+        };
 
-    class RenderCommandQueueDescBuilder : public Builder<RenderCommandQueueDesc> {
-    public:
-    };
+        class CommandQueueBuilder : public Builder<CommandQueueDesc> {
+        public:
+        };
 
-    class IRenderCommandList;
-    class IRenderCommandQueue {
-    public:
-        void ExecuteCommandList(Array<IRenderCommandList*>& lists);
-    };
-
+        class ICommandList;
+        class ICommandQueue {
+        public:
+            void executeCommandList(Array<ICommandList>& lists);
+        };
+    }
 }

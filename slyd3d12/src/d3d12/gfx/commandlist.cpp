@@ -1,4 +1,4 @@
-#include "te/d3d12/commandlist.h"
+/* #include "te/d3d12/commandlist.h"
 #include "te/d3d12/vertexbuffer.h"
 #include "te/d3d12/device.h"
 #include "te/d3d12/window.h"
@@ -128,3 +128,4 @@ bool_t D3D12CommandList::End() {
     return true;
 }
 
+ */

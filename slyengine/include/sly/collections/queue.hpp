@@ -13,7 +13,7 @@ TItemType Queue<TItemType, TCollectionType>::dequeue()
 }
 
 template <typename TItemType, typename TCollectionType>
-s32 Queue<TItemType, TCollectionType>::count() const
+size_t Queue<TItemType, TCollectionType>::count() const
 {
     return list_.count();
 }
@@ -27,12 +27,12 @@ TItemType Queue<TItemType, TCollectionType>::peek() const
 template <typename TItemType, typename TCollectionType>
 bool_t Queue<TItemType, TCollectionType>::next(ptr_t* state) const
 {
-    *state = reinterpret_cast<ptr_t>(reinterpret_cast<s32>(*state) + 1);
-    return reinterpret_cast<s32>(*state) <= count();
+    *state = reinterpret_cast<ptr_t>(reinterpret_cast<size_t>(*state) + 1);
+    return reinterpret_cast<size_t>(*state) <= count();
 }
 
 template <typename TItemType, typename TCollectionType>
 TItemType Queue<TItemType, TCollectionType>::read(ptr_t state) const
 {
-    return list_.get(reinterpret_cast<s32>(state) - 1);
+    return list_.get(reinterpret_cast<size_t>(state) - 1);
 }

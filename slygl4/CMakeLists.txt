@@ -24,7 +24,7 @@ include_directories(./../slywin32/include)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 if (MSVC)
 # For MSVC, CMake sets certain flags to defaults we want to override.

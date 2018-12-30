@@ -1,5 +1,6 @@
 #include "sly/global.h"
+#include "sly/win32/sys/os.h"
 
-bool_t RegisterModule_Win32() {
-    return true;
+void _CreateOperatingSystemImpl(out_ptr_t<sly::sys::IOperatingSystem> os) {
+    os = new sly::sys::Win32OperatingSystem();
 }

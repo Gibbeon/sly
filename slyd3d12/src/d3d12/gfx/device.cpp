@@ -1,4 +1,4 @@
-#include "te/d3d12/device.h"
+/* #include "te/d3d12/device.h"
 #include "te/d3d12/dxh.h"
 #include "te/d3d12/commandqueue.h"
 #include "te/d3d12/commandlist.h"
@@ -131,4 +131,4 @@ bool_t D3D12Device::CreateVertexBuffer(IGfxVertexBuffer** buffer, GfxVertexBuffe
 bool_t D3D12Device::CreateGfxWindow(IGfxWindow** window, WindowDesc& desc) {
     (*window) = new D3D12Window(this, new Win32Window(desc.hInstance, desc.bounds.w, desc.bounds.h,  "Sample Title"));
     return true;
-}
+} */

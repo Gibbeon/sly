@@ -6,7 +6,7 @@ List<TItemType>::List() :
 }
 
 template <typename TItemType>
-List<TItemType>::List(s32 capacity) :
+List<TItemType>::List(size_t capacity) :
     growBy_(25),
     count_(0),
     capacity_(0),
@@ -26,30 +26,32 @@ List<TItemType>::~List()
 }
 
 template <typename TItemType>
-s32 List<TItemType>::add(const TItemType item)
+size_t List<TItemType>::add(const TItemType item)
 {
     addRange(&item, 1);
     return count_;
 }
 
 template <typename TItemType>
-void List<TItemType>::addRange(const TItemType* array, s32 count)
+void List<TItemType>::addRange(const TItemType* array, size_t count)
 {
     NOT_NULL(array);
 
     ensure(count_ + count);
+    // Function will break here, since the buf_ reference copied will be invalid... 
+    // Honestly is "thi"
     Memory::copy(array, &items_[count_], sizeof(TItemType) * count);
     count_ += count;
 }
 
 template <typename TItemType>
-void List<TItemType>::insert(s32 index, const TItemType item)
+void List<TItemType>::insert(size_t index, const TItemType item)
 {
     insertRange(index, &item, 1);
 }
 
 template <typename TItemType>
-void List<TItemType>::insertRange(s32 index, const TItemType* array, s32 count)
+void List<TItemType>::insertRange(size_t index, const TItemType* array, size_t count)
 {
     BOUNDS_CHECK(count_ + 1, index);
 
@@ -64,7 +66,7 @@ void List<TItemType>::insertRange(s32 index, const TItemType* array, s32 count)
 }
 
 template <typename TItemType>
-void List<TItemType>::remove(s32 index)
+void List<TItemType>::remove(size_t index)
 {
     BOUNDS_CHECK(count_, index);
 
@@ -76,7 +78,7 @@ void List<TItemType>::remove(s32 index)
 }
 
 template <typename TItemType>
-void List<TItemType>::set(s32 index, const TItemType item)
+void List<TItemType>::set(size_t index, const TItemType item)
 {
     BOUNDS_CHECK(count_, index);
 
@@ -84,7 +86,7 @@ void List<TItemType>::set(s32 index, const TItemType item)
 }
 
 template <typename TItemType>
-TItemType List<TItemType>::get(s32 index) const
+TItemType List<TItemType>::get(size_t index) const
 {
     BOUNDS_CHECK(count_, index);
 
@@ -98,28 +100,29 @@ void List<TItemType>::clear()
 }
 
 template <typename TItemType>
-void List<TItemType>::ensure(s32 length)
+void List<TItemType>::ensure(size_t length)
 {
+    SLYASSERT_GT(growBy_, 0, "GrowBy cannot be 0");
     if(length > capacity_)
     {
-        resize(((length + growBy_) - 1 / growBy_) * growBy_);
+        resize((((length + growBy_) - 1) / growBy_) * growBy_);
     }
 }
 
 template <typename TItemType>       
-s32 List<TItemType>::count() const
+size_t List<TItemType>::count() const
 {
     return count_;
 }
 
 template <typename TItemType>
-s32 List<TItemType>::capacity() const
+size_t List<TItemType>::capacity() const
 {
     return capacity_;
 }
 
 template <typename TItemType>
-void List<TItemType>::resize(s32 capacity)
+void List<TItemType>::resize(size_t capacity)
 {
     TItemType* newArray = reinterpret_cast<TItemType*>(Memory::allocate(sizeof(TItemType) * capacity));
     
@@ -133,14 +136,14 @@ void List<TItemType>::resize(s32 capacity)
 }
 
 template <typename TItemType>
-TItemType& List<TItemType>::operator[](s32 index)
+TItemType& List<TItemType>::operator[](size_t index)
 {
     BOUNDS_CHECK(count_, index);
     return items_[index];
 }
 
 template <typename TItemType>
-TItemType List<TItemType>::operator[](s32 index) const
+TItemType List<TItemType>::operator[](size_t index) const
 {
     BOUNDS_CHECK(count_, index);
     return get(index);
@@ -153,9 +156,9 @@ TItemType* List<TItemType>::ptr() const
 }
 
 template <typename TItemType>
-s32 List<TItemType>::indexOf(TItemType key) const
+size_t List<TItemType>::indexOf(TItemType key) const
 {
-    for(s32 i = 0; i < count(); i++)
+    for(size_t i = 0; i < count(); i++)
     {
         if(items_[i] == key)
             return i;
@@ -175,5 +178,5 @@ bool_t List<TItemType>::next(ptr_t* state) const
 template <typename TItemType>
 TItemType List<TItemType>::read(ptr_t state) const
 {
-    return get((s32)reinterpret_cast<size_t>(state) - 1);
+    return get((size_t)reinterpret_cast<size_t>(state) - 1);
 }

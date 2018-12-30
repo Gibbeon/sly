@@ -14,31 +14,31 @@ namespace sly {
     {
         public:
             List();
-            List(s32 capacity);
+            List(size_t capacity);
 
             ~List();
             
-            s32 add(const TItemType item);
-            void addRange(const TItemType* array, s32 count);
+            size_t add(const TItemType item);
+            void addRange(const TItemType* array, size_t count);
 
-            void insert(s32 index, const TItemType item);
-            void insertRange(s32 index, const TItemType* array, s32 count);
+            void insert(size_t index, const TItemType item);
+            void insertRange(size_t index, const TItemType* array, size_t count);
 
-            void remove(s32 index);
+            void remove(size_t index);
             
-            TItemType get(s32 index) const;
-            void set(s32 index, const TItemType item);
+            TItemType get(size_t index) const;
+            void set(size_t index, const TItemType item);
 
             void clear();
-            void ensure(s32 length);
+            void ensure(size_t length);
 
-            TItemType operator[](const s32 index) const;
-            TItemType& operator[](const s32 index);
+            TItemType operator[](const size_t index) const;
+            TItemType& operator[](const size_t index);
 
-            s32 count() const;
-            s32 capacity() const;
+            size_t count() const;
+            size_t capacity() const;
 
-            s32 indexOf(TItemType key) const;
+            size_t indexOf(TItemType key) const;
 
         protected:
             virtual TItemType read(ptr_t state) const;
@@ -46,11 +46,11 @@ namespace sly {
             
         private:
             TItemType* items_;
-            s32 count_;
-            s32 capacity_;
-            s32 growBy_;
+            size_t count_;
+            size_t capacity_;
+            size_t growBy_;
 
-            void resize(s32 capacity);
+            void resize(size_t capacity);
             TItemType* ptr() const;
     };
 

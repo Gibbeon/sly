@@ -4,20 +4,20 @@
 #include "sly/builder.h"
 
 namespace sly {
-    
-    struct RenderSystemDesc {
-    public:
-    };
+    namespace gfx {
+        struct RenderSystemDesc {
+        public:
+        };
 
-    class RenderSystemDescBuilder : public Builder<RenderSystemDesc> {
-    public:
-    };
+        class RenderSystemBuilder : public Builder<RenderSystemDesc> {
+        public:
+        };
 
-    class IRenderDevice;
-    struct RenderDeviceDesc;
-    class IRenderSystem {
-    public:
-        void CreateRenderDevice(out_ptr_t<IRenderDevice> outDevice, ref_t<RenderDeviceDesc> desc);
-    };
-
+        class IDevice;
+        struct DeviceDesc;
+        class IRenderSystem {
+        public:
+            virtual void createDevice(out_ptr_t<IDevice> outDevice, ref_t<DeviceDesc> desc) = 0;
+        };
+    }
 }

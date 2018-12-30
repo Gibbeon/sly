@@ -4,20 +4,21 @@
 #include "sly/builder.h"
 
 namespace sly {
+    namespace gfx {
+        struct WindowDesc {
+        public:
+        };
 
-    struct RenderWindowDesc {
-    public:
-    };
-
-    class RenderWindowDescBuilder : public Builder<RenderWindowDesc> {
-    public:
-    };
-    
-    class IRenderCommandQueue;
-    class IRenderWindow {
-    public:
-        void ProcessEvents();
-        void SwapBuffers();
-        ref_t<IRenderCommandQueue> GetRenderQueue();
-    };
+        class WindowBuilder : public Builder<WindowDesc> {
+        public:
+        };
+        
+        class ICommandQueue;
+        class IWindow {
+        public:
+            void processEvents();
+            void swapBuffers();
+            ref_t<ICommandQueue> getRenderQueue();
+        };
+    }
 }
