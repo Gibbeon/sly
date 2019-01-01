@@ -10,18 +10,19 @@ namespace sly {
 
     class ApplicationBuilder : public Builder<ApplicationDesc> {
     public:
+        ApplicationBuilder() : Builder({}) {}
     };
 
     class IApplication {
     public:
         virtual bool_t isRunning() = 0;
-        virtual bool_t processEvents() = 0;
+        virtual bool_t processMessages() = 0;
     };
 
     class SlyApplication : public IApplication {
     public:
         virtual bool_t isRunning();
-        virtual bool_t processEvents();
+        virtual bool_t processMessages();
     };
 }
 

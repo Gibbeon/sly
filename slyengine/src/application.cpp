@@ -2,7 +2,7 @@
 
 using namespace sly;
 
-bool_t SlyApplication::processEvents() {
+bool_t SlyApplication::processMessages() {
     return true;
 }
 

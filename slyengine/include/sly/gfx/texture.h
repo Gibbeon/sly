@@ -2,6 +2,7 @@
 
 #include "sly/global.h"
 #include "sly/builder.h"
+#include "sly/gfx/rendertarget.h"
 
 namespace sly {
     namespace gfx {
@@ -13,8 +14,13 @@ namespace sly {
         public:
         };
 
-        class ITexture {
+        class ITexture : public IRenderTarget {
         public:
+        
+        protected:
+            using IRenderTarget::IRenderTarget;
+        
+            constexpr static TextureDesc DEFAULT = {  }; 
         };
     }
 }

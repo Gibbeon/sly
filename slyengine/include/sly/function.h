@@ -199,6 +199,4 @@ namespace sly {
         return pFn->exec(static_cast<TArgs &&>(arguments)...);
     }
     
-    #include "sly/function.hpp"
-
 }

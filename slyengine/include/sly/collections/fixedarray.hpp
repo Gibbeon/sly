@@ -1,4 +1,4 @@
-template <typename TItemType>
+/* template <typename TItemType>
 FixedFixedArray<TItemType>::FixedArray(const TItemType* items)
 {
     init(const_cast<TItemType*>(items));
@@ -62,4 +62,4 @@ template <typename TItemType>
 TItemType FixedArray<TItemType>::read(ptr_t state) const
 {
     return get(reinterpret_cast<size_t>(state) - 1);
-}
+} */

@@ -1,42 +1,48 @@
-#include "te/engine.h"
-#include "te/d3d12/global.h"
+#include "sly/d3d12.h"
+#include "sly/gfx.h"
+#include "sly/d3d12/gfx/rendertarget.h"
+#include "sly/d3d12/gfx/commandqueue.h"
+#include "sly/d3d12/gfx/managed.h"
+#include "sly/d3d12/gfx/fence.h"
+#include "sly/d3d12/gfx/descriptortable.h"
+#include "sly/collections/list.h"
 
-namespace te {
+namespace sly {
+    namespace sys {
+        class Win32Window;
+    }
 
-class Win32Window;
-class D3D12CommandQueue;
+    namespace gfx {
+        class D3D12CommandQueueImpl;
 
-class D3D12Device;
-class D3D12Window : public IGfxWindow {
-public:
-    D3D12Window(D3D12Device* device, Win32Window* window);
+        class D3D12DeviceImpl;
+        class D3D12WindowImpl : public D3D12ManagedImpl, public IWindow {
+        public:
+            D3D12WindowImpl(ref_t<D3D12DeviceImpl> device, ref_t<sly::sys::Win32Window> window);
+            virtual void init(ref_t<WindowDesc> desc = IWindow::DEFAULT_DESC);
 
-    virtual bool_t SetVisible(bool_t show);
-    virtual bool_t SwapBuffers();
+            // window control
+            virtual void setVisible(bool_t show);
+            virtual void processMessages();
 
-    ptr_t<IGfxDevice> GetGfxDevice() { return _device; }
-    ID3D12Resource* GetActiveRenderTarget() { return (_renderTargets[_frameIndex]); }
-    D3D12_CPU_DESCRIPTOR_HANDLE GetActiveHandle();
-    virtual IGfxCommandQueue* GetCommandQueue();
+            // buffers
+            virtual void swapBuffers();            
+            ref_t<IRenderTarget> getBackBuffer() { return &renderTargets_[drawFrameIndex_]; }       
 
-    virtual bool_t ProcessMessages();
+            // draw
+            virtual ref_t<ICommandQueue> getDirectCommandQueue() { return directCommandQueue_; }
+ 
+        private:
+            ref_t<IDXGISwapChain3> swapChain_;
+            D3D12RenderTargetImpl renderTargets_[2];
+            size_t drawFrameIndex_;
+            
+            ref_t<sly::sys::Win32Window> window_;
 
-private:
-    ptr_t<IGfxDevice> _device;
-
-private:
-    Win32Window* _window;
-
-    IDXGISwapChain3* _swapChain;
-    ID3D12DescriptorHeap* _rtvHeap;
-    ID3D12Resource* _renderTargets[2];
-    uint_t _rtvDescriptorSize;
-    uint_t _frameIndex;
-    D3D12CommandQueue* _commandQueue;
-
-    HANDLE _fenceEvent;
-    ID3D12Fence* _fence;
-    uint_t _fenceValue;
-};
+            D3D12FenceImpl fence_;
+            D3D12CommandQueueImpl directCommandQueue_;
+            D3D12DescriptorTableImpl desctriptorTable_;
+        };
+    }
 
 }

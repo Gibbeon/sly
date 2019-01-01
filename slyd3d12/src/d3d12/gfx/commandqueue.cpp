@@ -1,41 +1,21 @@
-/* #include "te/d3d12/commandqueue.h"
-#include "te/d3d12/commandlist.h"
+#include "sly/d3d12/gfx/commandqueue.h"
+#include "sly/d3d12/gfx/device.h"
+#include "sly/d3d12/gfx/commandlist.h"
 
-using namespace te;
+using namespace sly::gfx;
 
-D3D12CommandQueue::D3D12CommandQueue(ptr_t<ID3D12CommandQueue> queue, ID3D12Device* device) :
-    _queue(queue) {
+D3D12CommandQueueImpl::D3D12CommandQueueImpl(ref_t<D3D12DeviceImpl> device, ref_t<CommandQueueDesc> desc) :
+    D3D12ManagedImpl(device),
+    fence_(device) 
+{
+    // Describe and create the command queue.
+    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
-    ThrowIfFailed(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_ID3D12Fence, reinterpret_cast<void**>(&_fence)));
-    _fenceValue = 1;
-
-    _fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (_fenceEvent == nullptr)
-    {
-        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
-    }
+    device->getID3D12Device()->CreateCommandQueue(&queueDesc, IID_ID3D12CommandQueue, reinterpret_cast<void**>(&queue_));
 }
     
-bool_t D3D12CommandQueue::ExecuteCommandList(ptr_t<IGfxCommandList> list) {
-    ID3D12CommandList* ppCommandLists[] = { list.As<D3D12CommandList>()->GetCommandList() };
-    _queue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
-    return true;
+void D3D12CommandQueueImpl::executeCommandList(ref_t<ICommandList> lists) {
+    queue_->ExecuteCommandLists(1, lists.as<D3D12CommandListImpl>()->getID3D12CommandList());
 }
-
-bool_t D3D12CommandQueue::Flush() {
-    // Signal and increment the fence value.
-    const UINT64 fenceToWaitFor = _fenceValue + 1;
-    ThrowIfFailed(_queue->Signal(_fence, fenceToWaitFor));
-    _fenceValue++;
-
-    // Wait until the fence is completed.
-    ThrowIfFailed(_fence->SetEventOnCompletion(fenceToWaitFor, _fenceEvent));
-    WaitForSingleObject(_fenceEvent, INFINITE);
-
-    return true;
-}
-
-
-
-
- */

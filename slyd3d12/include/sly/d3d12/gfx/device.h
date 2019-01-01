@@ -1,33 +1,32 @@
-#include "te/engine.h"
-#include "te/d3d12/global.h"
+#pragma once
 
-namespace te {
+#include "sly/d3d12.h"
+#include "sly/gfx.h"
 
-class D3D12Device : public IGfxDevice {
-public:
-    D3D12Device(IDXGIFactory4*, IDXGIAdapter1*, ID3D12Device*);
-    
-    virtual bool_t CreateGfxCommandQueue(IGfxCommandQueue** queue, GfxCommandQueueDesc& desc);
-    virtual bool_t CreateGfxCommandList(IGfxCommandList** list, GfxCommandListDesc& desc);
+namespace sly {
+    namespace gfx {
 
-    virtual bool_t CreateGfxWindow(IGfxWindow**, WindowDesc& desc);
+        class D3D12DeviceImpl : public IDevice {
+        public:
+            D3D12DeviceImpl(ref_t<DeviceDesc> desc = IDevice::DEFAULT_DESC);
+            
+            virtual void createWindow(out_ptr_t<IWindow> ppWindow, ref_t<WindowDesc> desc);
+            virtual void createCommandQueue(out_ptr_t<ICommandQueue> queue, ref_t<CommandQueueDesc> desc);
+            virtual void createCommandList(out_ptr_t<ICommandList> ppWindow, ref_t<CommandListDesc> desc);
+            virtual void createRenderState(out_ptr_t<IRenderState> ppWindow, ref_t<RenderStateDesc> desc);
+            virtual void createShader(out_ptr_t<IShader> ppWindow, ref_t<ShaderDesc> desc);
+            virtual void createTexture(out_ptr_t<ITexture> ppWindow, ref_t<TextureDesc> desc);
+            virtual void createVertexBuffer(out_ptr_t<IVertexBuffer> ppWindow, ref_t<VertexBufferDesc> desc);
+            virtual void createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<IndexBufferDesc> desc);
+ 
+            ref_t<IDXGIAdapter1> getIDXGIAdapter1()   { return adapter_; }
+            ref_t<IDXGIFactory4> getIDXGIFactory4()   { return factory_; }
+            ref_t<ID3D12Device> getID3D12Device()   { return device_; }
 
-    virtual bool_t CreateVertexBuffer(IGfxVertexBuffer** buffer, GfxVertexBufferDesc& desc);
-
-    ID3D12Device* GetID3DDevice() { return _device; }
-    IDXGIAdapter1* GetIDXGIAdapter() { return _adapter; }
-    IDXGIFactory4* GetIDXGIFactory() { return _factory; }
-protected:
-    bool_t InitRootSignature();
-    bool_t InitPipelineState();
-
-private:
-    IDXGIFactory4*  _factory;
-    IDXGIAdapter1*  _adapter;
-    ID3D12Device*   _device;
-
-    ID3D12RootSignature* _rootSignature;
-    ID3D12PipelineState* _pipelineState;
-};
-
+        private:
+            ref_t<IDXGIFactory4>  factory_;
+            ref_t<IDXGIAdapter1>  adapter_;
+            ref_t<ID3D12Device>   device_;
+        };
+    }
 }

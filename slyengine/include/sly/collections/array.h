@@ -11,6 +11,7 @@ namespace sly {
     class Array: public Collection<TItemType>
     {
         public:
+            
             Array(TItemType* items, size_t count);
             Array(const TItemType* items, size_t count);
             

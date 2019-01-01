@@ -18,7 +18,10 @@ namespace sly {
         class ICommandList;
         class ICommandQueue {
         public:
-            void executeCommandList(Array<ICommandList>& lists);
+            virtual void executeCommandList(ref_t<ICommandList> list) = 0;
+
+        protected:
+            constexpr static CommandQueueDesc DEFAULT = {  }; 
         };
     }
 }

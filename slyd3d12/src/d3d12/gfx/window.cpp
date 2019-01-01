@@ -1,143 +1,97 @@
-/* #include "te/d3d12/window.h"
-#include "te/d3d12/device.h"
-#include "te/d3d12/commandqueue.h"
-#include "te/win32/window.h"
+#include "sly/d3d12/gfx/window.h"
+#include "sly/d3d12/gfx/device.h"
+#include "sly/d3d12/gfx/commandqueue.h"
+#include "sly/win32/sys/window.h"
+#include "sly/collections/fixedarray.h"
 
-using namespace te;
-D3D12Window::D3D12Window(D3D12Device* device, Win32Window* window) :
-    _window(window),
-    _device(device) {
+using namespace sly::gfx;
+D3D12WindowImpl::D3D12WindowImpl(ref_t<D3D12DeviceImpl> device, ref_t<sly::sys::Win32Window> window) :
+    window_(window),
+    fence_(device),
+    directCommandQueue_(device),
+    desctriptorTable_(device),
+    D3D12ManagedImpl(device) {
+}
 
-    GfxCommandQueueDesc desc;
-    device->CreateGfxCommandQueue(reinterpret_cast<IGfxCommandQueue**>(&_commandQueue), desc);
+void D3D12WindowImpl::init(ref_t<WindowDesc> desc) {
+    D3D12DescriptorTableBuilder descTableBuilder;
+
+    descTableBuilder.setCapacity(2);
+    
+    desctriptorTable_.init(descTableBuilder.build());
+
+    //CommandQueueDesc desc;
+    //device->createCommandQueue(commandQueue_, desc); // a command queue allows the queued executeion of command lists
    
     // Describe and create the swap chain.
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-    swapChainDesc.BufferCount = 2;
-    swapChainDesc.Width = _window->GetWidth();
-    swapChainDesc.Height = _window->GetHeight();
-    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    swapChainDesc.SampleDesc.Count = 1;
+    swapChainDesc.BufferCount = 2; // how many buffers we will have, 2 allows us to have one actively being written to whilest the other is displayed
+    swapChainDesc.Width = window_->GetWidth();
+    swapChainDesc.Height = window_->GetHeight();
+    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // the color format for the buffer
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // how this buffer is to be used
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // discard the buffer after it's displayed
+    swapChainDesc.SampleDesc.Count = 1; // for multisampling the image
 
-    IDXGISwapChain1* swapChain;
-    ThrowIfFailed(device->GetIDXGIFactory()->CreateSwapChainForHwnd(
-        _commandQueue->GetD3D12CommandQueue(),        // Swap chain needs the queue so that it can force a flush on it.
-        reinterpret_cast<Win32Window*>(_window)->GetHwnd(),
+    ThrowIfFailed(getDevice()->getIDXGIFactory4()->CreateSwapChainForHwnd(
+        directCommandQueue_.getID3D12CommandQueue().ptr(),        // Swap chain needs the queue so that it can force a flush on it.
+        window_->GetHwnd(),
         &swapChainDesc,
         nullptr,
         nullptr,
-        &swapChain
+        reinterpret_cast<IDXGISwapChain1**>(&swapChain_)
         ));
 
     // This sample does not support fullscreen transitions.
     //ThrowIfFailed(factory->MakeWindowAssociation(Win32Application::GetHwnd(), DXGI_MWA_NO_ALT_ENTER));
 
-    _swapChain = reinterpret_cast<IDXGISwapChain3*>(swapChain);
-    if(_swapChain == nullptr)
+    drawFrameIndex_ = swapChain_->GetCurrentBackBufferIndex();
+
+    FixedArray<size_t, 2> indicies;
+    desctriptorTable_.alloc(indicies, 2);
+
+    // Create a RTV for each frame.
+    for (UINT n = 0; n < 2; n++)
     {
-        throw HrException(-1);
-    }
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+        rtvHandle.ptr = desctriptorTable_.getAt(indicies[n]);
 
-    _frameIndex = _swapChain->GetCurrentBackBufferIndex();
+        ID3D12Resource* ptr = nullptr;
+        swapChain_->GetBuffer(n, IID_ID3D12Resource, reinterpret_cast<void**>(&ptr)); // gets the resource
 
-    // Create descriptor heaps.
-    {
-        // Describe and create a render target view (RTV) descriptor heap.
-        D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-        rtvHeapDesc.NumDescriptors = 2;
-        rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-        rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-        ThrowIfFailed(device->GetID3DDevice()->CreateDescriptorHeap(&rtvHeapDesc, IID_ID3D12DescriptorHeap, reinterpret_cast<void**>(&_rtvHeap)));
-
-        _rtvDescriptorSize = device->GetID3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-    }
-
-    // Create frame resources.
-    {
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle(_rtvHeap->GetCPUDescriptorHandleForHeapStart());
-        // Create a RTV for each frame.
-        for (UINT n = 0; n < 2; n++)
-        {
-			ID3D12Resource* ptr = nullptr;
-			ThrowIfFailed(_swapChain->GetBuffer(n, IID_ID3D12Resource, reinterpret_cast<void**>(&ptr)));
-			device->GetID3DDevice()->CreateRenderTargetView(ptr, 0, rtvHandle);
-			rtvHandle.ptr += INT64(1) * UINT64(_rtvDescriptorSize);
-			_renderTargets[n] = ptr;
-        }
-    }
-
-    ThrowIfFailed(device->GetID3DDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_ID3D12Fence, reinterpret_cast<void**>(&_fence)));
-    _fenceValue = 1;
-
-    _fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (_fenceEvent == nullptr)
-    {
-        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
-    }
-
+        getID3D12Device()->CreateRenderTargetView(ptr, 0, rtvHandle); // writes the location of a render target view heap entry at the heap location
+        
+        renderTargets_[n].init(ptr, rtvHandle.ptr);
+    }    
 }
 
-bool_t  D3D12Window::ProcessMessages()
+void  D3D12WindowImpl::processMessages()
 {
-    return _window->ProcessMessages();
+    window_->ProcessMessages();
 }
 
-
-IGfxCommandQueue* D3D12Window::GetCommandQueue()
+void D3D12WindowImpl::setVisible(bool_t show)
 {
-    return _commandQueue;
+    window_->Show();
 }
 
-bool_t D3D12Window::SetVisible(bool_t show)
-{
-    _window->Show();
-    return true;
-}
-
-bool_t D3D12Window::SwapBuffers()
+void D3D12WindowImpl::swapBuffers()
 {
     // Present the frame.
-    if(FAILED(_swapChain->Present(1, 0)))
+    if(FAILED(swapChain_->Present(1, 0)))
     {
-       HRESULT res = reinterpret_cast<D3D12Device*>(_device.ptr())->GetID3DDevice()->GetDeviceRemovedReason();
+       HRESULT res = getDevice()->getID3D12Device()->GetDeviceRemovedReason();
        ThrowIfFailed(res);
     }
 
-    // Create synchronization objects and wait until assets have been uploaded to the GPU.
-    //ID3D12Fence* fence;
-    //ThrowIfFailed(m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_ID3D12Fence, reinterpret_cast<void**>(&m_fence)));
-    //m_fenceValue = 1;
-
-    // Create an event handle to use for frame synchronization.
-    
     // Wait for the command list to execute; we are reusing the same command 
     // list in our main loop but for now, we just want to wait for setup to 
-    // complete before continuing.
+    // complete before continuing. Not ideal!
 
     // Signal and increment the fence value.
-    const UINT64 fence = _fenceValue;
-    ThrowIfFailed(_commandQueue->GetD3D12CommandQueue()->Signal(_fence, fence));
-    _fenceValue++;
+    // if the command queue didn't do anything this will hang!!!
+    //fence_.waitFor(directCommandQueue_.getID3D12CommandQueue());
 
-    // Wait until the previous frame is finished.
-    if (_fence->GetCompletedValue() < fence)
-    {
-        ThrowIfFailed(_fence->SetEventOnCompletion(fence, _fenceEvent));
-        WaitForSingleObject(_fenceEvent, INFINITE);
-    }
-
-    _frameIndex = _swapChain->GetCurrentBackBufferIndex();
-
-    return true;
+    drawFrameIndex_ = swapChain_->GetCurrentBackBufferIndex();
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE D3D12Window::GetActiveHandle() {
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = _rtvHeap->GetCPUDescriptorHandleForHeapStart();
-    rtvHandle.ptr += INT64(_frameIndex) * UINT64(_rtvDescriptorSize);
-    return rtvHandle;
-}
-
-
- */

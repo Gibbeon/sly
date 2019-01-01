@@ -1,19 +1,34 @@
-#include "te/engine.h"
-#include "te/d3d12/global.h"
+#pragma once
 
-namespace te {
+#include "sly/d3d12.h"
+#include "sly/d3d12/gfx/resource.h"
+#include "sly/gfx/vertexbuffer.h"
 
-class D3D12VertexBuffer : public IGfxVertexBuffer {
-public:
-    D3D12VertexBuffer(ID3D12Resource* buffer, ulong_t size);
-    virtual bool_t Write(void* data, ulong_t offset, ulong_t size);
+namespace sly {
+    namespace gfx {
+        class D3D12VertexBufferImpl : public D3D12ManagedImpl, public IVertexBuffer {
+        public:
+            D3D12VertexBufferImpl(ref_t<D3D12DeviceImpl> device);
 
-    D3D12_VERTEX_BUFFER_VIEW* GetVertexBufferView() { return &_vertexBufferView; }
+            virtual void init(ref_t<VertexBufferDesc> desc = VertexBufferDesc());
 
-private:
-    ID3D12Resource* _buffer;
-    D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
-    long_t _size;
-};
+            virtual void write(ptr_t data, size_t size, size_t stride);
 
+            ref_t<ID3D12Resource> getID3D12Resource() { return resource_; }
+            size_t getBufferLocation() { return bufferLocation_; }
+            size_t getSizeInBytes() { return sizeInBytes_; }
+            size_t getStrideInBytes() { return strideInBytes_; }
+             
+        protected:
+           // virtual void write(ptr_t data, size_t count, size_t stride);
+            using D3D12ManagedImpl::D3D12ManagedImpl;
+
+        private:
+            ref_t<ID3D12Resource> resource_;
+            size_t bufferLocation_;
+            size_t sizeInBytes_;
+            size_t strideInBytes_;
+        };
+    }
 }
+

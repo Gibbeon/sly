@@ -6,11 +6,15 @@ namespace sly {
     template<typename TDescType>
     class Builder {
     public:
-        ref_t<TDescType> Build();
+        virtual ref_t<TDescType> build();
 
     protected:
-        TDescType _desc;
+        Builder(TDescType initial) : desc_(initial) {}
+        TDescType desc_;
     };
 
-    #include "sly/builder.hpp"
+    template <typename TDescType>
+    ref_t<TDescType> Builder<TDescType>::build() { 
+        return ref_t<TDescType>(&desc_); 
+    }
 }
