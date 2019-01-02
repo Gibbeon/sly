@@ -3,7 +3,7 @@
 
 using namespace te;
 
-GLRenderingEngine::GLRenderingEngine(ptr_t pInstance) :
+GLRenderingEngine::GLRenderingEngine(void* pInstance) :
     m_pInstance(pInstance)
 {
 

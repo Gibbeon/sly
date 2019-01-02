@@ -14,7 +14,7 @@ class GLRenderingDevice : public IRenderingDevice
         virtual bool_t Attach(IDrawWindow* pWindow);
         virtual bool_t SwapBuffers();
 
-	bool_t InitializeExtensions(ptr_t);
+	bool_t InitializeExtensions(void*);
  private:
 
 	bool_t InitializeOpenGL(HWND, int, int, float, float, bool_t);

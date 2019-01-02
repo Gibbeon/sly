@@ -1,0 +1,14 @@
+[submodule "3rdparty/PhysX"]
+	path = 3rdparty/PhysX
+	url = https://github.com/NVIDIAGameWorks/PhysX.git
+[submodule "3rdparty/glm"]
+	path = 3rdparty/glm
+	url = https://github.com/g-truc/glm
+[submodule "3rdparty/v8"]
+	path = 3rdparty/v8
+	url = https://github.com/v8/v8.git
+[submodule "3rdparty/googletest"]
+	path = 3rdparty/googletest
+	url = https://github.com/google/googletest.git
+
+	

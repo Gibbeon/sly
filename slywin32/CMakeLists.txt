@@ -19,11 +19,15 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 add_compile_options("/sdl")
 
 include_directories(./include)
-include_directories(./../slyengine/include)
+include_directories(./../slycore/include)
+
+link_directories(../slycore/lib)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME} slycore.lib)
 
 if (MSVC)
 # For MSVC, CMake sets certain flags to defaults we want to override.

@@ -5,7 +5,6 @@
 #include "sly/d3d12/gfx/managed.h"
 #include "sly/d3d12/gfx/fence.h"
 #include "sly/d3d12/gfx/descriptortable.h"
-#include "sly/collections/list.h"
 
 namespace sly {
     namespace sys {
@@ -18,8 +17,8 @@ namespace sly {
         class D3D12DeviceImpl;
         class D3D12WindowImpl : public D3D12ManagedImpl, public IWindow {
         public:
-            D3D12WindowImpl(ref_t<D3D12DeviceImpl> device, ref_t<sly::sys::Win32Window> window);
-            virtual void init(ref_t<WindowDesc> desc = IWindow::DEFAULT_DESC);
+            D3D12WindowImpl(D3D12DeviceImpl& device, sly::sys::Win32Window& window);
+            virtual void init(WindowDesc& desc);
 
             // window control
             virtual void setVisible(bool_t show);
@@ -27,21 +26,21 @@ namespace sly {
 
             // buffers
             virtual void swapBuffers();            
-            ref_t<IRenderTarget> getBackBuffer() { return &renderTargets_[drawFrameIndex_]; }       
+            IRenderTarget& getBackBuffer() { return _renderTargets[_drawFrameIndex]; }       
 
             // draw
-            virtual ref_t<ICommandQueue> getDirectCommandQueue() { return directCommandQueue_; }
+            virtual ICommandQueue& getDirectCommandQueue() { return _directCommandQueue; }
  
         private:
-            ref_t<IDXGISwapChain3> swapChain_;
-            D3D12RenderTargetImpl renderTargets_[2];
-            size_t drawFrameIndex_;
+            IDXGISwapChain3* _swapChain;
+            D3D12RenderTargetImpl _renderTargets[2];
+            size_t _drawFrameIndex;
             
-            ref_t<sly::sys::Win32Window> window_;
+            sly::sys::Win32Window* _window;
 
-            D3D12FenceImpl fence_;
-            D3D12CommandQueueImpl directCommandQueue_;
-            D3D12DescriptorTableImpl desctriptorTable_;
+            D3D12FenceImpl _fence;
+            D3D12CommandQueueImpl _directCommandQueue;
+            D3D12DescriptorTableImpl _desctriptorTable;
         };
     }
 

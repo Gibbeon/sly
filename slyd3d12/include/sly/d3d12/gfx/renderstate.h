@@ -10,21 +10,21 @@ namespace sly {
 
         class D3D12RenderStateImpl : public D3D12ManagedImpl, public IRenderState {
         public:
-            D3D12RenderStateImpl(ref_t<D3D12DeviceImpl> device);
-            virtual void init(ref_t<RenderStateDesc> desc);
+            D3D12RenderStateImpl(D3D12DeviceImpl& device);
+            virtual void init(RenderStateDesc& desc);
 
-            ref_t<ID3D12PipelineState>  getID3D12PipelineState() { return pipelineState_; }
-            ref_t<ID3D12RootSignature>  getID3D12RootSignature() { return rootSignature_; }
+            ID3D12PipelineState&  getID3D12PipelineState() { return *_pipelineState; }
+            ID3D12RootSignature&  getID3D12RootSignature() { return *_rootSignature; }
         
         protected:
             void initRootSignature();
             void initPipelineState();
 
         private:                
-            ref_t<ID3D12PipelineState> pipelineState_;
-            ref_t<ID3D12RootSignature> rootSignature_;  
+            ID3D12PipelineState* _pipelineState;
+            ID3D12RootSignature* _rootSignature;  
 
-            D3D12_INPUT_ELEMENT_DESC inputElementDesc_[8];
+            D3D12_INPUT_ELEMENT_DESC _inputElementDesc[8];
         };       
     }
 }

@@ -150,6 +150,8 @@ def clean_up_and_halt():
 
 def main():
 	stop_on_error()
+	build(os.path.abspath('../slycore'))
+	stop_on_error()
 	build(os.path.abspath('../slyengine'))
 	stop_on_error()
 	build(os.path.abspath('../slywin32'))

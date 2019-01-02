@@ -4,7 +4,7 @@
 
 using namespace sly::gfx;
 
-void D3D12RenderSystemImpl::createDevice(out_ptr_t<IDevice> result, ref_t<DeviceDesc> desc)
+void D3D12RenderSystemImpl::createDevice(IDevice** result, DeviceDesc& desc)
 {
-    result = new D3D12DeviceImpl(desc);
+    (*result) = new D3D12DeviceImpl(desc);
 }

@@ -1,0 +1,31 @@
+slyengine (cleanup):
+    ☐ Replace collections with stl
+    ☐ Eliminate diagnostics
+    ✔ Find a lightweight math library with SSE extensions and easy transferability to DX/GL @done (1/1/2019, 3:27:46 PM)
+    ☐ Eliminate function with std::function
+    ☐ Eliminate Exception with std::Exception
+    ☐ Find out standard assert langauge and use it
+    ☐ eleiminate ref, local, out_ptr, void*
+    ☐ standardize the size_t, void*
+    ☐ add _64X _32X compilier flags
+    ☐ rename slyengine to sly
+    ☐ slyengine should be the game systems
+    ☐ clean up pointers and references
+slyengine (features):
+    ☐ add standard logging system
+    ☐ add standard heap/memory manager
+    ✔ find physics library @done (1/1/2019, 3:27:29 PM)
+slyengine (gfx):
+    ☐ The window/viewport nonsense is bad
+    ☐ Resource Transition is bad
+    ☐ Descriptor table should be global perhaps?
+    ☐ Eliminate all multiple inheritence
+    ☐ Get destroy functions added
+    ☐ Need to add memory management to the create* functions
+    ☐ Review conversion strategy
+    ☐ Review multi-treaded commandlist strategy
+    ☐ Walk through demos and reconstruct
+slygl:
+    ☐ make it work with the new structure
+
+

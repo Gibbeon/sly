@@ -7,11 +7,11 @@ namespace te {
 class GLRenderingEngine : public IRenderingEngine
 {
     public:
-        GLRenderingEngine(ptr_t);
+        GLRenderingEngine(void*);
 
         virtual bool_t CreateDevice(IRenderingDevice** pAdapter);
     private:
-        ptr_t m_pInstance;
+        void* m_pInstance;
 
 };
 

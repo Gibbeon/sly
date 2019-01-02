@@ -1,77 +1,79 @@
 #include "sly/d3d12/gfx/commandlist.h"
 #include "sly/d3d12/gfx/device.h"
 #include "sly/d3d12/gfx/convert.h"
-
-#include "sly/math/rect.h"
 #include "sly/d3d12/dxh.h"
 
 using namespace sly::gfx;
 
-D3D12CommandListImpl::D3D12CommandListImpl(ref_t<D3D12DeviceImpl> device, ref_t<CommandListDesc> desc) : renderState_(nullptr) {
-    device->getID3D12Device()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<void**>(&allocator_));
-    device->getID3D12Device()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, allocator_, NULL, IID_ID3D12CommandList, reinterpret_cast<void**>(&list_));
-    list_->Close();
+D3D12CommandListImpl::D3D12CommandListImpl(D3D12DeviceImpl& device) : _device(&device), _renderState(NULL) {
+
+}
+
+void D3D12CommandListImpl::init(CommandListDesc& desc) {
+    getID3D12Device().CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<void**>(&_allocator));
+    getID3D12Device().CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,_allocator, NULL, IID_ID3D12CommandList, reinterpret_cast<void**>(&_list));
+    _list->Close();
 }
 
 void D3D12CommandListImpl::begin() {
-    allocator_->Reset();
-    list_->Reset(allocator_, renderState_ == nullptr ? nullptr : renderState_->getID3D12PipelineState()); // need to see if we should have pipeline state be here 
+    _allocator->Reset();
+    _list->Reset(_allocator, _renderState == nullptr ? nullptr : &_renderState->getID3D12PipelineState()); // need to see if we should have pipeline state be here 
 }
 
 void D3D12CommandListImpl::end() {
     
     // I think this should be done inside the render target itself somehow?
     // Indicate that the back buffer will now be used to present.
-    list_->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(target_->getID3D12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
-    list_->Close();
+    _list->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(&_target->getID3D12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+    _list->Close();
 }
 
-void D3D12CommandListImpl::setRenderTarget(ref_t<IRenderTarget> target) {
-    target_ = target;
+void D3D12CommandListImpl::setRenderTarget(IRenderTarget& target) {
+    _target = reinterpret_cast<D3D12RenderTargetImpl*>(&target);
             // Indicate that the back buffer will be used as a render target.
-    list_->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(target_->getID3D12Resource(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+    _list->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(&_target->getID3D12Resource(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
     
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-    rtvHandle.ptr = target_->getBufferLocation();
+    rtvHandle.ptr = _target->getBufferLocation();
 
-    list_->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+    _list->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 }
 
-void D3D12CommandListImpl::setRenderState(ref_t<IRenderState> state) {
-    renderState_ = state;
-    list_->SetPipelineState(renderState_->getID3D12PipelineState());
+void D3D12CommandListImpl::setRenderState(IRenderState& state) {
+    _renderState = reinterpret_cast<D3D12RenderStateImpl*>(&state);
+    _list->SetPipelineState(&_renderState->getID3D12PipelineState());
 }
 
-void D3D12CommandListImpl::setViewport(ref_t<Viewport> viewport) {
-    list_->RSSetViewports(1, &D3D12_VIEWPORT_CAST(viewport));
+void D3D12CommandListImpl::setViewport(Viewport& viewport) {
+    _list->RSSetViewports(1, &D3D12_VIEWPORT_CAST(viewport));
 }
 
 void D3D12CommandListImpl::setScissorRect(sly::rect_t<long> rect) {
-    list_->RSSetScissorRects(1, &D3D12_RECT_CAST(rect));
+    _list->RSSetScissorRects(1, &D3D12_RECT_CAST(rect));
 }
 
-void D3D12CommandListImpl::setVertexBuffer(ref_t<IVertexBuffer> buffer) {    
-    list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) {    
+    _list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     D3D12_VERTEX_BUFFER_VIEW view;
 
-    view.BufferLocation = buffer.as<D3D12ResourceImpl>()->getBufferLocation();    
-    view.SizeInBytes = (UINT)buffer.as<D3D12ResourceImpl>()->getSizeInBytes();    
-    view.StrideInBytes = (UINT)buffer.as<D3D12ResourceImpl>()->getStrideInBytes();
+    view.BufferLocation = buffer.getBufferLocation();    
+    view.SizeInBytes = (UINT)buffer.getSizeInBytes();    
+    view.StrideInBytes = (UINT)buffer.getStrideInBytes();
 
-    list_->IASetVertexBuffers(0, 1, &view);
+    _list->IASetVertexBuffers(0, 1, &view);
 }
             
 void D3D12CommandListImpl::clear(color_t<> color) {
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-    rtvHandle.ptr = target_->getBufferLocation();
+    rtvHandle.ptr = _target->getBufferLocation();
 
     const float clearColor[] = { 0.4f, 0.4f, 0.4f, 1.0f };
-    list_->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+    _list->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
 
 void D3D12CommandListImpl::draw(size_t a, size_t b, size_t c, size_t d) {
-    list_->DrawInstanced((UINT)a, (UINT)b, (UINT)c, (UINT)d);
+    _list->DrawInstanced((UINT)a, (UINT)b, (UINT)c, (UINT)d);
 }
 
 /* #include "te/d3d12/commandlist.h"
@@ -143,14 +145,14 @@ bool_t D3D12CommandList::InitPipelineState() {
      return true; 
 }
 
-bool_t D3D12CommandList::Draw(ptr_t<IGfxVertexBuffer> buffer, ptr_t<IGfxWindow> window)
+bool_t D3D12CommandList::Draw(void*<IGfxVertexBuffer> buffer, void*<IGfxWindow> window)
 {
     D3D12Window* result = reinterpret_cast<D3D12Window*>(window.ptr());
     Draw(buffer, result->GetActiveRenderTarget(), result->GetActiveHandle());
     return true;
 }
 
-bool_t D3D12CommandList::Draw(ptr_t<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
+bool_t D3D12CommandList::Draw(void*<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
      // Command list allocators can only be reset when the associated 
     // command lists have finished execution on the GPU; apps should use 
     // fences to determine GPU execution progress.

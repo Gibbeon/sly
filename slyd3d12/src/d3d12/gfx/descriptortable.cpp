@@ -1,63 +1,60 @@
 #include "sly/d3d12/gfx/descriptortable.h"
 #include "sly/d3d12/gfx/device.h"
-#include "sly/collections/array.h"
-#include "sly/collections/fixedarray.h"
 
 using namespace sly::gfx;
 
-D3D12DescriptorTableImpl::D3D12DescriptorTableImpl(ref_t<D3D12DeviceImpl> device) : 
+D3D12DescriptorTableImpl::D3D12DescriptorTableImpl(D3D12DeviceImpl& device) : 
     D3D12ManagedImpl(device),
-    capacity_(0),
-    nextFree_(0),
-    count_(0)
+    _capacity(0),
+    _nextFree(0),
+    _count(0)
 {
 }
 
-void D3D12DescriptorTableImpl::init(ref_t<D3D12DescriptorTableDesc> desc) {
-    capacity_ = desc->capacity;
-    used_.ensure(desc->capacity);
-    used_.fillRange(false, desc->capacity);
+void D3D12DescriptorTableImpl::init(D3D12DescriptorTableDesc& desc) {
+    _capacity = desc.capacity;
+    _used.assign(_capacity, false);
 
     // Describe and create a render target view (RTV) descriptor heap.
     D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-    rtvHeapDesc.NumDescriptors = (UINT)desc->capacity; // one descriptor per buffer
+    rtvHeapDesc.NumDescriptors = (UINT)desc.capacity; // one descriptor per buffer
     rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // render target view
     rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    getID3D12Device()->CreateDescriptorHeap(&rtvHeapDesc, IID_ID3D12DescriptorHeap, reinterpret_cast<void**>(&descHeap_)); // creates a new heap just for this swap chain
-    descHeapStride_ = getID3D12Device()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); // gets the stride of each descriptor
+    getID3D12Device().CreateDescriptorHeap(&rtvHeapDesc, IID_ID3D12DescriptorHeap, reinterpret_cast<void**>(&_descHeap)); // creates a new heap just for this swap chain
+    _descHeapStride = getID3D12Device().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); // gets the stride of each descriptor
 }
 
-void D3D12DescriptorTableImpl::alloc(sly::Array<size_t>& indicies, size_t count) {
+void D3D12DescriptorTableImpl::alloc(size_t* indicies, size_t count) {
     for(size_t i = 0; i < count; ++i)
     {
-        indicies[i] = nextFree_;
-        used_[nextFree_] = true;
-        nextFree_ = getNextFree();
+        indicies[i] = _nextFree;
+        _used[_nextFree] = true;
+        _nextFree = getNextFree();
     }
-    count_ += count;
+    _count += count;
 }
 
-void D3D12DescriptorTableImpl::free(sly::Array<size_t>& indicies, size_t count) {
+void D3D12DescriptorTableImpl::free(size_t* indicies, size_t count) {
     for(size_t i = 0; i < count; ++i)
     {
-        if(used_[indicies[i]])
+        if(_used[indicies[i]])
         {
-            used_[indicies[i]] = false;
-            count_--; // only decrement if it was actually in use
+            _used[indicies[i]] = false;
+            _count--; // only decrement if it was actually in use
         }
         
-        if(nextFree_ > indicies[i])
-            nextFree_ = indicies[i];
+        if(_nextFree > indicies[i])
+            _nextFree = indicies[i];
     }
 }
 size_t D3D12DescriptorTableImpl::getAt(size_t index) {
-    return descHeap_->GetCPUDescriptorHandleForHeapStart().ptr + (index * descHeapStride_);
+    return _descHeap->GetCPUDescriptorHandleForHeapStart().ptr + (index * _descHeapStride);
 }
 
 size_t D3D12DescriptorTableImpl::getNextFree() {
-    for(size_t i = nextFree_; i < capacity_; ++i)
+    for(size_t i = _nextFree; i < _capacity; ++i)
     {
-        if(!used_[i])
+        if(!_used[i])
             return i;
     }
     return -1;

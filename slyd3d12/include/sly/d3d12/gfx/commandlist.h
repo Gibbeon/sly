@@ -2,7 +2,7 @@
 
 #include "sly/d3d12.h"
 #include "sly/gfx/commandlist.h"
-#include "sly/math.h"
+#include "sly/d3d12/gfx/device.h"
 #include "sly/d3d12/gfx/renderstate.h"
 #include "sly/d3d12/gfx/rendertarget.h"
 
@@ -13,16 +13,17 @@ namespace sly {
 
         class D3D12CommandListImpl: public ICommandList {
         public:
-            D3D12CommandListImpl(ref_t<D3D12DeviceImpl> device, ref_t<CommandListDesc> desc = DEFAULT_DESC);
+            D3D12CommandListImpl(D3D12DeviceImpl& device);
+            virtual void init(CommandListDesc& desc);
 
             virtual void begin();
             virtual void end();
 
-            virtual void setRenderState(ref_t<IRenderState> state);
-            virtual void setViewport(ref_t<Viewport> viewport);
+            virtual void setRenderState(IRenderState& state);
+            virtual void setViewport(Viewport& viewport);
             virtual void setScissorRect(rect_t<long> rect);
-            virtual void setVertexBuffer(ref_t<IVertexBuffer> buffer);
-            virtual void setRenderTarget(ref_t<IRenderTarget> target);
+            virtual void setVertexBuffer(IVertexBuffer& buffer);
+            virtual void setRenderTarget(IRenderTarget& target);
             
             virtual void clear(color_t<> color);
             virtual void draw(size_t, size_t, size_t, size_t);
@@ -39,20 +40,22 @@ namespace sly {
 
             //virtual void drawIndexed();
 
-            //virtual bool_t Draw(ptr_t<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE descriptor);
-            //virtual bool_t Draw(ptr_t<IGfxVertexBuffer> buffer, ptr_t<IGfxWindow> window);
+            //virtual bool_t Draw(void*<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE descriptor);
+            //virtual bool_t Draw(void*<IGfxVertexBuffer> buffer, void*<IGfxWindow> window);
 
-            ref_t<ID3D12CommandList>    getID3D12CommandList() { return list_; }
-            ref_t<ID3D12CommandAllocator>       getID3D12CommandAllocator() { return allocator_; }
+            ID3D12CommandList&      getID3D12CommandList() { return *_list; }
+            ID3D12CommandAllocator& getID3D12CommandAllocator() { return *_allocator; }
+            ID3D12Device& getID3D12Device() { return _device->getID3D12Device(); }
             
         protected:
             //using D3D12RenderStateImpl::D3D12RenderStateImpl;
 
         private:
-            ref_t<ID3D12GraphicsCommandList> list_;
-            ref_t<ID3D12CommandAllocator> allocator_;
-            ref_t<D3D12RenderTargetImpl> target_;
-            ref_t<D3D12RenderStateImpl> renderState_;
+            D3D12DeviceImpl* _device;
+            ID3D12GraphicsCommandList* _list;
+            ID3D12CommandAllocator* _allocator;
+            D3D12RenderTargetImpl* _target;
+            D3D12RenderStateImpl* _renderState;
         };
     }
 }

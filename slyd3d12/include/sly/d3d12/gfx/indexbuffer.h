@@ -8,7 +8,8 @@ namespace sly {
     namespace gfx {
         class D3D12IndexBufferImpl : public D3D12ResourceImpl, public IIndexBuffer {
         public:
-            D3D12IndexBufferImpl(ref_t<D3D12DeviceImpl> device, ref_t<IndexBufferDesc> desc = IIndexBuffer::DEFAULT_DESC);
+            D3D12IndexBufferImpl(D3D12DeviceImpl& device);
+            virtual void init(IndexBufferDesc& desc);
                 
         protected:
             using IIndexBuffer::IIndexBuffer;

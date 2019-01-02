@@ -21,8 +21,10 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 add_compile_options("/sdl")
 
 include_directories(./include)
+include_directories(../slycore/include)
 include_directories(../slyengine/include)
 
+link_directories(../slycore/lib)
 link_directories(../slyengine/lib)
 link_directories(../slywin32/lib)
 link_directories(../slyd3d12/lib)
@@ -33,6 +35,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
+target_link_libraries(${PROJECT_NAME} slycore.lib)
 target_link_libraries(${PROJECT_NAME} slyengine.lib)
 
 if(WIN32)

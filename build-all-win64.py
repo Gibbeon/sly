@@ -149,9 +149,11 @@ def clean_up_and_halt():
 	sys.exit()
 
 def main():
-	dir_list = ['slyd3d11','slyd3d12','slygl4', 'slyengine', 'slywin32', 'slyedit']
+	dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine', 'slywin32', 'slyedit']
 	cmake_all(dir_list)
 
+	stop_on_error()
+	build(os.path.abspath('slycore'))
 	stop_on_error()
 	build(os.path.abspath('slyengine'))
 	stop_on_error()

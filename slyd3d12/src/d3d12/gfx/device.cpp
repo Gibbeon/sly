@@ -11,7 +11,7 @@
 
 using namespace sly::gfx;
 
-D3D12DeviceImpl::D3D12DeviceImpl(ref_t<DeviceDesc> desc) {
+D3D12DeviceImpl::D3D12DeviceImpl(DeviceDesc& desc) {
     UINT dxgiFactoryFlags = 0;
 
     #ifdef _DEBUG
@@ -27,49 +27,51 @@ D3D12DeviceImpl::D3D12DeviceImpl(ref_t<DeviceDesc> desc) {
     }
     #endif
 
-    CreateDXGIFactory2(dxgiFactoryFlags, IID_IDXGIFactory4, reinterpret_cast<void**>(&factory_));
+    CreateDXGIFactory2(dxgiFactoryFlags, IID_IDXGIFactory4, reinterpret_cast<void**>(&_factory));
 
-    for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != factory_->EnumAdapters1(adapterIndex, &adapter_); ++adapterIndex)
+    for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != _factory->EnumAdapters1(adapterIndex, &_adapter); ++adapterIndex)
     {
         DXGI_ADAPTER_DESC1 desc;
-        adapter_->GetDesc1(&desc);
+        _adapter->GetDesc1(&desc);
 
-        if (SUCCEEDED(D3D12CreateDevice(adapter_, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<void**>(&device_))))
+        if (SUCCEEDED(D3D12CreateDevice(_adapter, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<void**>(&_device))))
         {
             break;
         }
     }
 }
 
-void D3D12DeviceImpl::createWindow(out_ptr_t<IWindow> ppWindow, ref_t<WindowDesc> desc) {
-    ppWindow = new D3D12WindowImpl(this, new sly::sys::Win32Window(1024,768,"Hi!"));
-    ppWindow->init(desc);
+void D3D12DeviceImpl::createWindow(IWindow** ppWindow, WindowDesc& desc) {
+    (*ppWindow) = new D3D12WindowImpl(*this, *(new sly::sys::Win32Window(1024,768,"Hi!")));
+    (*ppWindow)->init(desc);
 }
 
-void D3D12DeviceImpl::createCommandQueue(out_ptr_t<ICommandQueue> queue, ref_t<CommandQueueDesc> desc) {
-    queue = new D3D12CommandQueueImpl(this, desc);
+void D3D12DeviceImpl::createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) {
+    (*queue) = new D3D12CommandQueueImpl(*this);
+    (*queue)->init(desc);
 }
 
-void D3D12DeviceImpl::createCommandList(out_ptr_t<ICommandList> ppWindow, ref_t<CommandListDesc> desc) {
-    ppWindow = new D3D12CommandListImpl(this, desc);
+void D3D12DeviceImpl::createCommandList(ICommandList** ppWindow, CommandListDesc& desc) {
+    (*ppWindow) = new D3D12CommandListImpl(*this);
+    (*ppWindow)->init(desc);
 }
 
-void D3D12DeviceImpl::createRenderState(out_ptr_t<IRenderState> ppWindow, ref_t<RenderStateDesc> desc) {
-    ppWindow = new D3D12RenderStateImpl(this);
-    ppWindow->init(desc);
+void D3D12DeviceImpl::createRenderState(IRenderState** ppWindow, RenderStateDesc& desc) {
+    (*ppWindow) = new D3D12RenderStateImpl(*this);
+    (*ppWindow)->init(desc);
 }
 
-void D3D12DeviceImpl::createShader(out_ptr_t<IShader> ppWindow, ref_t<ShaderDesc> desc) {
-    ppWindow = new D3D12ShaderImpl(this);
-    ppWindow->init(desc);
+void D3D12DeviceImpl::createShader(IShader** ppWindow, ShaderDesc& desc) {
+    (*ppWindow) = new D3D12ShaderImpl(*this);
+    (*ppWindow)->init(desc);
 }
 
-void D3D12DeviceImpl::createTexture(out_ptr_t<ITexture> ppWindow, ref_t<TextureDesc> desc) {}
-void D3D12DeviceImpl::createVertexBuffer(out_ptr_t<IVertexBuffer> ppWindow, ref_t<VertexBufferDesc> desc) {
-    ppWindow = new D3D12VertexBufferImpl(this);
-    ppWindow->init(desc);
+void D3D12DeviceImpl::createTexture(ITexture** ppWindow, TextureDesc& desc) {}
+void D3D12DeviceImpl::createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc) {
+    (*ppWindow) = new D3D12VertexBufferImpl(*this);
+    (*ppWindow)->init(desc);
 }
-void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<IndexBufferDesc> desc) {}
+void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc) {}
 
 
 // #include "sly/d3d12/gfx/device.h"
@@ -83,10 +85,10 @@ void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<I
 
 // using namespace sly::gfx;
 
-// D3D12Device::D3D12Device(ref_t<IDXGIFactory4> factory, ref_t<IDXGIAdapter1> adapter, ref_t<ID3D12Device> device) :
+// D3D12Device::D3D12Device(IDXGIFactory4& factory, IDXGIAdapter1& adapter, ID3D12Device& device) :
 //     factory_(factory),
 //     adapter_(adapter),
-//     device_(device) {
+//     _device(device) {
     
 //     //InitRootSignature();
 //     //InitPipelineState();
@@ -99,7 +101,7 @@ void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<I
 //     ID3DBlob* signature;
 //     ID3DBlob* error;
 
-//     ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
+//     ThrowIfFailed(D3D12SerializeRootSignature(&_rootSignatureDesc, D3DROOT_SIGNATURE_VERSION_1, &signature, &error));
 //     ThrowIfFailed(_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<void**>(&_rootSignature)));
 //     return true;
 // }
@@ -141,24 +143,24 @@ void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<I
 //     psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 //     psoDesc.SampleDesc.Count = 1;
 
-//     ThrowIfFailed(_device->CreateGraphicsPipelineState(&psoDesc, IID_ID3D12PipelineState, reinterpret_cast<void**>(&_pipelineState)));
+//     ThrowIfFailed(_device->CreateGraphicsPipelineState(&_psoDesc, IIDID3D12PipelineState, reinterpret_cast<void**>(&_pipelineState)));
 //         return true;
 // } */
 
-// void D3D12Device::createCommandQueue(out_ptr_t<ICommandQueue> queue, ref_t<CommandQueueDesc> desc) {
+// void D3D12Device::createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) {
 // /*     // Describe and create the command queue.
 //     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 //     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 //     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
 //     ID3D12CommandQueue* commandQueue = nullptr;
-//     ThrowIfFailed(_device->CreateCommandQueue(&queueDesc, IID_ID3D12CommandQueue, reinterpret_cast<void**>(&commandQueue)));
+//     ThrowIfFailed(_device->CreateCommandQueue(&_queueDesc, IIDID3D12CommandQueue, reinterpret_cast<void**>(&commandQueue)));
 
 //     (*queue) = new D3D12CommandQueue(commandQueue, _device);
 //     return true; */
 // }
 
-// void D3D12Device::createCommandList(out_ptr_t<ICommandList> list, ref_t<CommandListDesc> desc) {
+// void D3D12Device::createCommandList(ICommandList** list, CommandListDesc& desc) {
 //     /* ID3D12CommandAllocator* commandAllocator;
 //     ID3D12GraphicsCommandList* commandList;
 
@@ -172,16 +174,16 @@ void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<I
 //     return true; */
 // }
 
-// void D3D12Device::createShader(out_ptr_t<IShader> ppWindow, ref_t<ShaderDesc> desc) {
+// void D3D12Device::createShader(IShader** ppWindow, ShaderDesc& desc) {
 
 // }
 
-// void D3D12Device::createTexture(out_ptr_t<ITexture> ppWindow, ref_t<TextureDesc> desc) {
+// void D3D12Device::createTexture(ITexture** ppWindow, TextureDesc& desc) {
 
 // }
  
 
-// void D3D12Device::createDataBuffer(out_ptr_t<IDataBuffer> buffer, ref_t<DataBufferDesc> desc) {
+// void D3D12Device::createDataBuffer(IDataBuffer** buffer, DataBufferDesc& desc) {
 //     // Note: using upload heaps to transfer static data like vert buffers is not 
 //     // recommended. Every time the GPU needs it, the upload heap will be marshalled 
 //     // over. Please read up on Default Heap usage. An upload heap is used here for 
@@ -199,9 +201,9 @@ void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<I
 //         const UINT vertexBufferSize = sizeof(triangleVertices);
 
 //     ThrowIfFailed(_device->CreateCommittedResource(
-//         &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//         &_CD3DX12HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 //         D3D12_HEAP_FLAG_NONE,
-//         &CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
+//         &_CD3DX12RESOURCE_DESC::Buffer(vertexBufferSize),
 //         D3D12_RESOURCE_STATE_GENERIC_READ,
 //         nullptr,
 //         IID_ID3D12Resource, 
@@ -211,6 +213,6 @@ void D3D12DeviceImpl::createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<I
 //     return true; */
 // }
 
-// void D3D12Device::createWindow(out_ptr_t<IWindow> window, ref_t<WindowDesc> desc) {
+// void D3D12Device::createWindow(IWindow** window, WindowDesc& desc) {
 //     window = new D3D12Window(this, new sly::sys::Win32Window(1024, 768,  "Sample Title"));
 // }

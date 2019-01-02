@@ -8,28 +8,28 @@
 namespace sly {
     namespace gfx {
     
-        class D3D12RenderTargetImpl : IRenderTarget {
+        class D3D12RenderTargetImpl : public IRenderTarget {
         public:
             D3D12RenderTargetImpl() {}
             virtual void init(ID3D12Resource* ptr, size_t buffer){
-                resource_ =ptr;
-                bufferLocation_ = buffer;
+                _resource = ptr;
+                _bufferLocation = buffer;
             }
 
-            virtual void write(ptr_t data, size_t size, size_t stride) {
+            virtual void write(void* data, size_t size, size_t stride) {
                 
             }
 
-            ref_t<ID3D12Resource> getID3D12Resource() { return resource_; }
-            size_t getBufferLocation() { return bufferLocation_; }
-            size_t getSizeInBytes() { return sizeInBytes_; }
+            ID3D12Resource& getID3D12Resource() { return *_resource; }
+            size_t getBufferLocation() {  return _bufferLocation; }
+            size_t getSizeInBytes() {  return _sizeInBytes; }
 
         protected:
 
         private:
-            ref_t<ID3D12Resource> resource_;
-            size_t bufferLocation_;
-            size_t sizeInBytes_;
+            ID3D12Resource* _resource;
+            size_t _bufferLocation;
+            size_t _sizeInBytes;
         };
     }
 }

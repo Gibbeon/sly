@@ -42,7 +42,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-bool_t GLRenderingDevice::InitializeExtensions(ptr_t m_pInstance)
+bool_t GLRenderingDevice::InitializeExtensions(void* m_pInstance)
 {
 	WNDCLASSEX wc;
 

@@ -8,25 +8,25 @@ namespace sly {
 
         class D3D12DeviceImpl : public IDevice {
         public:
-            D3D12DeviceImpl(ref_t<DeviceDesc> desc = IDevice::DEFAULT_DESC);
+            D3D12DeviceImpl(DeviceDesc& desc);
             
-            virtual void createWindow(out_ptr_t<IWindow> ppWindow, ref_t<WindowDesc> desc);
-            virtual void createCommandQueue(out_ptr_t<ICommandQueue> queue, ref_t<CommandQueueDesc> desc);
-            virtual void createCommandList(out_ptr_t<ICommandList> ppWindow, ref_t<CommandListDesc> desc);
-            virtual void createRenderState(out_ptr_t<IRenderState> ppWindow, ref_t<RenderStateDesc> desc);
-            virtual void createShader(out_ptr_t<IShader> ppWindow, ref_t<ShaderDesc> desc);
-            virtual void createTexture(out_ptr_t<ITexture> ppWindow, ref_t<TextureDesc> desc);
-            virtual void createVertexBuffer(out_ptr_t<IVertexBuffer> ppWindow, ref_t<VertexBufferDesc> desc);
-            virtual void createIndexBuffer(out_ptr_t<IIndexBufer> ppWindow, ref_t<IndexBufferDesc> desc);
+            virtual void createWindow(IWindow** ppWindow, WindowDesc& desc);
+            virtual void createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc);
+            virtual void createCommandList(ICommandList** ppWindow, CommandListDesc& desc);
+            virtual void createRenderState(IRenderState** ppWindow, RenderStateDesc& desc);
+            virtual void createShader(IShader** ppWindow, ShaderDesc& desc);
+            virtual void createTexture(ITexture** ppWindow, TextureDesc& desc);
+            virtual void createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc);
+            virtual void createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc);
  
-            ref_t<IDXGIAdapter1> getIDXGIAdapter1()   { return adapter_; }
-            ref_t<IDXGIFactory4> getIDXGIFactory4()   { return factory_; }
-            ref_t<ID3D12Device> getID3D12Device()   { return device_; }
+            IDXGIAdapter1& getIDXGIAdapter1()   { return *_adapter; }
+            IDXGIFactory4& getIDXGIFactory4()   { return *_factory; }
+            ID3D12Device& getID3D12Device()   { return *_device; }
 
         private:
-            ref_t<IDXGIFactory4>  factory_;
-            ref_t<IDXGIAdapter1>  adapter_;
-            ref_t<ID3D12Device>   device_;
+            IDXGIFactory4*  _factory;
+            IDXGIAdapter1*  _adapter;
+            ID3D12Device*   _device;
         };
     }
 }

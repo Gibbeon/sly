@@ -9,21 +9,20 @@ namespace sly {
     
         class D3D12ShaderImpl : public IShader {
         public:
-            D3D12ShaderImpl(ref_t<D3D12DeviceImpl> device) : device_(device) {}
-            virtual void init(ref_t<ShaderDesc> desc = IShader::DEFAULT_DESC);
+            D3D12ShaderImpl(D3D12DeviceImpl& device) : _device(&device) {}
+            virtual void init(ShaderDesc& desc);
 
-            ptr_t getBuffer() { return data_->GetBufferPointer(); }
-            size_t getSizeInBytes() { return data_->GetBufferSize(); }
+            void* getBuffer() { return _data->GetBufferPointer(); }
+            size_t getSizeInBytes() { return _data->GetBufferSize(); }
 
-            virtual void write(ptr_t data, size_t size, size_t stride) {}
+            virtual void write(void* data, size_t size, size_t stride) {}
             
-
-            ref_t<D3D12DeviceImpl> getDevice() { return device_; }
+            D3D12DeviceImpl& getDevice() { return *_device; }
         
         protected:
-            ref_t<ID3D12Device> getID3D12Device()   { return device_->getID3D12Device(); }
-            ref_t<ID3DBlob> data_;
-            ref_t<D3D12DeviceImpl> device_;           
+            ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
+            ID3DBlob* _data;
+            D3D12DeviceImpl* _device;           
             
             using IShader::IShader;
         };

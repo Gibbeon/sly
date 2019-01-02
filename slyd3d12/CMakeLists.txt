@@ -19,9 +19,11 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 add_compile_options("/sdl")
 
 include_directories(./include)
-include_directories(./../slyengine/include)
+include_directories(./../slycore/include)
 include_directories(./../slywin32/include)
  
+
+link_directories(./../slycore/lib)
 link_directories(./../slywin32/lib)
 
 #this isn't best practice
@@ -29,10 +31,10 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-find_library(SLYENGINE_LIB slyengine HINTS ./../slyengine/lib)
-find_library(SLYWIN32_LIB slywin32 HINTS ./../slywin32/lib)
+find_library(SLYCORE_LIB slycore PATHS ./../slycore/lib)
+find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)
 
-target_link_libraries(${PROJECT_NAME} ${SLYENGINE_LIB})
+target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
 target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
 target_link_libraries(${PROJECT_NAME} d3d12.lib)
 target_link_libraries(${PROJECT_NAME} dxgi.lib)

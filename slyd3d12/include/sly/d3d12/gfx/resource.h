@@ -10,23 +10,23 @@ namespace sly {
         class D3D12DeviceImpl;
         class D3D12ResourceImpl : public D3D12ManagedImpl  {
         public:
-            D3D12ResourceImpl(ref_t<D3D12DeviceImpl> device);
-            virtual void init(ref_t<ResourceDesc> desc = IResource::DEFAULT_DESC);
+            D3D12ResourceImpl(D3D12DeviceImpl& device);
+            virtual void init(ResourceDesc& desc);
 
-            ref_t<ID3D12Resource> getID3D12Resource() { return resource_; }
-            size_t getBufferLocation() { return bufferLocation_; }
-            size_t getSizeInBytes() { return sizeInBytes_; }
-            size_t getStrideInBytes() { return strideInBytes_; }
+            ID3D12Resource& getID3D12Resource() { return *_resource; }
+            size_t getBufferLocation() { return _bufferLocation; }
+            size_t getSizeInBytes() { return _sizeInBytes; }
+            size_t getStrideInBytes() { return  _strideInBytes; }
                        
         protected:
-            virtual void write(ptr_t data, size_t count, size_t stride);
+            virtual void write(void* data, size_t count, size_t stride);
             using D3D12ManagedImpl::D3D12ManagedImpl;
 
         private:
-            ref_t<ID3D12Resource> resource_;
-            size_t bufferLocation_;
-            size_t sizeInBytes_;
-            size_t strideInBytes_;
+            ID3D12Resource* _resource;
+            size_t _bufferLocation;
+            size_t _sizeInBytes;
+            size_t _strideInBytes;
         };
     }
 }

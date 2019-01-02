@@ -2,7 +2,7 @@
 
 using namespace sly::sys;
 
-Win32Window::Win32Window(uint_t width, uint_t height, string_t pszTitle) :
+Win32Window::Win32Window(uint_t width, uint_t height, std::string pszTitle) :
     m_width(width),
     m_height(height),
     m_title(pszTitle)
@@ -24,7 +24,7 @@ Win32Window::Win32Window(uint_t width, uint_t height, string_t pszTitle) :
     // Create the window and store a handle to it.
     this->SetHwnd(CreateWindow(
         windowClass.lpszClassName,
-        GetTitle(),
+        GetTitle().c_str(),
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,

@@ -51,7 +51,7 @@ def td_format(delta):
 	return '{:02}:{:02}:{:04}'.format(int(minutes + hours * 60), int(seconds), int(remainder * 1000))
 
 def main():
-	dir_list = ['slyd3d11','slyd3d12','slygl4', 'slyengine', 'slywin32', 'slyedit']
+	dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine', 'slywin32', 'slyedit']
 		
 	thread_print("Starting Clean All...")
 	clean_all(dir_list)
