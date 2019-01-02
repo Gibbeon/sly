@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "sly/d3d12.h"
-#include "sly/d3d12/gfx/managed.h"
+#include "sly/d3d12/gfx/device.h"
 
 namespace sly {
     namespace gfx {
@@ -15,7 +15,7 @@ namespace sly {
 
         };
         
-        class D3D12DescriptorTableImpl : public D3D12ManagedImpl {
+        class D3D12DescriptorTableImpl {
         public:
             D3D12DescriptorTableImpl(D3D12DeviceImpl& device);
 
@@ -30,7 +30,9 @@ namespace sly {
             size_t getCount() { _count; }
 
         protected:
-            using D3D12ManagedImpl::D3D12ManagedImpl;
+            virtual IDevice& getDevice() { return *_device; } 
+            ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
+            D3D12DeviceImpl* _device;     
 
             size_t _nextFree;
             size_t getNextFree();

@@ -1,16 +1,16 @@
 slyengine (cleanup):
-    ☐ Replace collections with stl
-    ☐ Eliminate diagnostics
+    ✔ Replace collections with stl @done (1/1/2019, 9:58:32 PM)
+    ✔ Eliminate diagnostics @done (1/1/2019, 9:58:34 PM)
     ✔ Find a lightweight math library with SSE extensions and easy transferability to DX/GL @done (1/1/2019, 3:27:46 PM)
-    ☐ Eliminate function with std::function
-    ☐ Eliminate Exception with std::Exception
+    ✔ Eliminate function with std::function @done (1/1/2019, 9:58:35 PM)
+    ✔ Eliminate Exception with std::Exception @done (1/1/2019, 9:58:40 PM)
     ☐ Find out standard assert langauge and use it
-    ☐ eleiminate ref, local, out_ptr, void*
-    ☐ standardize the size_t, void*
+    ✔ eleiminate ref, local, out_ptr, vptr_t @done (1/1/2019, 9:58:44 PM)
+    ☐ standardize the size_t, vptr_t
     ☐ add _64X _32X compilier flags
-    ☐ rename slyengine to sly
-    ☐ slyengine should be the game systems
-    ☐ clean up pointers and references
+    ✔ rename slyengine to slycore @done (1/1/2019, 9:58:53 PM)
+    ✔ slyengine should be the game systems @done (1/1/2019, 9:58:57 PM)
+    ✔ clean up pointers and references @done (1/1/2019, 9:59:00 PM)
 slyengine (features):
     ☐ add standard logging system
     ☐ add standard heap/memory manager

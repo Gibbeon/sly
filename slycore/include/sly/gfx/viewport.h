@@ -6,17 +6,17 @@ namespace sly {
     namespace gfx {
         struct Viewport
         {
-            Viewport(float x, float y, float width, float height, float minDepth = 0.0, float maxDepth = 1.0) :
+            Viewport(real_t x, real_t y, real_t width, real_t height, real_t minDepth = real_t(0.0), real_t maxDepth = real_t(1.0)) :
                 x(x), y(y), width(width), height(height), minDepth(minDepth), maxDepth(maxDepth)
             {
 
             }
-            float x;
-            float y;
-            float width;
-            float height;
-            float minDepth;
-            float maxDepth;
+            real_t x;
+            real_t y;
+            real_t width;
+            real_t height;
+            real_t minDepth;
+            real_t maxDepth;
         };
     }
 }

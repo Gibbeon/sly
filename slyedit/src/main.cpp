@@ -12,10 +12,10 @@ struct Vec3 {
 struct Vertex
 {
     Vec3 position;
-    sly::gfx::color_t<> color;
+    sly::gfx::color_t color;
 };
 
-size_t LoadFromFile(char* file, void** buffer) {
+size_t LoadFromFile(char* file, vptr_t* buffer) {
     FILE* fp;
     fopen_s (&fp, file, "r");
     fseek(fp, 0L, SEEK_END);
@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
   ID3DBlob               **ppErrorMsgs
 ); */
 //     ThrowIfFailed(D3DCompileFromFile(L"c:\\shaders.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
-    void* vsbuf;
+    vptr_t vsbuf;
     size_t vssize;
     vssize = LoadFromFile("c:\\shaders.hlsl", &vsbuf);
     
@@ -225,12 +225,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     ThrowIfFailed(m_commandList->Close());
  */
     sly::gfx::Viewport viewport(0, 0, 1024, 768);
-    sly::rect_t<long> scissorRect(0, 0, 1024, 768);
-    sly::gfx::color_t<> clearColor(.4f, .4f, .4f, 1.0f);
-
-    
-        
-    
+    sly::rect_t scissorRect(0, 0, 1024, 768);
+    sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);
+     
     while(application->isRunning())
     {
         list->begin();

@@ -6,12 +6,12 @@
 
 namespace sly {
     namespace gfx {
-        class D3D12TextureImpl : public D3D12ResourceImpl, public ITexture {
+        class D3D12TextureImpl : public ITexture {
         public:
-        
-        protected:
-            using D3D12ResourceImpl::D3D12ResourceImpl;
-        };
+            virtual IDevice& getDevice() { return *_device; } 
+            
+            D3D12DeviceImpl* _device;
+        };  
     }
 }
 

@@ -1,26 +1,20 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/builder.h"
+#include "sly/gfx/managedresource.h"
+#include "sly/gfx/builders/resourcebuilder.h"
 
 namespace sly {
-    namespace gfx {
-        struct ResourceDesc {
-        public:
-            void* data;
-            size_t sizeInBytes;
-            size_t stride;
-        };
+    namespace gfx {       
 
-        class IResource  {
+        class IResource : public IManagedResource  {
         public:
-            constexpr static ResourceDesc DEFAULT_DESC = {  }; 
-            virtual void write(void* data, size_t size, size_t stride) = 0;
-        };
+            virtual ~IResource() {}
+            //virtual void init(ResourceDesc& desc) = 0;
 
-        class ResourceBuilder : public Builder<ResourceDesc> {
-        public:
-            ResourceBuilder& setSizeInBytes(size_t size) { desc_.sizeInBytes = size; return * this; }
+            virtual void write(vptr_t data, size_t size, size_t stride) = 0;
+        protected:
+            IResource() {}
         };
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <initializer_list>
 #include "sly/global.h"
 
 
@@ -8,9 +7,11 @@ namespace sly {
     template<typename TDescType>
     class Builder {
     public:
+        virtual ~Builder() {}
         virtual TDescType& build();
 
-    protected:
+    protected:        
+        Builder()  {}
         Builder(TDescType initial) : desc_(initial) {}
         Builder(TDescType& initial) : desc_(initial) {}
         

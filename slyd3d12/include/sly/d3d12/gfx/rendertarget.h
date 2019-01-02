@@ -11,12 +11,13 @@ namespace sly {
         class D3D12RenderTargetImpl : public IRenderTarget {
         public:
             D3D12RenderTargetImpl() {}
+
             virtual void init(ID3D12Resource* ptr, size_t buffer){
                 _resource = ptr;
                 _bufferLocation = buffer;
             }
 
-            virtual void write(void* data, size_t size, size_t stride) {
+            virtual void write(vptr_t data, size_t size, size_t stride) {
                 
             }
 
@@ -24,9 +25,12 @@ namespace sly {
             size_t getBufferLocation() {  return _bufferLocation; }
             size_t getSizeInBytes() {  return _sizeInBytes; }
 
+            virtual IDevice& getDevice() { return *_device; } 
+
         protected:
 
         private:
+            D3D12DeviceImpl* _device;
             ID3D12Resource* _resource;
             size_t _bufferLocation;
             size_t _sizeInBytes;

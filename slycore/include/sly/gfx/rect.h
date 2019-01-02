@@ -5,14 +5,14 @@
 namespace sly {
 
     template<typename T>
-    class rect_t {
+    class rectt_t {
         public:
-            rect_t()
+            rectt_t()
             {
 
             }
 
-            rect_t(T left, T top, T right, T bottom) {
+            rectt_t(T left, T top, T right, T bottom) {
                 this->left = left;
                 this->top = top;
                 this->right = right;
@@ -32,6 +32,6 @@ namespace sly {
             };
     };
 
-    typedef rect_t<float> rectf_t;
-    typedef rect_t<u32> recti_t;
+    typedef rectt_t<float> box_t;
+    typedef rectt_t<size_t> rect_t;
 }

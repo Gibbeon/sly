@@ -6,13 +6,17 @@
 
 namespace sly {
     namespace gfx {
-        class D3D12IndexBufferImpl : public D3D12ResourceImpl, public IIndexBuffer {
+        class D3D12IndexBufferImpl : public IIndexBuffer {
         public:
             D3D12IndexBufferImpl(D3D12DeviceImpl& device);
             virtual void init(IndexBufferDesc& desc);
+
+            virtual IDevice& getDevice() { return *_device; } 
                 
         protected:
-            using IIndexBuffer::IIndexBuffer;
+        
+            D3D12DeviceImpl* _device;
+        
         };
     }
 }

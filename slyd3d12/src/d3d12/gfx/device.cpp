@@ -11,13 +11,19 @@
 
 using namespace sly::gfx;
 
-D3D12DeviceImpl::D3D12DeviceImpl(DeviceDesc& desc) {
+D3D12DeviceImpl::D3D12DeviceImpl(IRenderSystem& system) : _system(&system)
+{
+
+}
+
+void D3D12DeviceImpl::init(DeviceDesc& desc) 
+{
     UINT dxgiFactoryFlags = 0;
 
     #ifdef _DEBUG
     {
         ID3D12Debug* debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<void**>(&debugController))))
+        if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<vptr_t*>(&debugController))))
         {
             debugController->EnableDebugLayer();
 
@@ -27,14 +33,14 @@ D3D12DeviceImpl::D3D12DeviceImpl(DeviceDesc& desc) {
     }
     #endif
 
-    CreateDXGIFactory2(dxgiFactoryFlags, IID_IDXGIFactory4, reinterpret_cast<void**>(&_factory));
+    CreateDXGIFactory2(dxgiFactoryFlags, IID_IDXGIFactory4, reinterpret_cast<vptr_t*>(&_factory));
 
     for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != _factory->EnumAdapters1(adapterIndex, &_adapter); ++adapterIndex)
     {
         DXGI_ADAPTER_DESC1 desc;
         _adapter->GetDesc1(&desc);
 
-        if (SUCCEEDED(D3D12CreateDevice(_adapter, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<void**>(&_device))))
+        if (SUCCEEDED(D3D12CreateDevice(_adapter, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<vptr_t*>(&_device))))
         {
             break;
         }
@@ -102,7 +108,7 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     ID3DBlob* error;
 
 //     ThrowIfFailed(D3D12SerializeRootSignature(&_rootSignatureDesc, D3DROOT_SIGNATURE_VERSION_1, &signature, &error));
-//     ThrowIfFailed(_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<void**>(&_rootSignature)));
+//     ThrowIfFailed(_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
 //     return true;
 // }
 
@@ -143,7 +149,7 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 //     psoDesc.SampleDesc.Count = 1;
 
-//     ThrowIfFailed(_device->CreateGraphicsPipelineState(&_psoDesc, IIDID3D12PipelineState, reinterpret_cast<void**>(&_pipelineState)));
+//     ThrowIfFailed(_device->CreateGraphicsPipelineState(&_psoDesc, IIDID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
 //         return true;
 // } */
 
@@ -154,7 +160,7 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
 //     ID3D12CommandQueue* commandQueue = nullptr;
-//     ThrowIfFailed(_device->CreateCommandQueue(&_queueDesc, IIDID3D12CommandQueue, reinterpret_cast<void**>(&commandQueue)));
+//     ThrowIfFailed(_device->CreateCommandQueue(&_queueDesc, IIDID3D12CommandQueue, reinterpret_cast<vptr_t*>(&commandQueue)));
 
 //     (*queue) = new D3D12CommandQueue(commandQueue, _device);
 //     return true; */
@@ -164,9 +170,9 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     /* ID3D12CommandAllocator* commandAllocator;
 //     ID3D12GraphicsCommandList* commandList;
 
-//     ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<void**>(&commandAllocator)));
+//     ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<vptr_t*>(&commandAllocator)));
 
-//     ThrowIfFailed(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, NULL, IID_ID3D12CommandList, reinterpret_cast<void**>(&commandList)));
+//     ThrowIfFailed(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, NULL, IID_ID3D12CommandList, reinterpret_cast<vptr_t*>(&commandList)));
 
 //     ThrowIfFailed(commandList->Close());
 
@@ -207,7 +213,7 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //         D3D12_RESOURCE_STATE_GENERIC_READ,
 //         nullptr,
 //         IID_ID3D12Resource, 
-//         reinterpret_cast<void**>(&vertexBuffer)));
+//         reinterpret_cast<vptr_t*>(&vertexBuffer)));
 
 //     (*buffer) = new D3D12VertexBuffer(vertexBuffer, vertexBufferSize);
 //     return true; */

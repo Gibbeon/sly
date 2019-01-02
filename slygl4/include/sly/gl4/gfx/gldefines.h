@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "te/win32/global.h"
+#include "sly/win32.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>

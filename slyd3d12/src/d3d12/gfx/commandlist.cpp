@@ -10,8 +10,8 @@ D3D12CommandListImpl::D3D12CommandListImpl(D3D12DeviceImpl& device) : _device(&d
 }
 
 void D3D12CommandListImpl::init(CommandListDesc& desc) {
-    getID3D12Device().CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<void**>(&_allocator));
-    getID3D12Device().CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,_allocator, NULL, IID_ID3D12CommandList, reinterpret_cast<void**>(&_list));
+    getID3D12Device().CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<vptr_t*>(&_allocator));
+    getID3D12Device().CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,_allocator, NULL, IID_ID3D12CommandList, reinterpret_cast<vptr_t*>(&_list));
     _list->Close();
 }
 
@@ -42,13 +42,15 @@ void D3D12CommandListImpl::setRenderTarget(IRenderTarget& target) {
 void D3D12CommandListImpl::setRenderState(IRenderState& state) {
     _renderState = reinterpret_cast<D3D12RenderStateImpl*>(&state);
     _list->SetPipelineState(&_renderState->getID3D12PipelineState());
+    _list->SetComputeRootSignature(&_renderState->getID3D12RootSignature());
+    _list->SetGraphicsRootSignature(&_renderState->getID3D12RootSignature());
 }
 
 void D3D12CommandListImpl::setViewport(Viewport& viewport) {
     _list->RSSetViewports(1, &D3D12_VIEWPORT_CAST(viewport));
 }
 
-void D3D12CommandListImpl::setScissorRect(sly::rect_t<long> rect) {
+void D3D12CommandListImpl::setScissorRect(sly::rect_t rect) {
     _list->RSSetScissorRects(1, &D3D12_RECT_CAST(rect));
 }
 
@@ -64,7 +66,7 @@ void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) {
     _list->IASetVertexBuffers(0, 1, &view);
 }
             
-void D3D12CommandListImpl::clear(color_t<> color) {
+void D3D12CommandListImpl::clear(color_t color) {
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
     rtvHandle.ptr = _target->getBufferLocation();
 
@@ -100,7 +102,7 @@ bool_t D3D12CommandList::InitRootSignature() {
     ID3DBlob* error;
 
     ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
-    ThrowIfFailed(_device->GetID3DDevice()->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<void**>(&_rootSignature)));
+    ThrowIfFailed(_device->GetID3DDevice()->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
  return true; 
 }
 
@@ -141,18 +143,18 @@ bool_t D3D12CommandList::InitPipelineState() {
     psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     psoDesc.SampleDesc.Count = 1;
 
-    ThrowIfFailed(_device->GetID3DDevice()->CreateGraphicsPipelineState(&psoDesc, IID_ID3D12PipelineState, reinterpret_cast<void**>(&_pipelineState)));
+    ThrowIfFailed(_device->GetID3DDevice()->CreateGraphicsPipelineState(&psoDesc, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
      return true; 
 }
 
-bool_t D3D12CommandList::Draw(void*<IGfxVertexBuffer> buffer, void*<IGfxWindow> window)
+bool_t D3D12CommandList::Draw(vptr_t<IGfxVertexBuffer> buffer, vptr_t<IGfxWindow> window)
 {
     D3D12Window* result = reinterpret_cast<D3D12Window*>(window.ptr());
     Draw(buffer, result->GetActiveRenderTarget(), result->GetActiveHandle());
     return true;
 }
 
-bool_t D3D12CommandList::Draw(void*<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
+bool_t D3D12CommandList::Draw(vptr_t<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
      // Command list allocators can only be reset when the associated 
     // command lists have finished execution on the GPU; apps should use 
     // fences to determine GPU execution progress.

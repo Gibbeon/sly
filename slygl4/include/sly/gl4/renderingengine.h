@@ -1,4 +1,4 @@
-#pragma once 
+/* #pragma once 
 
 #include "te/gl/global.h"
 
@@ -7,13 +7,13 @@ namespace te {
 class GLRenderingEngine : public IRenderingEngine
 {
     public:
-        GLRenderingEngine(void*);
+        GLRenderingEngine(vptr_t);
 
         virtual bool_t CreateDevice(IRenderingDevice** pAdapter);
     private:
-        void* m_pInstance;
+        vptr_t m_pInstance;
 
 };
 
 
-}
+} */

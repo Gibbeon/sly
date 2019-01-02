@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/builder.h"
+#include "sly/gfx/builders/devicebuilder.h"
 
 namespace sly {
     namespace gfx {  
@@ -24,13 +24,12 @@ namespace sly {
         struct VertexBufferDesc;
         struct IndexBufferDesc;
         struct RenderStateDesc;
-
-        struct DeviceDesc {
-        public:
-        };
         
         class IDevice {
-        public:
+        public:        
+            virtual ~IDevice() {} 
+            virtual void init(DeviceDesc& desc) =0;
+
             virtual void createWindow(IWindow** ppWindow, WindowDesc& desc) = 0;
             virtual void createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) = 0;
             virtual void createCommandList(ICommandList** ppWindow, CommandListDesc& desc) = 0;
@@ -39,16 +38,11 @@ namespace sly {
             virtual void createTexture(ITexture** ppWindow, TextureDesc& desc) = 0;
             virtual void createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc) = 0;
             virtual void createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc) = 0;
+
+            // render target, stencil buffer, etc? need to review this some more
             
-            constexpr static DeviceDesc DEFAULT_DESC = {  }; 
         protected:
-            friend class DeviceBuilder;
+            IDevice() {} 
         };
-
-        class DeviceBuilder : public Builder<DeviceDesc> {
-        public:
-            DeviceBuilder() : Builder(IDevice::DEFAULT_DESC) {}
-        };
-
     }
 }

@@ -1,4 +1,4 @@
-#pragma once
+/* #pragma once
 
 #include "te/gl/global.h"
 
@@ -14,7 +14,7 @@ class GLRenderingDevice : public IRenderingDevice
         virtual bool_t Attach(IDrawWindow* pWindow);
         virtual bool_t SwapBuffers();
 
-	bool_t InitializeExtensions(void*);
+	bool_t InitializeExtensions(vptr_t);
  private:
 
 	bool_t InitializeOpenGL(HWND, int, int, float, float, bool_t);
@@ -84,4 +84,4 @@ public:
 	PFNGLUNIFORM4FVPROC glUniform4fv;
 };
 
-}
+} */

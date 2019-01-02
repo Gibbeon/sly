@@ -52,12 +52,12 @@ class Camera {
 
 class IGfxVertexBuffer : public IDestroyable {
 public:
-    virtual bool_t Write(void* data, ulong_t offset, ulong_t size)  = 0;
+    virtual bool_t Write(vptr_t data, ulong_t offset, ulong_t size)  = 0;
 };
 
 struct GfxSystemDesc {
 public:
-    void*<> hInstance;
+    vptr_t<> hInstance;
 };
 
 class GfxSystemDescBuilder : public Builder<GfxSystemDesc> {
@@ -66,7 +66,7 @@ public:
         _desc.hInstance = nullptr;
     } 
 
-    void*<GfxSystemDescBuilder> SetInstance(void*<> instance) { _desc.hInstance = instance; }
+    vptr_t<GfxSystemDescBuilder> SetInstance(vptr_t<> instance) { _desc.hInstance = instance; }
 };
 
 struct GfxDeviceDesc {
@@ -85,12 +85,12 @@ public:
     virtual bool_t End()  = 0;
     
 
-    virtual bool_t Draw(void*<IGfxVertexBuffer> buffer, void*<IGfxWindow> window) = 0;
+    virtual bool_t Draw(vptr_t<IGfxVertexBuffer> buffer, vptr_t<IGfxWindow> window) = 0;
 };
 
 class IGfxCommandQueue : public IDestroyable {
 public:
-    virtual bool_t ExecuteCommandList(void*<IGfxCommandList> buffer) = 0;
+    virtual bool_t ExecuteCommandList(vptr_t<IGfxCommandList> buffer) = 0;
     virtual bool_t Flush() = 0;
 };
 
@@ -151,7 +151,7 @@ public:
     std::string title;
     int_t colorDepth;
     int_t bufferCount;
-    void*<> hInstance;
+    vptr_t<> hInstance;
 };
 
 
@@ -194,7 +194,7 @@ public:
         _desc.size = 1024 * 1024;
     }
     
-    void*<GfxVertexBufferBuilder> SetSize(ulong_t size) { _desc.size = size; return this; }
+    vptr_t<GfxVertexBufferBuilder> SetSize(ulong_t size) { _desc.size = size; return this; }
 
 };
 
@@ -205,12 +205,12 @@ public:
 
 class Application {
 public:
-    bool_t Init(void*<> pInstance, std::string pszArgs);
+    bool_t Init(vptr_t<> pInstance, std::string pszArgs);
     bool_t CreateGfxSystem(IGfxSystem** system, GfxSystemDesc& desc);
     bool_t IsRunning();
 
 private:
-    void*<> _instance;
+    vptr_t<> _instance;
 };
 
 extern bool_t _CreateGfxSystemImpl(IGfxSystem** system, GfxSystemDesc& desc); */

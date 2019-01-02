@@ -17,7 +17,7 @@ typedef float f64;
 typedef long double f80;
 
 typedef bool bool_t;
-typedef f64 real_t;
+typedef f32 real_t;
 typedef u8 char_t;
 typedef u8 byte_t;
 typedef s16 short_t;
@@ -27,6 +27,7 @@ typedef u32 ushort_t;
 typedef u32 uint_t;
 typedef u64 ulong_t;
 typedef u64 size_t;
+typedef void* vptr_t;
 
 #ifdef FALSE
 #undef FALSE

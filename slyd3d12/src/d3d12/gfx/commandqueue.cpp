@@ -5,7 +5,7 @@
 using namespace sly::gfx;
 
 D3D12CommandQueueImpl::D3D12CommandQueueImpl(D3D12DeviceImpl& device):
-    D3D12ManagedImpl(device),
+    _device(&device),
     _fence(device) 
 {
 
@@ -17,10 +17,14 @@ void D3D12CommandQueueImpl::init(CommandQueueDesc& desc) {
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
-    getID3D12Device().CreateCommandQueue(&queueDesc, IID_ID3D12CommandQueue, reinterpret_cast<void**>(&_queue));
+    FenceDescBuilder fDesc;
+    _fence.init(fDesc.build());
+
+    getID3D12Device().CreateCommandQueue(&queueDesc, IID_ID3D12CommandQueue, reinterpret_cast<vptr_t*>(&_queue));
 }
     
 void D3D12CommandQueueImpl::executeCommandList(ICommandList* lists, size_t count) {
     auto f =  &reinterpret_cast<D3D12CommandListImpl*>(lists)->getID3D12CommandList();
     _queue->ExecuteCommandLists(1, &f);
+    _fence.waitFor(_queue);
 }

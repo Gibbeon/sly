@@ -5,9 +5,9 @@
 namespace sly {
     namespace gfx {
         template<typename TColorType = float>
-        struct color_t
+        struct colort_t
         {
-            color_t(TColorType r, TColorType g, TColorType b, TColorType a) :
+            colort_t(TColorType r, TColorType g, TColorType b, TColorType a) :
                 r(r), g(g), b(b), a(a)
             {
 
@@ -22,6 +22,8 @@ namespace sly {
                 TColorType data[4];
             };
         };
+
+        typedef colort_t<float> color_t;
     }
 }
 

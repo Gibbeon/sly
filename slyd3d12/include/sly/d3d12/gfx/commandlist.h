@@ -21,34 +21,17 @@ namespace sly {
 
             virtual void setRenderState(IRenderState& state);
             virtual void setViewport(Viewport& viewport);
-            virtual void setScissorRect(rect_t<long> rect);
+            virtual void setScissorRect(rect_t rect);
             virtual void setVertexBuffer(IVertexBuffer& buffer);
             virtual void setRenderTarget(IRenderTarget& target);
             
-            virtual void clear(color_t<> color);
+            virtual void clear(color_t color);
             virtual void draw(size_t, size_t, size_t, size_t);
-
-            //virtual void setViewport();
-            //virtual void setCamera();
-            //virtual void setProjection();
-            //virtual void setScissorRect();
-            //virtual void setVSShader();
-            //virtual void setPSShader();
-            //virtual void setVertexBuffer();
-            //virtual void setIndexBuffer();
-            //virtual void setTexture();
-
-            //virtual void drawIndexed();
-
-            //virtual bool_t Draw(void*<IGfxVertexBuffer> buffer, ID3D12Resource* target, D3D12_CPU_DESCRIPTOR_HANDLE descriptor);
-            //virtual bool_t Draw(void*<IGfxVertexBuffer> buffer, void*<IGfxWindow> window);
 
             ID3D12CommandList&      getID3D12CommandList() { return *_list; }
             ID3D12CommandAllocator& getID3D12CommandAllocator() { return *_allocator; }
             ID3D12Device& getID3D12Device() { return _device->getID3D12Device(); }
-            
-        protected:
-            //using D3D12RenderStateImpl::D3D12RenderStateImpl;
+            virtual IDevice& getDevice() { return *_device; }  
 
         private:
             D3D12DeviceImpl* _device;

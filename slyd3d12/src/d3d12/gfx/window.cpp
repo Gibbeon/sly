@@ -9,7 +9,7 @@ D3D12WindowImpl::D3D12WindowImpl(D3D12DeviceImpl& device, sly::sys::Win32Window&
     _fence(device),
     _directCommandQueue(device),
     _desctriptorTable(device),
-    D3D12ManagedImpl(device) {
+    _device(&device) {
 }
 
 void D3D12WindowImpl::init(WindowDesc& desc) {
@@ -34,14 +34,14 @@ void D3D12WindowImpl::init(WindowDesc& desc) {
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // discard the buffer after it's displayed
     swapChainDesc.SampleDesc.Count = 1; // for multisampling the image
 
-    ThrowIfFailed(getDevice().getIDXGIFactory4().CreateSwapChainForHwnd(
+    reinterpret_cast<D3D12DeviceImpl*>(&getDevice())->getIDXGIFactory4().CreateSwapChainForHwnd(
         &_directCommandQueue.getID3D12CommandQueue(),        // Swap chain needs the queue so that it can force a flush on it.
         _window->GetHwnd(),
         &swapChainDesc,
         nullptr,
         nullptr,
         reinterpret_cast<IDXGISwapChain1**>(&_swapChain)
-        ));
+        );
 
     // This sample does not support fullscreen transitions.
     //ThrowIfFailed(factory->MakeWindowAssociation(Win32Application::GetHwnd(), DXGI_MWANO_ALT_ENTER));
@@ -58,7 +58,7 @@ void D3D12WindowImpl::init(WindowDesc& desc) {
         rtvHandle.ptr = _desctriptorTable.getAt(indicies[n]);
 
         ID3D12Resource* ptr = nullptr;
-        _swapChain->GetBuffer(n, IID_ID3D12Resource, reinterpret_cast<void**>(&ptr)); // gets the resource
+        _swapChain->GetBuffer(n, IID_ID3D12Resource, reinterpret_cast<vptr_t*>(&ptr)); // gets the resource
 
         getID3D12Device().CreateRenderTargetView(ptr, 0, rtvHandle); // writes the location of a render target view heap entry at the heap location
         

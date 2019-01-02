@@ -6,10 +6,17 @@
 using namespace sly::gfx;
 
 D3D12VertexBufferImpl::D3D12VertexBufferImpl(D3D12DeviceImpl& device) :
-    D3D12ManagedImpl(device) 
+    _device(&device) 
 {
-    //D3D12ResourceImpl::init(desc);
+
 }
+
+
+            
+IDevice& D3D12VertexBufferImpl::getDevice() 
+{ 
+    return *_device; 
+} 
 
 void D3D12VertexBufferImpl::init(VertexBufferDesc& desc) {
 
@@ -20,15 +27,15 @@ void D3D12VertexBufferImpl::init(VertexBufferDesc& desc) {
          D3D12_RESOURCE_STATE_GENERIC_READ,
          nullptr,
          IID_ID3D12Resource, 
-         reinterpret_cast<void**>(&_resource));
+         reinterpret_cast<vptr_t*>(&_resource));
     
     write(desc.data, desc.sizeInBytes, desc.stride);
 }
 
-void D3D12VertexBufferImpl::write(void* data, size_t size, size_t stride) {
+void D3D12VertexBufferImpl::write(vptr_t data, size_t size, size_t stride) {
     byte_t* dest;
     D3D12_RANGE readRange = {0, 0};        // We do not intend to read from this resource on the CPU.
-    _resource->Map(0, &readRange, reinterpret_cast<void**>(&dest));
+    _resource->Map(0, &readRange, reinterpret_cast<vptr_t*>(&dest));
     memcpy(dest, data, size);
     _resource->Unmap(0, nullptr);
     
@@ -48,7 +55,7 @@ D3D12VertexBuffer::D3D12VertexBuffer(ID3D12Resource* buffer, ulong_t size) :
 
 }
 
-bool_t D3D12VertexBuffer::Write(void* data, ulong_t offset, ulong_t size) {
+bool_t D3D12VertexBuffer::Write(vptr_t data, ulong_t offset, ulong_t size) {
     float m_aspectRatio = 768.0 / 1024.0;
     // Define the geometry for a triangle.
     Vertex triangleVertices[] =
@@ -63,7 +70,7 @@ bool_t D3D12VertexBuffer::Write(void* data, ulong_t offset, ulong_t size) {
     // Copy the triangle data to the vertex buffer.
     UINT8* pVertexDataBegin;
     CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-    ThrowIfFailed(_buffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)));
+    ThrowIfFailed(_buffer->Map(0, &readRange, reinterpret_cast<vptr_t*>(&pVertexDataBegin)));
     memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
     _buffer->Unmap(0, nullptr);
 

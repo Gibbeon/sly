@@ -12,12 +12,12 @@ namespace sly {
             D3D12ShaderImpl(D3D12DeviceImpl& device) : _device(&device) {}
             virtual void init(ShaderDesc& desc);
 
-            void* getBuffer() { return _data->GetBufferPointer(); }
+            vptr_t getBuffer() { return _data->GetBufferPointer(); }
             size_t getSizeInBytes() { return _data->GetBufferSize(); }
 
-            virtual void write(void* data, size_t size, size_t stride) {}
+            virtual void write(vptr_t data, size_t size, size_t stride) {}
             
-            D3D12DeviceImpl& getDevice() { return *_device; }
+            virtual IDevice& getDevice() { return *_device; } 
         
         protected:
             ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }

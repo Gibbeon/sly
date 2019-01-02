@@ -1,25 +1,16 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/builder.h"
-#include "sly/gfx/resource.h"
+#include "sly/gfx/builders/rendertargetbuilder.h"
 
 namespace sly {
     namespace gfx {
-        struct RenderTargetDesc {
-        public:
-        };
-
-        class RenderTargetBuilder : public Builder<RenderTargetDesc> {
-        public:
-        };
-
         class IRenderTarget : public IResource {
         public:
+            virtual ~IRenderTarget() {}
         
         protected:
-            using IResource::IResource;
-            constexpr static RenderTargetDesc DEFAULT = {  }; 
+            IRenderTarget() {}
         };
     }
 }
