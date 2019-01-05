@@ -16,8 +16,8 @@ namespace sly {
 
             virtual void setVisible(bool_t show) = 0;
 
-            virtual IRenderTarget&  getBackBuffer() = 0;
-            virtual ICommandQueue& getDirectCommandQueue() = 0;
+            //virtual IRenderTarget&  getBackBuffer() = 0;
+            //virtual ICommandQueue& getDirectCommandQueue() = 0;
 
         protected:
             IWindow() {}

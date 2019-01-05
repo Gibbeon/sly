@@ -1,29 +1,41 @@
-#include "te/gl/renderingdevice.h"
-#include "te/win32/window.h"
+#include "sly/gl4/renderingdevice.h"
+#include "sly/win32/sys/window.h"
 
-using namespace te;
+using namespace sly::gfx;
 
-GLRenderingDevice::GLRenderingDevice()
+/* A simple function that will read a file into an allocated char pointer buffer */
+char* filetobuf(char *file)
 {
+    FILE *fptr;
+    long length;
+    char *buf;
 
+    fopen_s(&fptr, file, "rb"); /* Open file for reading */
+    if (!fptr) /* Return NULL on failure */
+        return NULL;
+    fseek(fptr, 0, SEEK_END); /* Seek to the end of the file */
+    length = ftell(fptr); /* Find out how many bytes into the file we are */
+    buf = (char*)malloc(length+1); /* Allocate a buffer for the entire length of the file and a null terminator */
+    fseek(fptr, 0, SEEK_SET); /* Go back to the beginning of the file */
+    fread(buf, length, 1, fptr); /* Read the contents of the file in to the buffer */
+    fclose(fptr); /* Close the file */
+    buf[length] = 0; /* Null terminator */
+
+    return buf; /* Return the buffer */
 }
 
-bool_t GLRenderingDevice::Attach(IDrawWindow* pWindow)
+
+GL4Window::GL4Window()
 {
-    Win32Window* m_MainWindow = reinterpret_cast<Win32Window*>(pWindow);
-    
-    InitializeOpenGL(m_MainWindow->GetHwnd(), m_MainWindow->GetHeight(), m_MainWindow->GetWidth(), 1.0, 0.0, true);
-
-    m_MainWindow->SetRenderingDevice(this);
-
-    return true;
+	_window = new sly::sys::Win32Window(1024,768,"GL HI!");
+    InitializeExtensions();
+    InitializeOpenGL(_window->GetHwnd(), _window->GetHeight(), _window->GetWidth(), 1.0, 0.0, true);
 }
 
-bool_t GLRenderingDevice::SwapBuffers()
+void GL4Window::swapBuffers()
 {
     BeginScene(.4f, .4f, 1.0f, 1.0f);
     EndScene();
-    return true;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -42,7 +54,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
+void GL4Window::InitializeExtensions()
 {
 	WNDCLASSEX wc;
 
@@ -52,7 +64,7 @@ bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
     wc.lpfnWndProc   = WndProc;
     wc.cbClsExtra    = 0;
     wc.cbWndExtra    = 0;
-    wc.hInstance     = (HINSTANCE)m_pInstance;
+    wc.hInstance     = (HINSTANCE)GetModuleHandle(NULL);
     wc.hIcon         = nullptr;
     wc.hCursor       = nullptr;
     wc.hbrBackground = nullptr;
@@ -62,7 +74,7 @@ bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
 
     if(!RegisterClassEx(&wc))
     {
-        return 0;
+        return;
     }
 
     HWND fakeWND = CreateWindow(
@@ -71,12 +83,12 @@ bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
         0, 0,                       // position x, y
         1, 1,                       // width, height
         NULL, NULL,                 // parent window, menu
-        (HINSTANCE)m_pInstance, NULL);           // instance, param
+        wc.hInstance, NULL);           // instance, param
  
  	if( !fakeWND )
     {
         int_t error = GetLastError();
-		return false;
+		return;
     }
 
 	HDC deviceContext;
@@ -89,7 +101,7 @@ bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
 	deviceContext = GetDC(fakeWND);
 	if(!deviceContext)
 	{
-		return false;
+		return;
 	}
 
 	ZeroMemory(&pixelFormat, sizeof(pixelFormat));
@@ -105,28 +117,28 @@ bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
 	error = SetPixelFormat(deviceContext, 1, &pixelFormat);
 	if(error != 1)
 	{
-		return false;
+		return;
 	}
 
 	// Create a temporary rendering context.
 	renderContext = wglCreateContext(deviceContext);
 	if(!renderContext)
 	{
-		return false;
+		return;
 	}
 
 	// Set the temporary rendering context as the current rendering context for this window.
 	error = wglMakeCurrent(deviceContext, renderContext);
 	if(error != 1)
 	{
-		return false;
+		return;
 	}
 
 	// Initialize the OpenGL extensions needed for this application.  Note that a temporary rendering context was needed to do so.
 	result = LoadExtensionList();
 	if(!result)
 	{
-		return false;
+		return;
 	}
 
 	// Release the temporary rendering context now that the extensions have been loaded.
@@ -139,11 +151,9 @@ bool_t GLRenderingDevice::InitializeExtensions(vptr_t m_pInstance)
     DestroyWindow(fakeWND);
 
 	deviceContext = 0;
-
-	return true;
 }
 
-bool_t GLRenderingDevice::InitializeOpenGL(HWND hwnd, int screenWidth, int screenHeight, float screenDepth, float screenNear, bool_t vsync)
+bool_t GL4Window::InitializeOpenGL(HWND hwnd, int screenWidth, int screenHeight, float screenDepth, float screenNear, bool_t vsync)
 {
 	int attributeListInt[19];
 	int pixelFormat[1];
@@ -286,10 +296,171 @@ bool_t GLRenderingDevice::InitializeOpenGL(HWND hwnd, int screenWidth, int scree
 		return false;
 	}
 
+	
+    /* We're going to create a simple diamond made from lines */
+    const GLfloat diamond[4][2] = {
+    {  0.0,  1.0  }, /* Top point */
+    {  1.0,  0.0  }, /* Right point */
+    {  0.0, -1.0  }, /* Bottom point */
+    { -1.0,  0.0  } }; /* Left point */
+
+    const GLfloat colors[4][3] = {
+    {  1.0,  0.0,  0.0  }, /* Red */
+    {  0.0,  1.0,  0.0  }, /* Green */
+    {  0.0,  0.0,  1.0  }, /* Blue */
+    {  1.0,  1.0,  1.0  } }; /* White */
+
+    /* These pointers will receive the contents of our shader source code files */
+    char *vertexsource, *fragmentsource;
+
+    /* These are handles used to reference the shaders */
+    GLuint vertexshader, fragmentshader;
+
+    /* This is a handle to the shader program */
+    GLuint shaderprogram;
+
+    /* Allocate and assign a Vertex Array Object to our handle */
+    glGenVertexArrays(1, &vao);
+
+    /* Bind our Vertex Array Object as the current used object */
+    glBindVertexArray(vao);
+
+    /* Allocate and assign two Vertex Buffer Objects to our handle */
+    glGenBuffers(2, vbo);
+
+    /* Bind our first VBO as being the active buffer and storing vertex attributes (coordinates) */
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+
+    /* Copy the vertex data from diamond to our buffer */
+    /* 8 * sizeof(GLfloat) is the size of the diamond array, since it contains 8 GLfloat values */
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), diamond, GL_STATIC_DRAW);
+
+    /* Specify that our coordinate data is going into attribute index 0, and contains two floats per vertex */
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    /* Enable attribute index 0 as being used */
+    glEnableVertexAttribArray(0);
+
+    /* Bind our second VBO as being the active buffer and storing vertex attributes (colors) */
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+
+    /* Copy the color data from colors to our buffer */
+    /* 12 * sizeof(GLfloat) is the size of the colors array, since it contains 12 GLfloat values */
+    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), colors, GL_STATIC_DRAW);
+
+    /* Specify that our color data is going into attribute index 1, and contains three floats per vertex */
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    /* Enable attribute index 1 as being used */
+    glEnableVertexAttribArray(1);
+
+    /* Read our shaders into the appropriate buffers */
+    vertexsource = filetobuf("c:\\tutorial2.vert");
+    fragmentsource = filetobuf("c:\\tutorial2.frag");
+
+    /* Create an empty vertex shader handle */
+    vertexshader = glCreateShader(GL_VERTEX_SHADER);
+
+    /* Send the vertex shader source code to GL */
+    /* Note that the source code is NULL character terminated. */
+    /* GL will automatically detect that therefore the length info can be 0 in this case (the last parameter) */
+    glShaderSource(vertexshader, 1, (const char**)&vertexsource, 0);
+
+    /* Compile the vertex shader */
+    glCompileShader(vertexshader);
+
+    glGetShaderiv(vertexshader, GL_COMPILE_STATUS, &IsCompiled_VS);
+    if(IsCompiled_VS == FALSE)
+    {
+       glGetShaderiv(vertexshader, GL_INFO_LOG_LENGTH, &maxLength);
+
+       /* The maxLength includes the NULL character */
+       vertexInfoLog = (char *)malloc(maxLength);
+
+       glGetShaderInfoLog(vertexshader, maxLength, &maxLength, vertexInfoLog);
+
+       /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
+       /* In this simple program, we'll just leave */
+       free(vertexInfoLog);
+       return false;
+    }
+
+    /* Create an empty fragment shader handle */
+    fragmentshader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    /* Send the fragment shader source code to GL */
+    /* Note that the source code is NULL character terminated. */
+    /* GL will automatically detect that therefore the length info can be 0 in this case (the last parameter) */
+    glShaderSource(fragmentshader, 1, (const char**)&fragmentsource, 0);
+
+    /* Compile the fragment shader */
+    glCompileShader(fragmentshader);
+
+    glGetShaderiv(fragmentshader, GL_COMPILE_STATUS, &IsCompiled_FS);
+    if(IsCompiled_FS == FALSE)
+    {
+       glGetShaderiv(fragmentshader, GL_INFO_LOG_LENGTH, &maxLength);
+
+       /* The maxLength includes the NULL character */
+       fragmentInfoLog = (char *)malloc(maxLength);
+
+       glGetShaderInfoLog(fragmentshader, maxLength, &maxLength, fragmentInfoLog);
+
+       /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
+       /* In this simple program, we'll just leave */
+       free(fragmentInfoLog);
+       return false;
+    }
+
+    /* If we reached this point it means the vertex and fragment shaders compiled and are syntax error free. */
+    /* We must link them together to make a GL shader program */
+    /* GL shader programs are monolithic. It is a single piece made of 1 vertex shader and 1 fragment shader. */
+    /* Assign our program handle a "name" */
+    shaderprogram = glCreateProgram();
+
+    /* Attach our shaders to our program */
+    glAttachShader(shaderprogram, vertexshader);
+    glAttachShader(shaderprogram, fragmentshader);
+
+    /* Bind attribute index 0 (coordinates) to in_Position and attribute index 1 (color) to in_Color */
+    /* Attribute locations must be setup before calling glLinkProgram. */
+    glBindAttribLocation(shaderprogram, 0, "in_Position");
+    glBindAttribLocation(shaderprogram, 1, "in_Color");
+
+    /* Link our program */
+    /* At this stage, the vertex and fragment programs are inspected, optimized and a binary code is generated for the shader. */
+    /* The binary code is uploaded to the GPU, if there is no error. */
+    glLinkProgram(shaderprogram);
+
+    /* Again, we must check and make sure that it linked. If it fails, it would mean either there is a mismatch between the vertex */
+    /* and fragment shaders. It might be that you have surpassed your GPU's abilities. Perhaps too many ALU operations or */
+    /* too many texel fetch instructions or too many interpolators or dynamic loops. */
+
+    glGetProgramiv(shaderprogram, GL_LINK_STATUS, (int *)&IsLinked);
+    if(IsLinked == FALSE)
+    {
+       /* Noticed that glGetProgramiv is used to get the length for a shader program, not glGetShaderiv. */
+       glGetProgramiv(shaderprogram, GL_INFO_LOG_LENGTH, &maxLength);
+
+       /* The maxLength includes the NULL character */
+       shaderProgramInfoLog = (char *)malloc(maxLength);
+
+       /* Notice that glGetProgramInfoLog, not glGetShaderInfoLog. */
+       glGetProgramInfoLog(shaderprogram, maxLength, &maxLength, shaderProgramInfoLog);
+
+       /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
+       /* In this simple program, we'll just leave */
+       free(shaderProgramInfoLog);
+       return false;
+    }
+
+    /* Load the shader into the rendering pipeline */
+    glUseProgram(shaderprogram);
+
 	return true;
 }
 
-void GLRenderingDevice::Shutdown(HWND hwnd)
+void GL4Window::Shutdown(HWND hwnd)
 {
 	// Release the rendering context.
 	if(m_renderingContext)
@@ -306,21 +477,41 @@ void GLRenderingDevice::Shutdown(HWND hwnd)
 		m_deviceContext = 0;
 	}
 
+	
 	return;
 }
 
-void GLRenderingDevice::BeginScene(float red, float green, float blue, float alpha)
+void GL4Window::BeginScene(float red, float green, float blue, float alpha)
 {
 	// Set the color to clear the screen to.
 	glClearColor(red, green, blue, alpha); 
 
 	// Clear the screen and depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    /* Loop our display increasing the number of shown vertexes each time.
+     * Start with 2 vertexes (a line) and increase to 3 (a triangle) and 4 (a diamond) */
+    for (int i=2; i <= 3; i++)
+    {
+        /* Make our background black */
+        //glClearColor(0.0, 0.0, 0.0, 1.0);
+        //glClear(GL_COLOR_BUFFER_BIT);
+
+        /* Invoke glDrawArrays telling that our data is a line loop and we want to draw 2-4 vertexes */
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, i);
+
+        /* Swap our buffers to make our changes visible */
+        //SDL_GL_SwapWindow(window);
+
+        /* Sleep for 2 seconds */
+        //SDL_Delay(2000);
+    }
+
 	
 	return;
 }
 
-void GLRenderingDevice::EndScene()
+void GL4Window::EndScene()
 {
 	// Present the back buffer to the screen since rendering is complete.
 	::SwapBuffers(m_deviceContext);
@@ -328,7 +519,7 @@ void GLRenderingDevice::EndScene()
 	return;
 }
 
-bool_t GLRenderingDevice::LoadExtensionList()
+bool_t GL4Window::LoadExtensionList()
 {
 	// Load the OpenGL extensions that this application will be using.
 	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
@@ -551,7 +742,7 @@ bool_t GLRenderingDevice::LoadExtensionList()
 	return true;
 }
 
-void GLRenderingDevice::GetWorldMatrix(float* matrix)
+void GL4Window::GetWorldMatrix(float* matrix)
 {
 	matrix[0]  = m_worldMatrix[0];
 	matrix[1]  = m_worldMatrix[1];
@@ -576,7 +767,7 @@ void GLRenderingDevice::GetWorldMatrix(float* matrix)
 	return;
 }
 
-void GLRenderingDevice::GetProjectionMatrix(float* matrix)
+void GL4Window::GetProjectionMatrix(float* matrix)
 {
 	matrix[0]  = m_projectionMatrix[0];
 	matrix[1]  = m_projectionMatrix[1];
@@ -601,13 +792,13 @@ void GLRenderingDevice::GetProjectionMatrix(float* matrix)
 	return;
 }
 
-void GLRenderingDevice::GetVideoCardInfo(char* cardName)
+void GL4Window::GetVideoCardInfo(char* cardName)
 {
 	strcpy_s(cardName, 128, m_videoCardDescription);
 	return;
 }
 
-void GLRenderingDevice::BuildIdentityMatrix(float* matrix)
+void GL4Window::BuildIdentityMatrix(float* matrix)
 {
 	matrix[0]  = 1.0f;
 	matrix[1]  = 0.0f;
@@ -632,7 +823,7 @@ void GLRenderingDevice::BuildIdentityMatrix(float* matrix)
 	return;
 }
 
-void GLRenderingDevice::BuildPerspectiveFovLHMatrix(float* matrix, float fieldOfView, float screenAspect, float screenNear, float screenDepth)
+void GL4Window::BuildPerspectiveFovLHMatrix(float* matrix, float fieldOfView, float screenAspect, float screenNear, float screenDepth)
 {
 	matrix[0]  = 1.0f / (screenAspect * tan(fieldOfView * 0.5f));
 	matrix[1]  = 0.0f;
@@ -657,7 +848,7 @@ void GLRenderingDevice::BuildPerspectiveFovLHMatrix(float* matrix, float fieldOf
 	return;
 }
 
-void GLRenderingDevice::MatrixRotationY(float* matrix, float angle)
+void GL4Window::MatrixRotationY(float* matrix, float angle)
 {
 	matrix[0]  = cosf(angle);
 	matrix[1]  = 0.0f;
@@ -682,7 +873,7 @@ void GLRenderingDevice::MatrixRotationY(float* matrix, float angle)
 	return;
 }
 
-void GLRenderingDevice::MatrixTranslation(float* matrix, float x, float y, float z)
+void GL4Window::MatrixTranslation(float* matrix, float x, float y, float z)
 {
 	matrix[0]  = 1.0f;
 	matrix[1]  = 0.0f;
@@ -707,7 +898,7 @@ void GLRenderingDevice::MatrixTranslation(float* matrix, float x, float y, float
 	return;
 }
 
-void GLRenderingDevice::MatrixMultiply(float* result, float* matrix1, float* matrix2)
+void GL4Window::MatrixMultiply(float* result, float* matrix1, float* matrix2)
 {
 	result[0]  = (matrix1[0] * matrix2[0]) + (matrix1[1] * matrix2[4]) + (matrix1[2] * matrix2[8]) + (matrix1[3] * matrix2[12]);
 	result[1]  = (matrix1[0] * matrix2[1]) + (matrix1[1] * matrix2[5]) + (matrix1[2] * matrix2[9]) + (matrix1[3] * matrix2[13]);

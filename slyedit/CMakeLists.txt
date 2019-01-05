@@ -50,7 +50,6 @@ if(WIN32)
         target_link_libraries(${PROJECT_NAME} d3dcompiler.lib)
     elseif(${GFXAPI} EQUAL "OPENGL4")
         target_link_libraries(${PROJECT_NAME} slygl4.lib)
-        target_link_libraries(${PROJECT_NAME} opengl32.lib)
     endif()
 endif()
 

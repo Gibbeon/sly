@@ -13,7 +13,7 @@ namespace sly {
 
         class RenderSystemBuilder : public Builder<RenderSystemDesc> {
         public:
-            RenderSystemBuilder() : Builder({}) {}
+            RenderSystemBuilder() : Builder() {}
         };
 
         class IDevice;
@@ -22,8 +22,7 @@ namespace sly {
         public:
             virtual void createDevice(IDevice** outDevice, DeviceDesc& desc) = 0;
 
-        protected:
-            constexpr static RenderSystemDesc DEFAULT = {  }; 
+
         };
     }
 }

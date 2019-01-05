@@ -58,9 +58,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     renderDevice->createWindow(&window, winBuilder.build());
 
    
-    sly::gfx::CommandListBuilder rclBuilder;
+/*     sly::gfx::CommandListBuilder rclBuilder;
     sly::gfx::ICommandList* list = nullptr;
-    renderDevice->createCommandList(&list, rclBuilder.build());
+    renderDevice->createCommandList(&list, rclBuilder.build()); */
    
     //D3D11_BUFFER_DESC bufferDesc;
     //bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
@@ -68,13 +68,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //bufferDesc.BindFlags        = D3D11_BIND_VERTEX_BUFFER;
     //bufferDesc.CPUAccessFlags   = 0;
     //bufferDesc.MiscFlags        = 0;
-    
+/*     
     Vertex triangleVertices[] =
     {
         { { 0.0f, 0.25f * (1024/768.0f), 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
         { { 0.25f, -0.25f * (1024/768.0f), 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
         { { -0.25f, -0.25f * (1024/768.0f), 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
-    }; //this is the initial data
+    };  *///this is the initial data
 
     // Fill in the subresource data.
     //D3D11_SUBRESOURCE_DATA InitData;
@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //    { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
     //};
 
-    sly::gfx::InputElementBuilder posBuilder1;
+/*     sly::gfx::InputElementBuilder posBuilder1;
     posBuilder1.setSemanticName("POSITION")
         .setFormat(sly::gfx::eDataFormat_R32G32B32_FLOAT)
         .setInputScope(sly::gfx::eDataInputClassification_PerVertex);
@@ -104,7 +104,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     vbBuilder.setData(triangleVertices, 3, sizeof(Vertex));
 
     sly::gfx::IVertexBuffer* vertexBuffer = nullptr;
-    renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build());
+    renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build()); */
 
 /*    sly::gfx::DataBufferBuilder ibBuilder;
     sly::gfx::IDataBuffer* indexBuffer = nullptr;
@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
   ID3DBlob               **ppErrorMsgs
 ); */
 //     ThrowIfFailed(D3DCompileFromFile(L"c:\\shaders.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
-    vptr_t vsbuf;
+/*     vptr_t vsbuf;
     size_t vssize;
     vssize = LoadFromFile("c:\\shaders.hlsl", &vsbuf);
     
@@ -150,17 +150,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
                 .setTarget("vs_5_0");
 
     sly::gfx::IShader* vsshader = nullptr;
-    renderDevice->createShader(&vsshader, vsspBuilder.build());
+    renderDevice->createShader(&vsshader, vsspBuilder.build()); */
 
 //     ThrowIfFailed(D3DCompileFromFile(L"c:\\shaders.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
-    sly::gfx::ShaderBuilder psspBuilder;
+/*     sly::gfx::ShaderBuilder psspBuilder;
     psspBuilder.setData(vsbuf, vssize)
                 .setEntryPoint("PSMain")
                 .setName("shaders")
                 .setTarget("ps_5_0");
 
     sly::gfx::IShader* psshader = nullptr;
-    renderDevice->createShader(&psshader, psspBuilder.build());
+    renderDevice->createShader(&psshader, psspBuilder.build()); */
 
     //D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
     //psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
@@ -177,7 +177,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     //psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     //psoDesc.SampleDesc.Count = 1;
 
-    sly::gfx::RenderStateBuilder rstBuilder;
+/*     sly::gfx::RenderStateBuilder rstBuilder;
     rstBuilder
         .setVSShader(*vsshader)
         .setPSShader(*psshader)
@@ -194,7 +194,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 
     sly::gfx::IRenderState* rsState = nullptr;
     renderDevice->createRenderState(&rsState, rstBuilder.build());
-
+ */
 /* // Set necessary state.
     m_viewport(0.0f, 0.0f, static_cast<float>(1024), static_cast<float>(768)),
     m_scissorRect(0, 0, static_cast<LONG>(1024), static_cast<LONG>(768))
@@ -230,7 +230,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
      
     while(application->isRunning())
     {
-        list->begin();
+ /*        list->begin();
         vertexBuffer->write(triangleVertices, sizeof(triangleVertices), sizeof(Vertex));
         list->setRenderState(*rsState);
 
@@ -241,7 +241,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
         list->clear(clearColor);
         list->setVertexBuffer(*vertexBuffer);
         list->draw(3, 1, 0, 0);
-        list->end();
+        list->end(); */
 
 
         application->processMessages();
@@ -250,8 +250,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
         // read input state
         // read network state
         // update scenes
-        //sly::Array<sly::gfx::ICommandList> batch((sly::gfx::ICommandList*)list.ptr(), 1);
-        window->getDirectCommandQueue().executeCommandList(list);
+        //window->getDirectCommandQueue().executeCommandList(list);
         window->swapBuffers();
     }
 

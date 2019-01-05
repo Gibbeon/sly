@@ -1,87 +1,107 @@
-/* #pragma once
+#pragma once
 
-#include "te/gl/global.h"
+#include "sly/gl4.h"
+#include "sly/gfx.h"
+#include "sly/win32/sys/window.h"
 
-namespace te {
+namespace sly {
+	namespace gfx {
+		class GL4Window : public IWindow {
+		public:
+			GL4Window();
 
+			virtual void init(WindowDesc& desc) {}
 
+            virtual void processMessages() { _window->ProcessMessages(); }
+            virtual void swapBuffers();
 
-class GLRenderingDevice : public IRenderingDevice
-{
-    public:
-        GLRenderingDevice();
+            virtual void setVisible(bool_t show) { _window->Show(); }
 
-        virtual bool_t Attach(IDrawWindow* pWindow);
-        virtual bool_t SwapBuffers();
+            //virtual IRenderTarget&  getBackBuffer() { return; }
+            //virtual ICommandQueue& getDirectCommandQueue() { return; }
 
-	bool_t InitializeExtensions(vptr_t);
- private:
+			//virtual bool_t Attach(IDrawWindow* pWindow);
+			//virtual bool_t SwapBuffers();
 
-	bool_t InitializeOpenGL(HWND, int, int, float, float, bool_t);
-	void Shutdown(HWND);
+			void InitializeExtensions();
+		private:
 
-	void BeginScene(float, float, float, float);
-	void EndScene();
+			bool_t InitializeOpenGL(HWND, int, int, float, float, bool_t);
+			void Shutdown(HWND);
 
-	void GetWorldMatrix(float*);
-	void GetProjectionMatrix(float*);
-	void GetVideoCardInfo(char*);
+			void BeginScene(float, float, float, float);
+			void EndScene();
 
-	void BuildIdentityMatrix(float*);
-	void BuildPerspectiveFovLHMatrix(float*, float, float, float, float);
-	void MatrixRotationY(float*, float);
-	void MatrixTranslation(float*, float, float, float);
-	void MatrixMultiply(float*, float*, float*);
+			void GetWorldMatrix(float*);
+			void GetProjectionMatrix(float*);
+			void GetVideoCardInfo(char*);
 
-private:
-	bool_t LoadExtensionList();
+			void BuildIdentityMatrix(float*);
+			void BuildPerspectiveFovLHMatrix(float*, float, float, float, float);
+			void MatrixRotationY(float*, float);
+			void MatrixTranslation(float*, float, float, float);
+			void MatrixMultiply(float*, float*, float*);
 
-private:
-	HDC m_deviceContext;
-	HGLRC m_renderingContext;
+		private:
+			bool_t LoadExtensionList();
 
-	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
-	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
-	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
+		private:
+			HDC m_deviceContext;
+			HGLRC m_renderingContext;
 
-	float m_worldMatrix[16];
-	float m_projectionMatrix[16];
-	char m_videoCardDescription[128];
+			PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
+			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
+			PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
 
-public:
-	PFNGLATTACHSHADERPROC glAttachShader;
-	PFNGLBINDBUFFERPROC glBindBuffer;
-	PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
-	PFNGLBUFFERDATAPROC glBufferData;
-	PFNGLCOMPILESHADERPROC glCompileShader;
-	PFNGLCREATEPROGRAMPROC glCreateProgram;
-	PFNGLCREATESHADERPROC glCreateShader;
-	PFNGLDELETEBUFFERSPROC glDeleteBuffers;
-	PFNGLDELETEPROGRAMPROC glDeleteProgram;
-	PFNGLDELETESHADERPROC glDeleteShader;
-	PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
-	PFNGLDETACHSHADERPROC glDetachShader;
-	PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
-	PFNGLGENBUFFERSPROC glGenBuffers;
-	PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
-	PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation;
-	PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog;
-	PFNGLGETPROGRAMIVPROC glGetProgramiv;
-	PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
-	PFNGLGETSHADERIVPROC glGetShaderiv;
-	PFNGLLINKPROGRAMPROC glLinkProgram;
-	PFNGLSHADERSOURCEPROC glShaderSource;
-	PFNGLUSEPROGRAMPROC glUseProgram;
-	PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
-	PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
-	PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
-	PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
-	PFNGLACTIVETEXTUREPROC glActiveTexture;
-	PFNGLUNIFORM1IPROC glUniform1i;
-	PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
-	PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
-	PFNGLUNIFORM3FVPROC glUniform3fv;
-	PFNGLUNIFORM4FVPROC glUniform4fv;
-};
+			float m_worldMatrix[16];
+			float m_projectionMatrix[16];
+			char m_videoCardDescription[128];
 
-} */
+			GLuint vao, vbo[2]; /* Create handles for our Vertex Array Object and two Vertex Buffer Objects */
+			int IsCompiled_VS, IsCompiled_FS;
+			int IsLinked;
+			int maxLength;
+			char *vertexInfoLog;
+			char *fragmentInfoLog;
+			char *shaderProgramInfoLog;
+
+			sly::sys::Win32Window* _window;
+
+		public:
+			PFNGLATTACHSHADERPROC glAttachShader;
+			PFNGLBINDBUFFERPROC glBindBuffer;
+			PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
+			PFNGLBUFFERDATAPROC glBufferData;
+			PFNGLCOMPILESHADERPROC glCompileShader;
+			PFNGLCREATEPROGRAMPROC glCreateProgram;
+			PFNGLCREATESHADERPROC glCreateShader;
+			PFNGLDELETEBUFFERSPROC glDeleteBuffers;
+			PFNGLDELETEPROGRAMPROC glDeleteProgram;
+			PFNGLDELETESHADERPROC glDeleteShader;
+			PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
+			PFNGLDETACHSHADERPROC glDetachShader;
+			PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
+			PFNGLGENBUFFERSPROC glGenBuffers;
+			PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
+			PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation;
+			PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog;
+			PFNGLGETPROGRAMIVPROC glGetProgramiv;
+			PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
+			PFNGLGETSHADERIVPROC glGetShaderiv;
+			PFNGLLINKPROGRAMPROC glLinkProgram;
+			PFNGLSHADERSOURCEPROC glShaderSource;
+			PFNGLUSEPROGRAMPROC glUseProgram;
+			PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+			PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
+			PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
+			PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
+			PFNGLACTIVETEXTUREPROC glActiveTexture;
+			PFNGLUNIFORM1IPROC glUniform1i;
+			PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
+			PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
+			PFNGLUNIFORM3FVPROC glUniform3fv;
+			PFNGLUNIFORM4FVPROC glUniform4fv;
+		};
+	}
+
+} 

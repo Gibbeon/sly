@@ -7,7 +7,7 @@ using namespace sly::sys;
 typedef void (APIENTRY * pfCreateRenderSystem) (sly::gfx::IRenderSystem** ppRenderSystem, sly::gfx::RenderSystemDesc& desc);
 
 Win32OperatingSystem::Win32OperatingSystem() {
-    HMODULE h = LoadLibraryA("c:/dev/sly/slyd3d12/bin/slyd3d12.dll");
+    HMODULE h = LoadLibraryA("c:/dev/sly/slygl4/bin/slygl4.dll");
     
     pfCreateRenderSystem pf = (pfCreateRenderSystem)GetProcAddress(h, "_CreateRenderSystemImpl");
     
