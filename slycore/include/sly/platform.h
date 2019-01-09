@@ -15,7 +15,7 @@ namespace sly {
         struct RenderSystemDesc;
     }
 
-    namespace sys {
+    namespace os {
         class IOperatingSystem;
     }
     
@@ -28,11 +28,13 @@ namespace sly {
         static void createRenderSystem(gfx::IRenderSystem** outRenderSystem, gfx::RenderSystemDesc& desc);
         
         static void registerRenderSystem(std::string name, std::function<void(gfx::IRenderSystem**, gfx::RenderSystemDesc&)> fn);
+
+        static sly::os::IOperatingSystem& OS() { return *_os; }
     
     private:
-        static sly::sys::IOperatingSystem* _os;
+        static sly::os::IOperatingSystem* _os;
         static std::map<std::string, std::function<void(gfx::IRenderSystem**, gfx::RenderSystemDesc&)>> _renderSystems;
     };
 }
 
-extern void _CreateOperatingSystemImpl(sly::sys::IOperatingSystem** os);
+extern void _CreateOperatingSystemImpl(sly::os::IOperatingSystem** os);

@@ -1,5 +1,5 @@
 #include "sly/gl4/renderingdevice.h"
-#include "sly/win32/sys/window.h"
+#include "sly/win32/os/window.h"
 
 using namespace sly::gfx;
 
@@ -27,7 +27,7 @@ char* filetobuf(char *file)
 
 GL4Window::GL4Window()
 {
-	_window = new sly::sys::Win32Window(1024,768,"GL HI!");
+	_window = new sly::os::Win32Window(1024,768,"GL HI!");
     InitializeExtensions();
     InitializeOpenGL(_window->GetHwnd(), _window->GetHeight(), _window->GetWidth(), 1.0, 0.0, true);
 }

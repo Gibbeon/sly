@@ -13,6 +13,8 @@ namespace sly {
             virtual void init(CommandQueueDesc& desc);
             
             virtual void executeCommandList(ICommandList* lists, size_t count = 1); // where is my render target
+
+            virtual void flush();
             
             ID3D12CommandQueue& getID3D12CommandQueue() { return *_queue; }
             ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }

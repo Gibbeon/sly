@@ -1,10 +1,10 @@
 #include "sly/d3d12/gfx/window.h"
 #include "sly/d3d12/gfx/device.h"
 #include "sly/d3d12/gfx/commandqueue.h"
-#include "sly/win32/sys/window.h"
+#include "sly/win32/os/window.h"
 
 using namespace sly::gfx;
-D3D12WindowImpl::D3D12WindowImpl(D3D12DeviceImpl& device, sly::sys::Win32Window& window) :
+D3D12WindowImpl::D3D12WindowImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window) :
     _window(&window),
     _fence(device),
     _directCommandQueue(device),
@@ -20,9 +20,6 @@ void D3D12WindowImpl::init(WindowDesc& desc) {
     _desctriptorTable.init(descTableBuilder.build());
     CommandQueueBuilder builder;
     _directCommandQueue.init(builder.build());
-
-    //CommandQueueDesc desc;
-    //device->createCommandQueue(commandQueue_, desc); // a command queue allows the queued executeion of command lists
    
     // Describe and create the swap chain.
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};

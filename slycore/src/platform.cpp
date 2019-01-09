@@ -8,7 +8,7 @@
 
 using namespace sly;
 
-sly::sys::IOperatingSystem* Platform::_os = NULL;
+sly::os::IOperatingSystem* Platform::_os = NULL;
 std::map<std::string, std::function<void(gfx::IRenderSystem**, gfx::RenderSystemDesc&)>> Platform::_renderSystems;
 
 void Platform::initialize() {

@@ -12,7 +12,7 @@ namespace sly {
             virtual ~IResource() {}
             //virtual void init(ResourceDesc& desc) = 0;
 
-            virtual void write(vptr_t data, size_t size, size_t stride) = 0;
+            //virtual void write(vptr_t data, size_t size, size_t stride) = 0;
         protected:
             IResource() {}
         };

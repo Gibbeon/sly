@@ -1,6 +1,6 @@
-#include "sly/win32/sys/window.h"
+#include "sly/win32/os/window.h"
 
-using namespace sly::sys;
+using namespace sly::os;
 
 Win32Window::Win32Window(uint_t width, uint_t height, std::string pszTitle) :
     m_width(width),

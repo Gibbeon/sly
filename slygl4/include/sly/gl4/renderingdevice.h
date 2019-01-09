@@ -2,7 +2,7 @@
 
 #include "sly/gl4.h"
 #include "sly/gfx.h"
-#include "sly/win32/sys/window.h"
+#include "sly/win32/os/window.h"
 
 namespace sly {
 	namespace gfx {
@@ -65,7 +65,7 @@ namespace sly {
 			char *fragmentInfoLog;
 			char *shaderProgramInfoLog;
 
-			sly::sys::Win32Window* _window;
+			sly::os::Win32Window* _window;
 
 		public:
 			PFNGLATTACHSHADERPROC glAttachShader;

@@ -26,5 +26,9 @@ void D3D12CommandQueueImpl::init(CommandQueueDesc& desc) {
 void D3D12CommandQueueImpl::executeCommandList(ICommandList* lists, size_t count) {
     auto f =  &reinterpret_cast<D3D12CommandListImpl*>(lists)->getID3D12CommandList();
     _queue->ExecuteCommandLists(1, &f);
+
+}
+
+void D3D12CommandQueueImpl::flush() {
     _fence.waitFor(_queue);
 }
