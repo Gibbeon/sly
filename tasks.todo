@@ -6,8 +6,8 @@ slyengine (cleanup):
     ✔ Eliminate Exception with std::Exception @done (1/1/2019, 9:58:40 PM)
     ☐ Find out standard assert langauge and use it
     ✔ eleiminate ref, local, out_ptr, vptr_t @done (1/1/2019, 9:58:44 PM)
-    ☐ standardize the size_t, vptr_t
-    ☐ add _64X _32X compilier flags
+    ✔ standardize the size_t, vptr_t @done (1/9/2019, 8:15:57 PM)
+    ✔ add _64X _32X compilier flags @done (1/9/2019, 8:16:03 PM)
     ✔ rename slyengine to slycore @done (1/1/2019, 9:58:53 PM)
     ✔ slyengine should be the game systems @done (1/1/2019, 9:58:57 PM)
     ✔ clean up pointers and references @done (1/1/2019, 9:59:00 PM)
@@ -16,16 +16,16 @@ slyengine (features):
     ☐ add standard heap/memory manager
     ✔ find physics library @done (1/1/2019, 3:27:29 PM)
 slyengine (gfx):
-    ☐ The window/viewport nonsense is bad
-    ☐ Resource Transition is bad
-    ☐ Descriptor table should be global perhaps?
-    ☐ Eliminate all multiple inheritence
+    ✔ The window/viewport nonsense is bad @done (1/9/2019, 8:16:07 PM)
+    ✔ Resource Transition is bad @done (1/9/2019, 8:16:09 PM)
+    ✔ Descriptor table should be global perhaps? @done (1/9/2019, 8:16:11 PM)
+    ✔ Eliminate all multiple inheritence @done (1/9/2019, 8:16:13 PM)
     ☐ Get destroy functions added
     ☐ Need to add memory management to the create* functions
     ☐ Review conversion strategy
     ☐ Review multi-treaded commandlist strategy
     ☐ Walk through demos and reconstruct
 slygl:
-    ☐ make it work with the new structure
+    ✔ make it work with the new structure @done (1/9/2019, 8:16:24 PM)
 
 
