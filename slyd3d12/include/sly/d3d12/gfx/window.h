@@ -6,7 +6,7 @@
 #include "sly/d3d12/gfx/descriptortable.h"
 
 namespace sly {
-    namespace sys {
+    namespace os {
         class Win32Window;
     }
 
@@ -16,7 +16,7 @@ namespace sly {
         class D3D12DeviceImpl;
         class D3D12WindowImpl : public IWindow {
         public:
-            D3D12WindowImpl(D3D12DeviceImpl& device, sly::sys::Win32Window& window);
+            D3D12WindowImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window);
             virtual void init(WindowDesc& desc);
 
             // window control
@@ -25,7 +25,7 @@ namespace sly {
 
             // buffers
             virtual void swapBuffers();            
-            IRenderTarget& getBackBuffer() { return _renderTargets[_drawFrameIndex]; }       
+            IRenderTarget& getDrawBuffer() { return _renderTargets[_drawFrameIndex]; }       
 
             // draw
             virtual ICommandQueue& getDirectCommandQueue() { return _directCommandQueue; }
@@ -40,7 +40,7 @@ namespace sly {
             D3D12RenderTargetImpl _renderTargets[2];
             size_t _drawFrameIndex;
             
-            sly::sys::Win32Window* _window;
+            sly::os::Win32Window* _window;
 
             D3D12FenceImpl _fence;
             D3D12CommandQueueImpl _directCommandQueue;

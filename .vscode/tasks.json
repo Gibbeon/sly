@@ -76,6 +76,24 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "build slygl4",
+            "type": "shell",
+            "command": "py.exe",
+            "windows": {
+                "args": [
+                    "./build-win64.py"
+                ],
+            },
+            "options": {
+                "cwd": "${workspaceRoot}/slygl4"
+            },
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "build slywin32",
             "type": "shell",
             "command": "py.exe",

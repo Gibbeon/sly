@@ -13,6 +13,8 @@ namespace sly {
 
             virtual void init(CommandQueueDesc& desc) = 0;
             virtual void executeCommandList(ICommandList* lists, size_t count = 1) = 0;
+
+            virtual void flush() = 0;
         protected:
             ICommandQueue() {}
         };

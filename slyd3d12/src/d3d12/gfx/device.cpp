@@ -7,7 +7,7 @@
 #include "sly/d3d12/gfx/shader.h"
 #include "sly/d3d12/gfx/renderstate.h"
 #include "sly/d3d12/gfx/texture.h"
-#include "sly/win32/sys/window.h"
+#include "sly/win32/os/window.h"
 
 using namespace sly::gfx;
 
@@ -48,7 +48,7 @@ void D3D12DeviceImpl::init(DeviceDesc& desc)
 }
 
 void D3D12DeviceImpl::createWindow(IWindow** ppWindow, WindowDesc& desc) {
-    (*ppWindow) = new D3D12WindowImpl(*this, *(new sly::sys::Win32Window(1024,768,"Hi!")));
+    (*ppWindow) = new D3D12WindowImpl(*this, *(new sly::os::Win32Window(1024,768,"Hi!")));
     (*ppWindow)->init(desc);
 }
 
@@ -86,7 +86,7 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 // //#include "sly/d3d12/gfx/commandlist.h"
 // //#include "sly/d3d12/gfx/vertexbuffer.h"
 // #include "sly/d3d12/gfx/window.h"
-// #include "sly/win32/sys/window.h"
+// #include "sly/win32/os/window.h"
 
 
 // using namespace sly::gfx;
@@ -220,5 +220,5 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 // }
 
 // void D3D12Device::createWindow(IWindow** window, WindowDesc& desc) {
-//     window = new D3D12Window(this, new sly::sys::Win32Window(1024, 768,  "Sample Title"));
+//     window = new D3D12Window(this, new sly::os::Win32Window(1024, 768,  "Sample Title"));
 // }

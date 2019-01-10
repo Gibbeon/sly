@@ -18,7 +18,7 @@ namespace sly {
         struct RenderSystemDesc;
     }
 
-    namespace sys {
+    namespace os {
         class IOperatingSystem;
     }
     
@@ -38,4 +38,4 @@ namespace sly {
     };
 }
 
-extern void _CreateOperatingSystemImpl(sly::sys::IOperatingSystem** os);
+extern void _CreateOperatingSystemImpl(sly::os::IOperatingSystem** os);

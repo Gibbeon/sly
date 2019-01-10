@@ -45,7 +45,7 @@ namespace sly {
             {
                 // Wait until the fence is completed.
                 _fence->SetEventOnCompletion(_fenceValue, _fenceEvent);
-                WaitForSingleObject(_fenceEvent, timeout);
+                WaitForSingleObject(_fenceEvent, (DWORD)timeout);
             }
 
              _fenceValue++;

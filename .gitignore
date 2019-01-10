@@ -1,8 +1,9 @@
 # Local Output Directories
 **/bin
 **/lib
-**/build
+**/build*/
 **/temp
+**/cmakefiles
 
 # Prerequisites
 *.d
@@ -41,3 +42,8 @@
 *.pdb
 *.log
 *.tlog
+
+#CMake Files
+cmake_install.cmake
+cmakecache.txt
+makefile

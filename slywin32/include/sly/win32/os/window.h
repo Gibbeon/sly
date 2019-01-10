@@ -4,7 +4,7 @@
 #include "sly/win32.h"
 
 namespace sly {
-    namespace sys {
+    namespace os {
         class Win32Window
         {
             public:
