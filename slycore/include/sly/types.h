@@ -1,9 +1,13 @@
 #pragma once
 
-#if !defined(_SIZE_T)
-#include <tchar.h>
+#if defined(_WIN32)
+    #include <tchar.h>
 #else
-typedef char char_t;
+    #if defined(UNICODE)
+    typedef char char_t;
+    #else
+    typedef wchar_t char_t;
+    #endif
 #endif
 
 typedef unsigned long long u64;
