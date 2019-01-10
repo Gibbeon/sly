@@ -6,10 +6,10 @@
         {
             "label": "build slycore",
             "type": "shell",
-            "command": "py.exe",
             "windows": {
+                "command": "py.exe",
                 "args": [
-                    "./build-win64.py"
+                    "build-x64.py"
                 ],
             },
             "options": {
@@ -24,10 +24,10 @@
         {
             "label": "build slyengine",
             "type": "shell",
-            "command": "py.exe",
             "windows": {
+                "command": "py.exe",
                 "args": [
-                    "./build-win64.py"
+                    "./build-x64.py"
                 ],
             },
             "options": {
@@ -42,10 +42,10 @@
         {
             "label": "build slyedit",
             "type": "shell",
-            "command": "py.exe",
             "windows": {
+                "command": "py.exe",
                 "args": [
-                    "./build-win64.py"
+                    "./build-x64.py"
                 ],
             },
             "options": {
@@ -60,10 +60,10 @@
         {
             "label": "build slyd3d12",
             "type": "shell",
-            "command": "py.exe",
             "windows": {
+                "command": "py.exe",
                 "args": [
-                    "./build-win64.py"
+                    "./build-x64.py"
                 ],
             },
             "options": {
@@ -78,10 +78,10 @@
         {
             "label": "build slygl4",
             "type": "shell",
-            "command": "py.exe",
             "windows": {
+                "command": "py.exe",
                 "args": [
-                    "./build-win64.py"
+                    "./build-x64.py"
                 ],
             },
             "options": {
@@ -96,10 +96,10 @@
         {
             "label": "build slywin32",
             "type": "shell",
-            "command": "py.exe",
             "windows": {
+                "command": "py.exe",
                 "args": [
-                    "./build-win64.py"
+                    "./build-x64.py"
                 ],
             },
             "options": {

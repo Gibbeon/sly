@@ -1,6 +1,6 @@
 #pragma once
 
-#if WIN32
+#if !defined(_SIZE_T)
 #include <tchar.h>
 #else
 typedef char char_t;
@@ -32,7 +32,7 @@ typedef s64 long_t;
 typedef u32 ushort_t;
 typedef u32 uint_t;
 typedef u64 ulong_t;
-typedef u32 size_t;
+typedef u64 size_t;
 typedef void* vptr_t;
 
 

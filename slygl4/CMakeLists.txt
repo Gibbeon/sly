@@ -37,10 +37,13 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" )
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 find_library(SLYCORE_LIB slycore HITS ./../slycore/lib)
-find_library(OPENGL_LIB OpenGL)
+
 if(MSVC)
+find_library(OPENGL_LIB OpenGL32)
   find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)
   target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
+else()
+  find_library(OPENGL_LIB OpenGL)
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})

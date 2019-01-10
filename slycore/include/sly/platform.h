@@ -31,6 +31,8 @@ namespace sly {
         static void createRenderSystem(gfx::IRenderSystem** outRenderSystem, gfx::RenderSystemDesc& desc);
         
         static void registerRenderSystem(std::string name, fpCreateRenderSystem fn);
+
+        static sly::os::IOperatingSystem& OS() { return *_os; }
     
     private:
         static sly::os::IOperatingSystem* _os;

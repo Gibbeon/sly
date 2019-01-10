@@ -158,31 +158,27 @@ def clean_up_and_halt():
 					
 	sys.exit()
 
-def main():
+def main(): #dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine', 'slywin32', 'slyedit']
+	dir_list = ['slycore', 'slyengine']
 	if(PLATFORM == "Windows"):
-		dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine', 'slywin32', 'slyedit']
-	else:
-		dir_list = ['slygl4', 'slycore', 'slyengine', 'slyedit']
+		dir_list.append('slywin32')
+	cmake_all(dir_list)
+	stop_on_error()
+
+	for proj_name in dir_list:
+		build(os.path.abspath(proj_name))
+		stop_on_error()
+
+	dir_list = ['slyedit', 'slygl4']
+	if(PLATFORM == "Windows"):
+		dir_list.extend(['slyd3d11','slyd3d12'])
 
 	cmake_all(dir_list)
+	stop_on_error()
 
-	stop_on_error()
-	build(os.path.abspath('slycore'))
-	stop_on_error()
-	build(os.path.abspath('slyengine'))
-	stop_on_error()
-	if(PLATFORM == "Windows"):
-		build(os.path.abspath('slywin32'))
+	for proj_name in dir_list:
+		build(os.path.abspath(proj_name))
 		stop_on_error()
-		dir_list = ['slyd3d11','slyd3d12','slygl4']
-		build_all(dir_list)	
-		stop_on_error()
-	else:
-		build(os.path.abspath('slygl4'))
-		stop_on_error()
-
-	build(os.path.abspath('slyedit'))	
-	stop_on_error()
 
 	clean_up_and_halt()
 	
