@@ -13,17 +13,18 @@ namespace sly {
 
         class RenderSystemBuilder : public Builder<RenderSystemDesc> {
         public:
-            RenderSystemBuilder() : Builder({}) {}
+            RenderSystemBuilder() : Builder() {}
         };
 
         class IDevice;
         struct DeviceDesc;
         class IRenderSystem {
         public:
+            virtual ~IRenderSystem() {}
             virtual void createDevice(IDevice** outDevice, DeviceDesc& desc) = 0;
 
         protected:
-            constexpr static RenderSystemDesc DEFAULT = {  }; 
+            IRenderSystem() {}
         };
     }
 }

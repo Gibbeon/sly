@@ -1,11 +1,8 @@
-import os, subprocess, shutil, sys, threading
+import os, subprocess, shutil, sys, threading, platform
 from queue import Queue
 from threading import Thread
-
 from datetime import datetime
 starttime = datetime.now()
-
-INIT_ENV_BAT = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars64.bat"
 
 errors = dict()
 
@@ -14,13 +11,19 @@ for file in files:
     if file.endswith(".tlog"):
         os.remove(os.path.join(os.getcwd(),file))
 
-vars = subprocess.check_output([INIT_ENV_BAT, '&&', 'set'])
-for var in vars.splitlines():
-	var = var.decode('cp1252')
-	k, _, v = map(str.strip, var.strip().partition('='))
-	if k.startswith('?'):
-		continue
-	os.environ[k] = v
+PLATFORM = platform.system()
+USE_MSVC = PLATFORM == "Windows"
+USE_MAKE = not USE_MSVC
+
+if(USE_MSVC):
+	INIT_ENV_BAT = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars64.bat"
+	vars = subprocess.check_output([INIT_ENV_BAT, '&&', 'set'])
+	for var in vars.splitlines():
+		var = var.decode('cp1252')
+		k, _, v = map(str.strip, var.strip().partition('='))
+		if k.startswith('?'):
+			continue
+		os.environ[k] = v
 
 class CMakeWorker(Thread):
 	def __init__(self, queue):
@@ -59,11 +62,15 @@ def cmake(path):
 
 	log = open("cmake_" + os.path.basename(path) + '.tlog', 'w')
 
-	if not os.path.exists(os.path.join(path, "build/win64")):
-		os.makedirs(os.path.join(path, "build/win64"))
+	if not os.path.exists(os.path.join(path, "build-x64")):
+		os.makedirs(os.path.join(path, "build-x64"))
 		
-	abspath = os.path.join(path, "build/win64")
-	p = subprocess.Popen(["cmake", "../../","-G", "Visual Studio 15 2017","-A","x64","-T","host=x64"], cwd=abspath, shell=True, stdout=log, stderr=log, stdin=log)
+	abspath = os.path.join(path, "build-x64")
+	if(USE_MSVC):
+		p = subprocess.Popen(["cmake", "../","-G", "Visual Studio 15 2017","-A","x64","-T","host=x64"], cwd=abspath, shell=True, stdout=log, stderr=log, stdin=log)
+	else:
+		thread_print(abspath)
+		p = subprocess.Popen(["cmake", "../","-DCMAKE_OSX_ARCHITECTURES=x86_64"], cwd=abspath, stdout=log, stderr=log, stdin=log)
 	p.wait()
 	if not p.returncode == 0:
 		thread_print("A cmake error code=" + str(p.returncode) + " has occurred while building " + os.path.basename(path))
@@ -78,7 +85,10 @@ def build(path):
 
 	log = open("msbuild_" + os.path.basename(path) + '.tlog', 'w')
 
-	p = subprocess.Popen(["msbuild", "/nologo","/p:Configuration=Debug","/p:Platform=x64","/m:8","/v:m",os.path.join(os.path.abspath(path), "build/win64/" + os.path.basename(path) + ".vcxproj")], cwd=path, shell=True, stdout=log, stderr=log, stdin=log, )
+	if(USE_MSVC):
+		p = subprocess.Popen(["msbuild", "/nologo","/p:Configuration=Debug","/p:Platform=x64","/m:8","/v:m",os.path.join(os.path.abspath(path), "build-x64/" + os.path.basename(path) + ".vcxproj")], cwd=path, shell=True, stdout=log, stderr=log, stdin=log, )
+	else:
+		p = subprocess.Popen(["make"], cwd=os.path.join(os.path.abspath(path), "build-x64/"), stdout=log, stderr=log, stdin=log, )
 	p.wait()
 	if not p.returncode == 0:
 		thread_print("A msbuild error code=" + str(p.returncode) + " has occurred while building " + os.path.basename(path))
@@ -149,14 +159,29 @@ def clean_up_and_halt():
 	sys.exit()
 
 def main():
+	if(PLATFORM == "Windows"):
+		dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine', 'slywin32', 'slyedit']
+	else:
+		dir_list = ['slygl4', 'slycore', 'slyengine', 'slyedit']
+
+	cmake_all(dir_list)
+
 	stop_on_error()
-	build(os.path.abspath('../slycore'))
+	build(os.path.abspath('slycore'))
 	stop_on_error()
-	build(os.path.abspath('../slyengine'))
+	build(os.path.abspath('slyengine'))
 	stop_on_error()
-	build(os.path.abspath('../slywin32'))
-	stop_on_error()
-	build(os.path.abspath('.'))	
+	if(PLATFORM == "Windows"):
+		build(os.path.abspath('slywin32'))
+		stop_on_error()
+		dir_list = ['slyd3d11','slyd3d12','slygl4']
+		build_all(dir_list)	
+		stop_on_error()
+	else:
+		build(os.path.abspath('slygl4'))
+		stop_on_error()
+
+	build(os.path.abspath('slyedit'))	
 	stop_on_error()
 
 	clean_up_and_halt()

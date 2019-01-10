@@ -10,7 +10,7 @@ namespace sly {
 
     class ApplicationBuilder : public Builder<ApplicationDesc> {
     public:
-        ApplicationBuilder() : Builder({}) {}
+        ApplicationBuilder() : Builder() {}
     };
 
     class IApplication {

@@ -26,7 +26,7 @@ typedef s64 long_t;
 typedef u32 ushort_t;
 typedef u32 uint_t;
 typedef u64 ulong_t;
-typedef u64 size_t;
+typedef u32 size_t;
 typedef void* vptr_t;
 
 #ifdef FALSE

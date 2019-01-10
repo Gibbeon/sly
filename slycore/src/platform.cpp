@@ -1,5 +1,3 @@
-#pragma once
-
 #include <functional>
 
 #include "sly/platform.h"
@@ -9,7 +7,7 @@
 using namespace sly;
 
 sly::sys::IOperatingSystem* Platform::_os = NULL;
-std::map<std::string, std::function<void(gfx::IRenderSystem**, gfx::RenderSystemDesc&)>> Platform::_renderSystems;
+std::map<std::string, fpCreateRenderSystem> Platform::_renderSystems;
 
 void Platform::initialize() {
     _CreateOperatingSystemImpl(&_os);
@@ -23,7 +21,7 @@ void Platform::createRenderSystem(gfx::IRenderSystem** outRenderSystem, gfx::Ren
     _renderSystems["D3D12"](outRenderSystem, desc);
 }
 
-void Platform::registerRenderSystem(std::string name, std::function<void(gfx::IRenderSystem**, gfx::RenderSystemDesc&)> fn)
+void Platform::registerRenderSystem(std::string name, fpCreateRenderSystem fn)
 {
     _renderSystems.insert_or_assign(name, fn);
     auto value = _renderSystems["D3D12"];    

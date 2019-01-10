@@ -1,4 +1,4 @@
-import os, subprocess, shutil, sys, threading
+import os, subprocess, shutil, sys, threading, platform
 from queue import Queue
 from threading import Thread
 
@@ -59,10 +59,10 @@ def cmake(path):
 
 	log = open("cmake_" + os.path.basename(path) + '.tlog', 'w')
 
-	if not os.path.exists(os.path.join(path, "build/win64")):
-		os.makedirs(os.path.join(path, "build/win64"))
+	if not os.path.exists(os.path.join(path, "build-x64")):
+		os.makedirs(os.path.join(path, "build-x64"))
 		
-	abspath = os.path.join(path, "build/win64")
+	abspath = os.path.join(path, "build-x64")
 	p = subprocess.Popen(["cmake", "../../","-G", "Visual Studio 15 2017","-A","x64","-T","host=x64"], cwd=abspath, shell=True, stdout=log, stderr=log, stdin=log)
 	p.wait()
 	if not p.returncode == 0:
@@ -78,7 +78,7 @@ def build(path):
 
 	log = open("msbuild_" + os.path.basename(path) + '.tlog', 'w')
 
-	p = subprocess.Popen(["msbuild", "/nologo","/p:Configuration=Debug","/p:Platform=x64","/m:8","/v:m",os.path.join(os.path.abspath(path), "build/win64/" + os.path.basename(path) + ".vcxproj")], cwd=path, shell=True, stdout=log, stderr=log, stdin=log, )
+	p = subprocess.Popen(["msbuild", "/nologo","/p:Configuration=Debug","/p:Platform=x64","/m:8","/v:m",os.path.join(os.path.abspath(path), "build-x64/" + os.path.basename(path) + ".vcxproj")], cwd=path, shell=True, stdout=log, stderr=log, stdin=log, )
 	p.wait()
 	if not p.returncode == 0:
 		thread_print("A msbuild error code=" + str(p.returncode) + " has occurred while building " + os.path.basename(path))
