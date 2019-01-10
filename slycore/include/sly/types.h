@@ -1,6 +1,10 @@
 #pragma once
 
+#if WIN32
 #include <tchar.h>
+#else
+typedef char char_t;
+#endif
 
 typedef unsigned long long u64;
 typedef signed long long s64;
@@ -30,7 +34,7 @@ typedef u32 uint_t;
 typedef u64 ulong_t;
 typedef u32 size_t;
 typedef void* vptr_t;
-//typedef char char_t;
+
 
 #ifdef FALSE
 #undef FALSE

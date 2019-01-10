@@ -33,7 +33,7 @@ namespace sly {
         static void registerRenderSystem(std::string name, fpCreateRenderSystem fn);
     
     private:
-        static sly::sys::IOperatingSystem* _os;
+        static sly::os::IOperatingSystem* _os;
         static std::map<std::string, fpCreateRenderSystem> _renderSystems;
     };
 }

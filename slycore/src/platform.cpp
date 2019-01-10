@@ -6,7 +6,7 @@
 
 using namespace sly;
 
-sly::sys::IOperatingSystem* Platform::_os = NULL;
+sly::os::IOperatingSystem* Platform::_os = NULL;
 std::map<std::string, fpCreateRenderSystem> Platform::_renderSystems;
 
 void Platform::initialize() {

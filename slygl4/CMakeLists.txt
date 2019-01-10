@@ -4,6 +4,8 @@ project(slygl4)
 set(CMAKE_SUPPRESS_REGENERATION true)
 
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
+set(CMAKE_FIND_LIBRARY_PREFIXES "")
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
@@ -34,15 +36,15 @@ link_directories(./../slywin32/lib)
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-
-find_library(SLYCORE_LIB slycore PATHS ./../slycore/lib)
-find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)
+find_library(SLYCORE_LIB slycore HITS ./../slycore/lib)
+find_library(OPENGL_LIB OpenGL)
+if(MSVC)
+  find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)
+  target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
+endif()
 
 target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
-target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
-target_link_libraries(${PROJECT_NAME} opengl32.lib)
-
-
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIB})
 
 if (MSVC)
 # For MSVC, CMake sets certain flags to defaults we want to override.
