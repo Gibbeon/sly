@@ -159,7 +159,7 @@ bool_t GL4Window::InitializeOpenGL(HWND hwnd, int screenWidth, int screenHeight,
 	int pixelFormat[1];
 	unsigned int formatCount;
 	int result;
-	PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
+	PIXELFORMATDESCRIPTOR pixelFormatriptor;
 	int attributeList[5];
 	float fieldOfView, screenAspect;
 	char *vendorString, *rendererString;
@@ -218,7 +218,7 @@ bool_t GL4Window::InitializeOpenGL(HWND hwnd, int screenWidth, int screenHeight,
 	}
 
 	// If the video card/display can handle our desired pixel format then we set it as the current one.
-	result = SetPixelFormat(m_deviceContext, pixelFormat[0], &pixelFormatDescriptor);
+	result = SetPixelFormat(m_deviceContext, pixelFormat[0], &pixelFormatriptor);
 	if(result != 1)
 	{
         int_t output = GetLastError();
@@ -276,9 +276,9 @@ bool_t GL4Window::InitializeOpenGL(HWND hwnd, int screenWidth, int screenHeight,
 	rendererString = (char*)glGetString(GL_RENDERER);
 
 	// Store the video card name in a class member variable so it can be retrieved later.
-	strcpy_s(m_videoCardDescription, vendorString);
-	strcat_s(m_videoCardDescription, " - ");
-	strcat_s(m_videoCardDescription, rendererString);
+	strcpy_s(m_videoCardription, vendorString);
+	strcat_s(m_videoCardription, " - ");
+	strcat_s(m_videoCardription, rendererString);
 
 	// Turn on or off the vertical sync depending on the input bool_t value.
 	if(vsync)
@@ -794,7 +794,7 @@ void GL4Window::GetProjectionMatrix(float* matrix)
 
 void GL4Window::GetVideoCardInfo(char* cardName)
 {
-	strcpy_s(cardName, 128, m_videoCardDescription);
+	strcpy_s(cardName, 128, m_videoCardription);
 	return;
 }
 

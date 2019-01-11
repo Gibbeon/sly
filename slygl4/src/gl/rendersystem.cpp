@@ -11,7 +11,7 @@ GL4RenderSystemImpl::GL4RenderSystemImpl() {
 
 }
 
-void GL4RenderSystemImpl::createDevice(IDevice** pAdapter, DeviceDesc& desc) {
+void GL4RenderSystemImpl::createDevice(IDevice** pAdapter, Device& desc) {
     (*pAdapter) = new GL4Device();
 }
         

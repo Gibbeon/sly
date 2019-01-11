@@ -10,7 +10,7 @@ namespace sly {
         class IResource : public IManagedResource  {
         public:
             virtual ~IResource() {}
-            //virtual void init(ResourceDesc& desc) = 0;
+            //virtual void init(Resource& desc) = 0;
 
             //virtual void write(vptr_t data, size_t size, size_t stride) = 0;
         protected:

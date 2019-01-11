@@ -73,15 +73,15 @@ struct CD3DX12_VIEWPORT : public D3D12_VIEWPORT
         FLOAT minDepth = D3D12_MIN_DEPTH,
         FLOAT maxDepth = D3D12_MAX_DEPTH )
     {
-        auto Desc = pResource->GetDesc();
-        const UINT64 SubresourceWidth = Desc.Width >> mipSlice;
-        const UINT64 SubresourceHeight = Desc.Height >> mipSlice;
-        switch (Desc.Dimension)
+        auto desc  = pResource->GetDesc();
+        const UINT64 SubresourceWidth = desc.Width >> mipSlice;
+        const UINT64 SubresourceHeight = desc.Height >> mipSlice;
+        switch (desc.Dimension)
         {
         case D3D12_RESOURCE_DIMENSION_BUFFER:
             TopLeftX = topLeftX;
             TopLeftY = 0.0f;
-            Width = Desc.Width - topLeftX;
+            Width = desc.Width - topLeftX;
             Height = 1.0f;
             break;
         case D3D12_RESOURCE_DIMENSION_TEXTURE1D:
@@ -340,7 +340,7 @@ struct CD3DX12_BLEND_DESC : public D3D12_BLEND_DESC
     {
         AlphaToCoverageEnable = FALSE;
         IndependentBlendEnable = FALSE;
-        const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc =
+        const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlend =
         {
             FALSE,FALSE,
             D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
@@ -349,7 +349,7 @@ struct CD3DX12_BLEND_DESC : public D3D12_BLEND_DESC
             D3D12_COLOR_WRITE_ENABLE_ALL,
         };
         for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
-            RenderTarget[ i ] = defaultRenderTargetBlendDesc;
+            RenderTarget[ i ] = defaultRenderTargetBlend;
     }
 };
 //------------------------------------------------------------------------------------------------

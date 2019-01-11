@@ -10,7 +10,7 @@ namespace sly {
 		public:
 			GL4Window();
 
-			virtual void init(WindowDesc& desc) {}
+			virtual void init(Window& desc) {}
 
             virtual void processMessages() { _window->ProcessMessages(); }
             virtual void swapBuffers();
@@ -55,7 +55,7 @@ namespace sly {
 
 			float m_worldMatrix[16];
 			float m_projectionMatrix[16];
-			char m_videoCardDescription[128];
+			char m_videoCardription[128];
 
 			GLuint vao, vbo[2]; /* Create handles for our Vertex Array Object and two Vertex Buffer Objects */
 			int IsCompiled_VS, IsCompiled_FS;

@@ -7,19 +7,19 @@
 namespace sly {
 	namespace gfx {
 		class GL4Device : public IDevice {
-			virtual void init(DeviceDesc& desc) {}
+			virtual void init(Device& desc) {}
 
-            virtual void createWindow(IWindow** ppWindow, WindowDesc& desc) {
+            virtual void createWindow(IWindow** ppWindow, Window& desc) {
 				(*ppWindow) = new GL4Window();
 			}
 
-            virtual void createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) {}
-            virtual void createCommandList(ICommandList** ppWindow, CommandListDesc& desc) {}
-            virtual void createRenderState(IRenderState** ppWindow, RenderStateDesc& desc) {}
-            virtual void createShader(IShader** ppWindow, ShaderDesc& desc) {}
-            virtual void createTexture(ITexture** ppWindow, TextureDesc& desc) {}
-            virtual void createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc) {}
-            virtual void createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc) {}
+            virtual void createCommandQueue(ICommandQueue** queue, CommandQueue& desc) {}
+            virtual void createCommandList(ICommandList** ppWindow, CommandList& desc) {}
+            virtual void createRenderState(IRenderState** ppWindow, RenderState& desc) {}
+            virtual void createShader(IShader** ppWindow, Shader& desc) {}
+            virtual void createTexture(ITexture** ppWindow, Texture& desc) {}
+            virtual void createVertexBuffer(IVertexBuffer** ppWindow, VertexBuffer& desc) {}
+            virtual void createIndexBuffer(IIndexBufer** ppWindow, IndexBuffer& desc) {}
 		};
     }
 } 

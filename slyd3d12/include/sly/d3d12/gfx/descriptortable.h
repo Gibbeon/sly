@@ -46,11 +46,11 @@ namespace sly {
             size_t _descHeapStride;  
         };        
 
-        class D3D12DescriptorTableBuilder : public Builder<D3D12DescriptorTableDesc> {
+        class D3D12riptorTableBuilder : public Builder<D3D12DescriptorTableDesc> {
         public:
-            D3D12DescriptorTableBuilder() : Builder({}) {}
+            D3D12riptorTableBuilder() : Builder() {}
 
-            D3D12DescriptorTableBuilder& setCapacity(size_t capacity) { desc_.capacity = capacity; return *this; }
+            D3D12riptorTableBuilder& setCapacity(size_t capacity) { desc_.capacity = capacity; return *this; }
 
         };
     }

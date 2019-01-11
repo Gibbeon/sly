@@ -2,6 +2,7 @@
 
 #include "sly/global.h"
 #include "sly/builder.h"
+#include "sly/gfx/device.h"
 
 // this is actually a plugin, ignoring for now
 
@@ -17,7 +18,7 @@ namespace sly {
         };
 
         class IDevice;
-        struct DeviceDesc;
+        struct Device;
         class IRenderSystem {
         public:
             virtual ~IRenderSystem() {}

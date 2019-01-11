@@ -15,12 +15,12 @@ void D3D12DescriptorTableImpl::init(D3D12DescriptorTableDesc& desc) {
     _capacity = desc.capacity;
     _used.assign(_capacity, false);
 
-    // Describe and create a render target view (RTV) descriptor heap.
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-    rtvHeapDesc.NumDescriptors = (UINT)desc.capacity; // one descriptor per buffer
-    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // render target view
-    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    getID3D12Device().CreateDescriptorHeap(&rtvHeapDesc, IID_ID3D12DescriptorHeap, reinterpret_cast<vptr_t*>(&_descHeap)); // creates a new heap just for this swap chain
+    // ribe and create a render target view (RTV) descriptor heap.
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeap = {};
+    rtvHeap.NumDescriptors = (UINT)desc.capacity; // one descriptor per buffer
+    rtvHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // render target view
+    rtvHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    getID3D12Device().CreateDescriptorHeap(&rtvHeap, IID_ID3D12DescriptorHeap, reinterpret_cast<vptr_t*>(&_descHeap)); // creates a new heap just for this swap chain
     _descHeapStride = getID3D12Device().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); // gets the stride of each descriptor
 }
 

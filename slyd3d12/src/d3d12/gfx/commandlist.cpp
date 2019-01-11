@@ -95,13 +95,13 @@ D3D12CommandList::D3D12CommandList(D3D12Device* device, ID3D12GraphicsCommandLis
     }
 
 bool_t D3D12CommandList::InitRootSignature() {
-    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
-    rootSignatureDesc.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignature;
+    rootSignature.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
     ID3DBlob* signature;
     ID3DBlob* error;
 
-    ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
+    ThrowIfFailed(D3D12SerializeRootSignature(&rootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
     ThrowIfFailed(_device->GetID3DDevice()->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
  return true; 
 }
@@ -121,29 +121,29 @@ bool_t D3D12CommandList::InitPipelineState() {
     ThrowIfFailed(D3DCompileFromFile(L"c:\\shaders.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
     // Define the vertex input layout.
-    D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
+    D3D12_INPUT_ELEMENT_DESC inputElements[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
     };
 
-    // Describe and create the graphics pipeline state object (PSO).
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
-    psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
-    psoDesc.pRootSignature = _rootSignature;
-    psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader);
-    psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader);
-    psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-    psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-    psoDesc.DepthStencilState.DepthEnable = FALSE;
-    psoDesc.DepthStencilState.StencilEnable = FALSE;
-    psoDesc.SampleMask = UINT_MAX;
-    psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-    psoDesc.NumRenderTargets = 1;
-    psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-    psoDesc.SampleDesc.Count = 1;
+    // ribe and create the graphics pipeline state object (PSO).
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC pso = {};
+    pso.InputLayout = { inputElements, _countof(inputElements) };
+    pso.pRootSignature = _rootSignature;
+    pso.VS = CD3DX12_SHADER_BYTECODE(vertexShader);
+    pso.PS = CD3DX12_SHADER_BYTECODE(pixelShader);
+    pso.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+    pso.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+    pso.DepthStencilState.DepthEnable = FALSE;
+    pso.DepthStencilState.StencilEnable = FALSE;
+    pso.SampleMask = UINT_MAX;
+    pso.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    pso.NumRenderTargets = 1;
+    pso.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+    pso.Sample.Count = 1;
 
-    ThrowIfFailed(_device->GetID3DDevice()->CreateGraphicsPipelineState(&psoDesc, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
+    ThrowIfFailed(_device->GetID3DDevice()->CreateGraphicsPipelineState(&pso, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
      return true; 
 }
 
@@ -178,8 +178,8 @@ bool_t D3D12CommandList::Draw(vptr_t<IGfxVertexBuffer> buffer, ID3D12Resource* t
 
     // so the descriptor is on the heap and we need to tell it where that is
     // passing this in for now
-    //D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
-    //rtvHandle.ptr += INT64(m_frameIndex) * UINT64(m_rtvDescriptorSize);
+    //D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUriptorHandleForHeapStart();
+    //rtvHandle.ptr += INT64(m_frameIndex) * UINT64(m_rtvriptorSize);
 
     _list->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 

@@ -4,11 +4,11 @@
 #include "sly/builder.h"
 
 namespace sly {
-    struct ApplicationDesc {
+    struct Application {
     public:
     };
 
-    class ApplicationBuilder : public Builder<ApplicationDesc> {
+    class ApplicationBuilder : public Builder<Application> {
     public:
         ApplicationBuilder() : Builder() {}
     };
@@ -26,13 +26,13 @@ namespace sly {
     };
 }
 
-/* template<class TDescType>
+/* template<class TType>
 class Builder {
 public:
-    TDescType& Build() { return _desc; }
+    TType& Build() { return _desc; }
 
 protected:
-    TDescType _desc;
+    TType _desc;
 };
 
 class IDestroyable {
@@ -55,25 +55,25 @@ public:
     virtual bool_t Write(vptr_t data, ulong_t offset, ulong_t size)  = 0;
 };
 
-struct GfxSystemDesc {
+struct GfxSystem {
 public:
     vptr_t<> hInstance;
 };
 
-class GfxSystemDescBuilder : public Builder<GfxSystemDesc> {
+class GfxSystemBuilder : public Builder<GfxSystem> {
 public:
-    GfxSystemDescBuilder() {
+    GfxSystemBuilder() {
         _desc.hInstance = nullptr;
     } 
 
-    vptr_t<GfxSystemDescBuilder> SetInstance(vptr_t<> instance) { _desc.hInstance = instance; }
+    vptr_t<GfxSystemBuilder> SetInstance(vptr_t<> instance) { _desc.hInstance = instance; }
 };
 
-struct GfxDeviceDesc {
+struct GfxDevice {
 
 };
 
-class GfxDeviceBuilder : public Builder<GfxDeviceDesc> {
+class GfxDeviceBuilder : public Builder<GfxDevice> {
 public:
 
 };
@@ -111,20 +111,20 @@ private:
 
 
 
-struct GfxCommandListDesc {
+struct GfxCommandList {
 
 };
 
-class GfxCommandListBuilder : public Builder<GfxCommandListDesc> {
+class GfxCommandListBuilder : public Builder<GfxCommandList> {
 public:
 
 };
 
-struct GfxCommandQueueDesc {
+struct GfxCommandQueue {
 
 };
 
-class GfxCommandQueueBuilder : public Builder<GfxCommandQueueDesc> {
+class GfxCommandQueueBuilder : public Builder<GfxCommandQueue> {
 public:
 
 };
@@ -145,7 +145,7 @@ struct RECT {
     };
 };
 
-struct WindowDesc {
+struct Window {
 public:
     RECT bounds;
     std::string title;
@@ -155,7 +155,7 @@ public:
 };
 
 
-struct GfxVertexBufferDesc {
+struct GfxVertexBuffer {
 public:
     ulong_t size;
 };
@@ -163,10 +163,10 @@ public:
 
 class IGfxDevice : public IDestroyable {
 public:
-    virtual bool_t CreateGfxCommandQueue(IGfxCommandQueue** queue, GfxCommandQueueDesc& desc) = 0;
-    virtual bool_t CreateGfxCommandList(IGfxCommandList** list, GfxCommandListDesc& desc) = 0;
-    virtual bool_t CreateGfxWindow(IGfxWindow**, WindowDesc& desc) = 0;
-    virtual bool_t CreateVertexBuffer(IGfxVertexBuffer** buffer, GfxVertexBufferDesc& desc) = 0;
+    virtual bool_t CreateGfxCommandQueue(IGfxCommandQueue** queue, GfxCommandQueue& desc) = 0;
+    virtual bool_t CreateGfxCommandList(IGfxCommandList** list, GfxCommandList& desc) = 0;
+    virtual bool_t CreateGfxWindow(IGfxWindow**, Window& desc) = 0;
+    virtual bool_t CreateVertexBuffer(IGfxVertexBuffer** buffer, GfxVertexBuffer& desc) = 0;
 };
 
 
@@ -174,7 +174,7 @@ public:
 
 
 
-class WindowBuilder : public Builder<WindowDesc> {
+class WindowBuilder : public Builder<Window> {
 public:
     WindowBuilder& SetBounds(RECT rect) { _desc.bounds = rect; return *this; }
     WindowBuilder& SetTitle(std::string title) { _desc.title = title; return *this; }
@@ -188,7 +188,7 @@ protected:
 
 
 
-class GfxVertexBufferBuilder : public Builder<GfxVertexBufferDesc> {
+class GfxVertexBufferBuilder : public Builder<GfxVertexBuffer> {
 public:
     GfxVertexBufferBuilder() {
         _desc.size = 1024 * 1024;
@@ -200,17 +200,17 @@ public:
 
 class IGfxSystem : public IDestroyable {
 public:
-    virtual bool_t CreateDevice(IGfxDevice**, GfxDeviceDesc& desc) = 0;
+    virtual bool_t CreateDevice(IGfxDevice**, GfxDevice& desc) = 0;
 };
 
 class Application {
 public:
     bool_t Init(vptr_t<> pInstance, std::string pszArgs);
-    bool_t CreateGfxSystem(IGfxSystem** system, GfxSystemDesc& desc);
+    bool_t CreateGfxSystem(IGfxSystem** system, GfxSystem& desc);
     bool_t IsRunning();
 
 private:
     vptr_t<> _instance;
 };
 
-extern bool_t _CreateGfxSystemImpl(IGfxSystem** system, GfxSystemDesc& desc); */
+extern bool_t _CreateGfxSystemImpl(IGfxSystem** system, GfxSystem& desc); */

@@ -13,7 +13,7 @@ D3D12WindowImpl::D3D12WindowImpl(D3D12DeviceImpl& device, sly::os::Win32Window& 
 }
 
 void D3D12WindowImpl::init(WindowDesc& desc) {
-    D3D12DescriptorTableBuilder descTableBuilder;
+    D3D12riptorTableBuilder descTableBuilder;
 
     descTableBuilder.setCapacity(2);
     
@@ -21,20 +21,20 @@ void D3D12WindowImpl::init(WindowDesc& desc) {
     CommandQueueBuilder builder;
     _directCommandQueue.init(builder.build());
    
-    // Describe and create the swap chain.
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-    swapChainDesc.BufferCount = 2; // how many buffers we will have, 2 allows us to have one actively being written to whilest the other is displayed
-    swapChainDesc.Width = _window->GetWidth();
-    swapChainDesc.Height = _window->GetHeight();
-    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // the color format for the buffer
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // how this buffer is to be used
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // discard the buffer after it's displayed
-    swapChainDesc.SampleDesc.Count = 1; // for multisampling the image
+    // ribe and create the swap chain.
+    DXGI_SWAP_CHAIN_DESC1 swapChain = {};
+    swapChain.BufferCount = 2; // how many buffers we will have, 2 allows us to have one actively being written to whilest the other is displayed
+    swapChain.Width = _window->GetWidth();
+    swapChain.Height = _window->GetHeight();
+    swapChain.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // the color format for the buffer
+    swapChain.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // how this buffer is to be used
+    swapChain.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // discard the buffer after it's displayed
+    swapChain.SampleDesc.Count = 1; // for multisampling the image
 
     reinterpret_cast<D3D12DeviceImpl*>(&getDevice())->getIDXGIFactory4().CreateSwapChainForHwnd(
         &_directCommandQueue.getID3D12CommandQueue(),        // Swap chain needs the queue so that it can force a flush on it.
         _window->GetHwnd(),
-        &swapChainDesc,
+        &swapChain,
         nullptr,
         nullptr,
         reinterpret_cast<IDXGISwapChain1**>(&_swapChain)

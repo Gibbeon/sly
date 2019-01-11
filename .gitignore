@@ -1,7 +1,8 @@
 # Local Output Directories
 **/bin
 **/lib
-**/build*/
+**/build/
+**/build-*/
 **/temp
 **/cmakefiles
 

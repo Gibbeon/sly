@@ -12,15 +12,15 @@ D3D12CommandQueueImpl::D3D12CommandQueueImpl(D3D12DeviceImpl& device):
 }
 
 void D3D12CommandQueueImpl::init(CommandQueueDesc& desc) {
-    // Describe and create the command queue.
-    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    // ribe and create the command queue.
+    D3D12_COMMAND_QUEUE_DESC queue = {};
+    queue.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    queue.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
-    FenceDescBuilder fDesc;
-    _fence.init(fDesc.build());
+    FenceBuilder f;
+    _fence.init(f.build());
 
-    getID3D12Device().CreateCommandQueue(&queueDesc, IID_ID3D12CommandQueue, reinterpret_cast<vptr_t*>(&_queue));
+    getID3D12Device().CreateCommandQueue(&queue, IID_ID3D12CommandQueue, reinterpret_cast<vptr_t*>(&_queue));
 }
     
 void D3D12CommandQueueImpl::executeCommandList(ICommandList* lists, size_t count) {

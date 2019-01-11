@@ -6,6 +6,7 @@
 
 using namespace sly;
 
+sly::IMemoryManager* Platform::_mem = NULL;
 sly::os::IOperatingSystem* Platform::_os = NULL;
 std::map<std::string, fpCreateRenderSystem> Platform::_renderSystems;
 
@@ -13,7 +14,7 @@ void Platform::initialize() {
     _CreateOperatingSystemImpl(&_os);
 }
 
-void Platform::createApplication(IApplication** outApplication, ApplicationDesc& desc) {
+void Platform::createApplication(IApplication** outApplication, Application& desc) {
     (*outApplication) = new SlyApplication();
 }
 

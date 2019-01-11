@@ -10,7 +10,7 @@ namespace sly {
 
         };
 
-        class FenceDescBuilder : public Builder<FenceDesc> {
+        class FenceBuilder : public Builder<FenceDesc> {
 
         };
 

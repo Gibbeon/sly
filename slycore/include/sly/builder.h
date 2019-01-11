@@ -4,22 +4,22 @@
 
 
 namespace sly {
-    template<typename TDescType>
+    template<typename TType>
     class Builder {
     public:
         virtual ~Builder() {}
-        virtual TDescType& build();
+        virtual TType& build();
 
     protected:        
         Builder()  {}
-        Builder(TDescType initial) : desc_(initial) {}
-        Builder(TDescType& initial) : desc_(initial) {}
+        Builder(TType initial) : desc_(initial) {}
+        Builder(TType& initial) : desc_(initial) {}
         
-        TDescType desc_;
+        TType desc_;
     };
 
-    template <typename TDescType>
-    TDescType& Builder<TDescType>::build() { 
+    template <typename TType>
+    TType& Builder<TType>::build() { 
         return desc_; 
     }
 }

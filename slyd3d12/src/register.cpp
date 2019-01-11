@@ -4,6 +4,6 @@
 #include "sly/d3d12.h"
 #include "sly/d3d12/gfx/rendersystem.h"
 
-extern "C" __declspec( dllexport ) void _CreateRenderSystemImpl(sly::gfx::IRenderSystem** ppRenderSystem, sly::gfx::RenderSystemDesc& desc) {
+extern "C" __declspec( dllexport ) void _CreateRenderSystemImpl(sly::gfx::IRenderSystem** ppRenderSystem, sly::gfx::RenderSystem& desc) {
     (*ppRenderSystem) = new sly::gfx::D3D12RenderSystemImpl();
 };

@@ -18,7 +18,7 @@ slyengine (features):
 slyengine (gfx):
     ✔ The window/viewport nonsense is bad @done (1/9/2019, 8:16:07 PM)
     ✔ Resource Transition is bad @done (1/9/2019, 8:16:09 PM)
-    ✔ Descriptor table should be global perhaps? @done (1/9/2019, 8:16:11 PM)
+    ✔ riptor table should be global perhaps? @done (1/9/2019, 8:16:11 PM)
     ✔ Eliminate all multiple inheritence @done (1/9/2019, 8:16:13 PM)
     ☐ Get destroy functions added
     ☐ Need to add memory management to the create* functions

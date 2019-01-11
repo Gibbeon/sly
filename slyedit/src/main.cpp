@@ -199,37 +199,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     ENSURE(gfx->CreateDevice(&device, gfxDeviceBuilder.Build()), "Failed to create GfxSystem");
             
     te::IGfxWindow* window = nullptr;
-    te::WindowBuilder windowDesc;
-    windowDesc.SetBounds(te::RECT(0, 0, 1024, 768))
+    te::WindowBuilder window;
+    window.SetBounds(te::RECT(0, 0, 1024, 768))
             .SetColorDepth(32)
             .SetBufferCount(2);
 
     // one device multiple windows? each window would have it's own swapchain and the device would render to it seperatly
-    ENSURE(device->CreateGfxWindow(&window, windowDesc.Build()), "Failed to create window");
+    ENSURE(device->CreateGfxWindow(&window, window.Build()), "Failed to create window");
 
     // windows need to always be hidden until the main loop beings
     //window->SetVisible(FALSE);
 
-    //te::GfxCommandQueueBuilder queuebufferDesc;
+    //te::GfxCommandQueueBuilder queuebuffer;
 
     te::IGfxCommandQueue* queue;
-    //ENSURE(device->CreateGfxCommandQueue(&queue, queuebufferDesc.Build()), "");
+    //ENSURE(device->CreateGfxCommandQueue(&queue, queuebuffer.Build()), "");
 
     // why didn't this work to have multiple queues per window
     // something to do with rendering to the swap chain and failing on present?
     queue = window->GetCommandQueue();
 
-    te::GfxCommandListBuilder bufferDesc;
+    te::GfxCommandListBuilder buffer;
 
     te::IGfxCommandList* commands;
-    ENSURE(device->CreateGfxCommandList(&commands, bufferDesc.Build()), "");
+    ENSURE(device->CreateGfxCommandList(&commands, buffer.Build()), "");
 
     // need to add the data required for vertex stride info
-    te::GfxVertexBufferBuilder vertexBufferDesc;
+    te::GfxVertexBufferBuilder vertexBuffer;
 
     // need to generize buffers and streams here
     te::IGfxVertexBuffer* vertexbuffer;
-    ENSURE(device->CreateVertexBuffer(&vertexbuffer, vertexBufferDesc.Build()), "");
+    ENSURE(device->CreateVertexBuffer(&vertexbuffer, vertexBuffer.Build()), "");
 
     //vertexbuffer->Write(0, 0, 0);
 

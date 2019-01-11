@@ -101,13 +101,13 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 // }
 // /* 
 // bool_t D3D12Device::InitRootSignature() {
-//     CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
-//     rootSignatureDesc.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+//     CD3DX12_ROOT_SIGNATURE_DESC rootSignature;
+//     rootSignature.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 //     ID3DBlob* signature;
 //     ID3DBlob* error;
 
-//     ThrowIfFailed(D3D12SerializeRootSignature(&_rootSignatureDesc, D3DROOT_SIGNATURE_VERSION_1, &signature, &error));
+//     ThrowIfFailed(D3D12SerializeRootSignature(&_rootSignature, D3DROOT_SIGNATURE_VERSION_1, &signature, &error));
 //     ThrowIfFailed(_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
 //     return true;
 // }
@@ -127,46 +127,46 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     ThrowIfFailed(D3DCompileFromFile(L"c:\\shaders.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
 //     // Define the vertex input layout.
-//     D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
+//     D3D12_INPUT_ELEMENT_DESC inputElements[] =
 //     {
 //         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 //         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 //     };
 
-//     // Describe and create the graphics pipeline state object (PSO).
-//     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
-//     psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
-//     psoDesc.pRootSignature = _rootSignature;
-//     psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader);
-//     psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader);
-//     psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-//     psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-//     psoDesc.DepthStencilState.DepthEnable = FALSE;
-//     psoDesc.DepthStencilState.StencilEnable = FALSE;
-//     psoDesc.SampleMask = UINT_MAX;
-//     psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-//     psoDesc.NumRenderTargets = 1;
-//     psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-//     psoDesc.SampleDesc.Count = 1;
+//     // ribe and create the graphics pipeline state object (PSO).
+//     D3D12_GRAPHICS_PIPELINE_STATE_DESC pso = {};
+//     pso.InputLayout = { inputElements, _countof(inputElements) };
+//     pso.pRootSignature = _rootSignature;
+//     pso.VS = CD3DX12_SHADER_BYTECODE(vertexShader);
+//     pso.PS = CD3DX12_SHADER_BYTECODE(pixelShader);
+//     pso.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+//     pso.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+//     pso.DepthStencilState.DepthEnable = FALSE;
+//     pso.DepthStencilState.StencilEnable = FALSE;
+//     pso.SampleMask = UINT_MAX;
+//     pso.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+//     pso.NumRenderTargets = 1;
+//     pso.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+//     pso.Sample.Count = 1;
 
-//     ThrowIfFailed(_device->CreateGraphicsPipelineState(&_psoDesc, IIDID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
+//     ThrowIfFailed(_device->CreateGraphicsPipelineState(&_pso, IIDID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
 //         return true;
 // } */
 
-// void D3D12Device::createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) {
-// /*     // Describe and create the command queue.
-//     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-//     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-//     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+// void D3D12Device::createCommandQueue(ICommandQueue** queue, CommandQueue& desc) {
+// /*     // ribe and create the command queue.
+//     D3D12_COMMAND_QUEUE_DESC queue = {};
+//     queue.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+//     queue.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
 //     ID3D12CommandQueue* commandQueue = nullptr;
-//     ThrowIfFailed(_device->CreateCommandQueue(&_queueDesc, IIDID3D12CommandQueue, reinterpret_cast<vptr_t*>(&commandQueue)));
+//     ThrowIfFailed(_device->CreateCommandQueue(&_queue, IIDID3D12CommandQueue, reinterpret_cast<vptr_t*>(&commandQueue)));
 
 //     (*queue) = new D3D12CommandQueue(commandQueue, _device);
 //     return true; */
 // }
 
-// void D3D12Device::createCommandList(ICommandList** list, CommandListDesc& desc) {
+// void D3D12Device::createCommandList(ICommandList** list, CommandList& desc) {
 //     /* ID3D12CommandAllocator* commandAllocator;
 //     ID3D12GraphicsCommandList* commandList;
 
@@ -180,16 +180,16 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     return true; */
 // }
 
-// void D3D12Device::createShader(IShader** ppWindow, ShaderDesc& desc) {
+// void D3D12Device::createShader(IShader** ppWindow, Shader& desc) {
 
 // }
 
-// void D3D12Device::createTexture(ITexture** ppWindow, TextureDesc& desc) {
+// void D3D12Device::createTexture(ITexture** ppWindow, Texture& desc) {
 
 // }
  
 
-// void D3D12Device::createDataBuffer(IDataBuffer** buffer, DataBufferDesc& desc) {
+// void D3D12Device::createDataBuffer(IDataBuffer** buffer, DataBuffer& desc) {
 //     // Note: using upload heaps to transfer static data like vert buffers is not 
 //     // recommended. Every time the GPU needs it, the upload heap will be marshalled 
 //     // over. Please read up on Default Heap usage. An upload heap is used here for 
@@ -219,6 +219,6 @@ void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc&
 //     return true; */
 // }
 
-// void D3D12Device::createWindow(IWindow** window, WindowDesc& desc) {
+// void D3D12Device::createWindow(IWindow** window, Window& desc) {
 //     window = new D3D12Window(this, new sly::os::Win32Window(1024, 768,  "Sample Title"));
 // }

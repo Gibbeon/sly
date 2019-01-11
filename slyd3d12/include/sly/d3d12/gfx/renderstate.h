@@ -29,7 +29,7 @@ namespace sly {
             ID3D12PipelineState* _pipelineState;
             ID3D12RootSignature* _rootSignature;  
 
-            D3D12_INPUT_ELEMENT_DESC _inputElementDesc[8];
+            D3D12_INPUT_ELEMENT_DESC _inputElement[8];
         };       
     }
 }
