@@ -1,12 +1,15 @@
 #pragma once
 
+#include <stddef.h>
+
 #if defined(_WIN32)
     #include <tchar.h>
 #else
-    #if defined(UNICODE)
-    typedef char char_t;
-    #else
+    #undef UNICODE
+    #if UNICODE 
     typedef wchar_t char_t;
+    #else
+    typedef char char_t;
     #endif
 #endif
 
@@ -36,8 +39,11 @@ typedef s64 long_t;
 typedef u32 ushort_t;
 typedef u32 uint_t;
 typedef u64 ulong_t;
-typedef u64 size_t;
 typedef void* vptr_t;
+
+#if !defined(_SIZE_T)
+typedef u64 size_t;
+#endif
 
 
 #ifdef FALSE
