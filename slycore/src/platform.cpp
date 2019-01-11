@@ -2,6 +2,7 @@
 
 #include "sly/platform.h"
 #include "sly/application.h"
+#include "sly/mem/memorymanager.h"
 #include "sly/gfx/rendersystem.h"
 
 using namespace sly;
@@ -12,6 +13,7 @@ std::map<std::string, fpCreateRenderSystem> Platform::_renderSystems;
 
 void Platform::initialize() {
     _CreateOperatingSystemImpl(&_os);
+    _mem = new MemoryManager();
 }
 
 void Platform::createApplication(IApplication** outApplication, Application& desc) {

@@ -5,7 +5,6 @@
 #if defined(_WIN32)
     #include <tchar.h>
 #else
-    #undef UNICODE
     #if UNICODE 
     typedef wchar_t char_t;
     #else

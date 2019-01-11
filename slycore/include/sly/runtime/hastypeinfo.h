@@ -1,6 +1,7 @@
 #pragma once
 
-#include <string>
+#include "sly/runtime/types.h"
+#include "sly/runtime/typeinfo.h"
 
 namespace sly {
 
@@ -8,8 +9,7 @@ namespace sly {
     public:
         virtual ~IHasTypeInfo() {}
 
-        virtual size_t getTypeIID() = 0;
-        virtual std::string getTypeName() = 0;
+        virtual TypeInfo getTypeInfo() = 0;
 
     protected:
         IHasTypeInfo() {}

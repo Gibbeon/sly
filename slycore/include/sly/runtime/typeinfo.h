@@ -1,24 +1,23 @@
 #pragma once
 
-#include "sly/global.h"
+#include <string>
+
 #include "sly/runtime/activator.h"
 
-namespace sly {
-    template <class TType = vptr_t>
-    struct TypeInfo {
-        TypeInfo() :
-            name(TOSTRING(TType)),
-            id(GET_TYPE_IID(TType)),
-            activator(&_activator).
-            _activator(GET_TYPE_CTOR())
-        {
+#define _CLASS_NAME_(x) STRINGIFY(x)
+#define _IID_(x) IID_ ## x
+#define _TYPE_INFO_(typeName) virtual TypeInfo getTypeInfo() { return TypeInfo(_CLASS_NAME_(typeName), _IID_(typeName)); }
 
+namespace sly {
+    struct TypeInfo {
+        TypeInfo(std::string typeName, u32 typeId) :
+            name(typeName),
+            id(typeId)
+        {
         }
 
         std::string name;
-        u32 id;   
-        IActivator& activator;
+        u32 id;  
     private:
-        DefaultAcivator<TType> _activator;  
     };
 }

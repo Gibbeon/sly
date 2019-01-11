@@ -34,7 +34,7 @@ namespace sly {
         static void registerRenderSystem(std::string name, fpCreateRenderSystem fn);
 
         static sly::os::IOperatingSystem& OS() { return *_os; }
-        static sly::IMemoryManager& MemoryManager() { return *_mem; }
+        static sly::IMemoryManager& Memory() { return *_mem; }
     
     private:
         static sly::os::IOperatingSystem* _os;

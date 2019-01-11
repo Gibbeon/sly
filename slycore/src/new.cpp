@@ -6,17 +6,17 @@ using namespace sly;
 
 void *operator new(decltype(sizeof(0)) size) noexcept(false)
 {
-    return Platform::MemoryManager().alloc(size);
+    return Platform::Memory().alloc(size);
 }
 void operator delete(void *ptr) throw()
 {
-    Platform::MemoryManager().free(ptr);
+    Platform::Memory().free(ptr);
 }
 void *operator new[](decltype(sizeof(0)) size) noexcept(false)
 {
-    return Platform::MemoryManager().alloc(size);
+    return Platform::Memory().alloc(size);
 }
 void operator delete[](void *ptr) throw()
 {
-    Platform::MemoryManager().free(ptr);
+    Platform::Memory().free(ptr);
 }
