@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/usr/include/c++/4.2.1/tr1"
             ],
             "defines": [
                 "_DEBUG",
@@ -15,6 +16,24 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "msvc-x64"
+        },
+        {
+            "name": "Mac",
+            "intelliSenseMode": "clang-x64",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "macFrameworkPath": [
+                "/System/Library/Frameworks"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4
