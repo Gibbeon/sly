@@ -1,9 +1,12 @@
 #include "sly/global.h"
-#include "sly/platform.h"
+#include "sly/engine.h"
 #include "sly/gfx.h"
 #include "sly/d3d12.h"
 #include "sly/d3d12/gfx/rendersystem.h"
+#include "sly/ext/pluginmanager.h"
 
-extern "C" __declspec( dllexport ) void _CreateRenderSystemImpl(sly::gfx::IRenderSystem** ppRenderSystem, sly::gfx::RenderSystem& desc) {
-    (*ppRenderSystem) = new sly::gfx::D3D12RenderSystemImpl();
+extern "C" __declspec( dllexport ) void _RegisterPlugins(sly::IPluginManager& manager) {
+    static sly::gfx::D3D12RenderSystemImpl instance;
+
+    manager.set<sly::gfx::IRenderSystem>(instance);
 };

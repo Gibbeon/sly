@@ -1,22 +1,22 @@
 #include "sly/global.h"
-#include "sly/platform.h"
+#include "sly/engine.h"
 #include "sly/mem/memorymanager.h"
 
 using namespace sly;
 
 void *operator new(decltype(sizeof(0)) size) noexcept(false)
 {
-    return Platform::Memory().alloc(size);
+    return Engine::MemoryManager().alloc(size);
 }
 void operator delete(void *ptr) throw()
 {
-    Platform::Memory().free(ptr);
+    Engine::MemoryManager().free(ptr);
 }
 void *operator new[](decltype(sizeof(0)) size) noexcept(false)
 {
-    return Platform::Memory().alloc(size);
+    return Engine::MemoryManager().alloc(size);
 }
 void operator delete[](void *ptr) throw()
 {
-    Platform::Memory().free(ptr);
+    Engine::MemoryManager().free(ptr);
 }

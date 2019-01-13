@@ -20,17 +20,12 @@ struct Vertex
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 {   
     // load configuration, plugins, etc
-    sly::Platform::initialize();
+    sly::Engine::init();
 
-    // this should create the custom application of the user for system events, memory management, etc.
-    sly::ApplicationBuilder applicationBuilder;
-    sly::IApplication* application = nullptr;
-    sly::Platform::createApplication(&application, applicationBuilder.build());
-    
     // choosing between multiple render systems?
     sly::gfx::RenderSystemBuilder rsBuilder;
     sly::gfx::IRenderSystem* renderSystem = nullptr;
-    sly::Platform::createRenderSystem(&renderSystem, rsBuilder.build());
+    sly::Engine::createRenderSystem(&renderSystem);//, rsBuilder.build());
 
     // create a device
     sly::gfx::DeviceBuilder rdBuilder;
@@ -49,8 +44,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     
     // data
     Vertex* triangleVertices = nullptr;
-    sly::os::IFileInputStream* pVertexData;
-    sly::Platform::OS().FileSystem().open(&pVertexData, u8"vertex.dat");
+    sly::IFileInputStream* pVertexData;
+    sly::Engine::OS().FileSystem().open(&pVertexData, u8"vertex.dat");
     size_t vtxsize = pVertexData->getSize();
     
     triangleVertices = (Vertex*)malloc(vtxsize);
@@ -74,8 +69,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build()); 
 
     //shaders
-    sly::os::IFileInputStream* pShaderFile;
-    sly::Platform::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
+    sly::IFileInputStream* pShaderFile;
+    sly::Engine::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
 
     size_t vssize = pShaderFile->getSize();
     
@@ -122,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
     sly::rect_t scissorRect(0, 0, 1024, 768);
     sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);   
 
-    while(application->isRunning())
+    while(true)
     {
         // loop
         list->begin();
@@ -135,7 +130,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
         list->draw(3, 1, 0, 0);
         list->end(); 
 
-        application->processMessages();
+        //application->processMessages();
 
         window->processMessages();        
         window->getDirectCommandQueue().executeCommandList(list);

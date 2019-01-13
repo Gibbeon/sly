@@ -7,7 +7,6 @@
 #include "sly/mem/heap.h"
 
 namespace sly {
-    namespace mem {
         class MallocHeap : public IHeap {
         public:      
             MallocHeap() {}
@@ -21,5 +20,5 @@ namespace sly {
             virtual size_t getMaxAllocationSize() { return SIZE_MAX; }
         protected:
         };
-    }
+    
 }

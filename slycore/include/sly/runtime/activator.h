@@ -14,8 +14,6 @@ namespace sly {
         IActivator() {}
     };
 
-    //typedef std::function<vptr_t(IHeap&)> fpConstructor;
-
     class Activator : public IActivator {
     public:
         Activator(std::function<vptr_t(IHeap&)> ctor);

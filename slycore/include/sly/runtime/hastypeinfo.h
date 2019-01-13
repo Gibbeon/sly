@@ -5,14 +5,19 @@
 
 namespace sly {
 
+    //create a hash based of a type name
+
+
     class IHasTypeInfo {
     public:
         virtual ~IHasTypeInfo() {}
 
-        virtual TypeInfo getTypeInfo() = 0;
+        virtual const TypeInfo& getType() = 0;
 
     protected:
         IHasTypeInfo() {}
+
+
     };
 }
 

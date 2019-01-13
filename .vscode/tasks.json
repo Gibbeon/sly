@@ -45,11 +45,11 @@
             "windows": {
                 "command": "py.exe",
                 "args": [
-                    "./build-x64.py"
+                    "${workspaceRoot}/build-all-x64.py"
                 ],
             },
             "options": {
-                "cwd": "${workspaceRoot}/slyedit"
+                "cwd": "${workspaceRoot}"
             },
             "group": "build",
             "presentation": {

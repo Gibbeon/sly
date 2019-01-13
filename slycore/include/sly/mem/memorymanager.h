@@ -1,10 +1,11 @@
 #pragma once
 
-#include <typeinfo>
+#include <map>
 
 #include "sly/global.h"
 #include "sly/plugin.h"
 #include "sly/mem/heap.h"
+#include "sly/mem/mallocheap.h"
 #include "sly/mem/builders/memorymanagerbuilder.h"
 
 namespace sly {
@@ -12,7 +13,7 @@ namespace sly {
     public:
         virtual ~IMemoryManager() {}
 
-        virtual void init(MemoryManagerDesc& desc);
+        virtual void init(MemoryManagerDesc& desc) = 0;
 
         virtual IHeap& getGlobalHeap() = 0;
         virtual void setGlobalHeap(IHeap& hHandle) = 0;
@@ -30,19 +31,23 @@ namespace sly {
 
     class MemoryManager : public IMemoryManager {
     public:
-        _TYPE_INFO_(MemoryManager);
 
+        virtual const TypeInfo& getType() {
+            static const TypeInfo instance = TypeInfo::get<decltype(*this)>();
+            return instance;
+        }
+    
         MemoryManager() {}
         virtual ~MemoryManager() {}
 
-        virtual void init(MemoryManagerDesc& desc);
+        virtual void init(MemoryManagerDesc& desc) {}
 
-        virtual IHeap& getGlobalHeap();
-        virtual void setGlobalHeap(IHeap& hHandle);
+        virtual IHeap& getGlobalHeap() { return *_default; }
+        virtual void setGlobalHeap(IHeap& hHandle) {}
 
-        virtual void getHeap(size_t heapId);
-        virtual void setHeap(size_t heapId, IHeap& heap);
-        virtual void removeHeap(size_t heapId);
+        virtual void getHeap(size_t heapId) {}
+        virtual void setHeap(size_t heapId, IHeap& heap) {}
+        virtual void removeHeap(size_t heapId) {}
 
         virtual vptr_t alloc(size_t size) { return ::malloc(size); }       
         virtual void free(vptr_t ptr) { ::free(ptr); }
@@ -50,7 +55,5 @@ namespace sly {
     protected:    
 
         IHeap* _default;
-        size_t _nextHeapId;
-        std::map<size_t, IHeap&> _heaps;
     };  
 }

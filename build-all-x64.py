@@ -169,9 +169,9 @@ def main(): #dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine',
 		build(os.path.abspath(proj_name))
 		stop_on_error()
 
-	dir_list = ['slyedit', 'slygl4']
+	dir_list = ['slyedit']#, 'slygl4']
 	if(PLATFORM == "Windows"):
-		dir_list.extend(['slyd3d11','slyd3d12'])
+		dir_list.extend(['slyd3d12']) #'slyd3d11',
 
 	cmake_all(dir_list)
 	stop_on_error()

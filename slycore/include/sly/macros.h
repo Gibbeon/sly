@@ -22,3 +22,9 @@ template< const char char_, const char* str_, unsigned int value_ = 0 > struct s
 };
 
 template<const char* str_, unsigned int value_> struct static_strlen< '\0', str_, value_ > { static const unsigned int result = value_ ; } ;
+
+// Generate CRC lookup table
+template <unsigned c, int k = 8>
+struct f : f<((c & 1) ? 0xedb88320 : 0) ^ (c >> 1), k - 1> {};
+template <unsigned c> struct f<c, 0>{enum {value = c};};
+

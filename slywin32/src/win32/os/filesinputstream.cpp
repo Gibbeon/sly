@@ -4,12 +4,10 @@
 #include <sys/stat.h>
 
 #include "sly/win32/os/os.h"
-#include "sly/gfx/rendersystem.h"
-#include "sly/platform.h"
 
 #define BUF_SIZE 256
 
-using namespace sly::os;
+using namespace sly;
 
 void Win32FileInputStream::open(const char_t* file) {
 
