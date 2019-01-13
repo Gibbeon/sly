@@ -22,6 +22,9 @@ if(MSVC)
 endif()
 
 include_directories(./include)
+include_directories(../slycore/include)
+
+link_directories(../slycore/lib)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )

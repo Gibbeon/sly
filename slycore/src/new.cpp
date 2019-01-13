@@ -1,4 +1,4 @@
-#include "sly/global.h"
+/* #include "sly/global.h"
 #include "sly/engine.h"
 #include "sly/mem/memorymanager.h"
 
@@ -20,3 +20,4 @@ void operator delete[](void *ptr) throw()
 {
     Engine::MemoryManager().free(ptr);
 }
+ */

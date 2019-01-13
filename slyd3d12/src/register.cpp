@@ -1,5 +1,4 @@
 #include "sly/global.h"
-#include "sly/engine.h"
 #include "sly/gfx.h"
 #include "sly/d3d12.h"
 #include "sly/d3d12/gfx/rendersystem.h"

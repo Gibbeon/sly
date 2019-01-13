@@ -52,15 +52,17 @@ namespace sly {
 
     class Win32OperatingSystem : public IOperatingSystem {
     public:
+        
+
         Win32OperatingSystem();
         virtual ~Win32OperatingSystem() {}
 
         virtual void init();
+        virtual size_t getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max);
 
         virtual IFileSystem& FileSystem() { return _fs; }
 
     protected:
-        void loadModules();
 
     private:
         Win32FileSystem _fs;

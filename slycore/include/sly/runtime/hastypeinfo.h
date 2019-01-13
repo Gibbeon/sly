@@ -4,10 +4,6 @@
 #include "sly/runtime/typeinfo.h"
 
 namespace sly {
-
-    //create a hash based of a type name
-
-
     class IHasTypeInfo {
     public:
         virtual ~IHasTypeInfo() {}
@@ -20,4 +16,6 @@ namespace sly {
 
     };
 }
+
+#define _GET_TYPE_INFO()     virtual const TypeInfo& getType() { static const TypeInfo instance = TypeInfo::get<decltype(*this)>(); return instance; }
 

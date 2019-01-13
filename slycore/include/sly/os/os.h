@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sly/global.h"
+#include "sly/ext/pluginmanager.h"
 
 namespace sly {
     class IFileInputStream {
@@ -38,12 +39,16 @@ namespace sly {
         IFileSystem() {}
 
     };
+    
+    typedef void (*pfRegisterPlugins) (sly::IPluginManager& );
 
     class IOperatingSystem {
     public:
         virtual ~IOperatingSystem() {}
+        
 
         virtual void init() = 0;
+        virtual size_t getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max) = 0;
 
         virtual IFileSystem& FileSystem() = 0;
     protected:

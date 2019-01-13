@@ -4,10 +4,7 @@
 namespace sly {
     namespace gfx {
         class D3D12RenderSystemImpl : public IRenderSystem {
-            virtual const TypeInfo& getType() {
-                static const TypeInfo instance = TypeInfo::get<decltype(*this)>();
-                return instance;
-            }
+            _GET_TYPE_INFO();
 
             virtual void createDevice(IDevice** outDevice, DeviceDesc& desc);
         };  
