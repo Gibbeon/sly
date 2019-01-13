@@ -72,7 +72,9 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "bitset": "cpp"
+        "*.tcc": "cpp",
+        "clocale": "cpp",
+        "cwctype": "cpp"
     },
     "python.pythonPath": "C:\\Users\\me\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
     "search.exclude": {

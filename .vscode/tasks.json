@@ -8,10 +8,11 @@
             "type": "shell",
             "windows": {
                 "command": "py.exe",
-                "args": [
-                    "build-x64.py"
-                ],
             },
+            "command": "python3",
+            "args": [
+                "build-x64.py"
+            ],
             "options": {
                 "cwd": "${workspaceRoot}/slycore"
             },
