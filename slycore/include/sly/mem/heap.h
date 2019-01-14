@@ -1,118 +1,67 @@
 #pragma once
 
 #include "sly/global.h"
+#include "sly/mem/memoryblock.h"
+#include "sly/mem/allocator.h"
 
 namespace sly {
     class IHeap {
     public:
         virtual ~IHeap() {}
-        
+
+        virtual vptr_t alloc(size_t) = 0;
+        virtual void free(vptr_t) = 0;
+        virtual void reset() = 0;
+
+        virtual vptr_t head() = 0;
         virtual size_t getSize() = 0;
+
+        virtual bool_t isInHeap(vptr_t) = 0;
         
     protected:    
         IHeap() {}
-    };  
-
-    class Heap {
-    public:
-        Heap(vptr_t memory, size_t size);
-
-        vptr_t head();
-        vptr_t tail();
-            
-    protected:
-    }
-
-    // need to take alignment into consideration    
-    class PoolAllocator {
-    public:
-        PoolAllocator(IHeap& heap, size_t blockSize); // blocksize should be a power of two ideally
-
-        vptr_t alloc(size_t size) {
-            // how many blocks do I need
-
-            // search the table for that many blocks together (best fit, worst fit, first fit)
-
-            // mark those blocks as allocated
-            
-            // calculate the return pointer
-
-            return NULL;
-        }
-
-        void free(vptr_t ptr) {
-            // get the table offset from the pointer
-            
-            // mark those blocks as free
-        }
-
-        // do we want the head of every pointer to be a pointer to it's heap?
-
-        // getMaxAllocationSize();
-        // getFreeSize();
-
-    protected:
-        IHeap& heap;
-        size_t blockSize;
-        size_t numBlocks;
-        size_t offset;
     };
 
-    class StackAllocator {
+    class Heap : public IHeap {
     public:
-        StackAllocator(IHeap& heap); // blocksize should be a power of two ideally
-
-        vptr_t alloc(size_t size) {
-            // keep a pointer to next available
-            // return next available
-
-            return NULL;
+        Heap(MemoryBlock& block, IAllocator& allocator) :
+            _block(block),
+            _allocator(allocator)
+        {
         }
 
-        void free(vptr_t ptr) {
-            // you can only free the last ptr
-            // move the pointer back by the size of this one
+        virtual ~Heap() {}
+
+        virtual vptr_t alloc(size_t size) {
+            return _allocator.alloc(size);
         }
 
-        // do we want the head of every pointer to be a pointer to it's heap?
+        virtual void free(vptr_t ptr) {
+            _allocator.free(ptr);
+        }
 
-        // getMaxAllocationSize();
-        // getFreeSize();
+        virtual void reset() {
+            _allocator.reset();
+        }
+
+        virtual bool_t isInHeap(vptr_t ptr) {
+            return ptr >= head() && ptr < tail();
+        }
+        
+        virtual size_t getSize() {
+            return _block.getSize();
+        }
+
+        virtual vptr_t head() {
+            return _block.head();
+        }
+
+        vptr_t tail() {
+            return (vptr_t)((size_t)head() + getSize());
+        }
 
     protected:
-        IHeap& heap;
-    };
-
-    class LinkedListAllocator { // doubly linked list perhaps? // maybe instead of blocks we still use a table of some sort?
-    public:
-        LinkedListAllocator(IHeap& heap, size_t blockSize); // blocksize should be a power of two ideally
-
-        vptr_t alloc(size_t size) {
-            // start at head, if used go to next allocation
-
-            // if not used see if this can fit (best fit, worst fit, first fit)
-
-            // mark those blocks as allocated
-            
-            // calculate the return pointer
-
-            return NULL;
-        }
-
-        void free(vptr_t ptr) {
-            // start at head, walk until ptr matches
-            // set previous pointer to be the ptr of this
-            // set new free size on previous pointer
-            
-            // mark those blocks as free
-        }
-
-        // do we want the head of every pointer to be a pointer to it's heap?
-
-        // getMaxAllocationSize();
-        // getFreeSize();
-
-    protected:
-        IHeap& heap;
+        MemoryBlock& _block;
+        IAllocator& _allocator;
     };
 }
