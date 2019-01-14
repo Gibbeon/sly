@@ -13,3 +13,6 @@
 [submodule "3rdparty/HLSLcc"]
 	path = 3rdparty/HLSLcc
 	url = https://github.com/Unity-Technologies/HLSLcc.git
+[submodule "mtlpp"]
+	path = mtlpp
+	url = https://github.com/naleksiev/mtlpp.git
