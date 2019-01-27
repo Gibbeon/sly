@@ -16,3 +16,6 @@
 [submodule "mtlpp"]
 	path = mtlpp
 	url = https://github.com/naleksiev/mtlpp.git
+[submodule "3rdparty/rapidjson"]
+	path = 3rdparty/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
