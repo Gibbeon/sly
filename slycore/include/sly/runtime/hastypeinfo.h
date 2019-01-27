@@ -17,5 +17,5 @@ namespace sly {
     };
 }
 
-#define _GET_TYPE_INFO()     virtual const TypeInfo& getType() { static const TypeInfo instance = TypeInfo::get<decltype(*this)>(); return instance; }
+#define _GET_TYPE_INFO()     virtual const sly::TypeInfo& getType() { static const sly::TypeInfo instance = sly::TypeInfo::get<std::remove_reference<decltype(*this)>::type>(); return instance; }
 

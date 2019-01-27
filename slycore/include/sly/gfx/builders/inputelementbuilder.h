@@ -13,7 +13,7 @@ namespace sly {
         public:
             InputElementDesc() : offset(0) {}
 
-            std::string semanticName;
+            const char * semanticName;
             eDataFormat format;
             eDataInputClassification scope;
             size_t offset;
@@ -24,7 +24,7 @@ namespace sly {
             InputElementBuilder() : Builder() {}
             virtual ~InputElementBuilder() {}
 
-            InputElementBuilder& setSemanticName(std::string name) { desc_.semanticName = name; return * this;}
+            InputElementBuilder& setSemanticName(const char * name) { desc_.semanticName = name; return * this;}
             InputElementBuilder& setFormat(eDataFormat format) {desc_.format = format; return * this;}
             InputElementBuilder& setInputScope(eDataInputClassification scope) {desc_.scope = scope; return * this;}
             InputElementBuilder& setOffset(size_t offset) {desc_.offset = offset; return * this;}

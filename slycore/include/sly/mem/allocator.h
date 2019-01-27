@@ -7,7 +7,7 @@ namespace sly {
     public:
         virtual ~IAllocator() {}
 
-        virtual vptr_t alloc(u32 size) = 0;
+        virtual vptr_t alloc(size_t size) = 0;
         virtual void free(vptr_t ptr) = 0;
 
         virtual void reset();

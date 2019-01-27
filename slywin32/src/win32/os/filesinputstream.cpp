@@ -47,8 +47,10 @@ void Win32FileInputStream::open(const char_t* file) {
     }
 }
 
-void Win32FileInputStream::read(vptr_t buffer, size_t size) {
-    CopyMemory(buffer, _file, size);
+size_t Win32FileInputStream::read(vptr_t buffer, size_t size) {
+    CopyMemory(buffer, (vptr_t)((size_t)_file + _offset), size);
+    _offset += size;
+    return size;
 }
 
 size_t Win32FileInputStream::getSize() {

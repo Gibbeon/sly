@@ -36,7 +36,7 @@ namespace sly {
         virtual ~PluginManager() {}
 
         virtual const TypeInfo& getType() {
-            static const TypeInfo instance = TypeInfo::get<decltype(*this)>();
+            static const TypeInfo instance = TypeInfo::get<std::remove_reference<decltype(*this)>::type>();
             return instance;
         }
 
