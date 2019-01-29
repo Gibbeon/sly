@@ -74,7 +74,13 @@
         "xloctime": "cpp",
         "*.tcc": "cpp",
         "clocale": "cpp",
-        "cwctype": "cpp"
+        "cwctype": "cpp",
+        "bitset": "cpp",
+        "codecvt": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "regex": "cpp",
+        "thread": "cpp"
     },
     "python.pythonPath": "C:\\Users\\me\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
     "search.exclude": {

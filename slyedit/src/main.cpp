@@ -1,11 +1,25 @@
 //#include <windows.h>
 #include "sly.h"
-#include "sly/application.h"
 
 #include "sly/os/os.h"
 #include "sly/gfx.h"
+#include "sly/runtime/serialization/jsonserializer.h"
+#include "sly/runtime/serialization/binaryserializer.h"
 
 #include <stdio.h>
+
+template<typename T = void>
+struct result_t {
+    result_t() : successful(true) {}
+    result_t(T value) : retval (value) {}
+    
+    bool_t successful;
+    T retval;
+
+    operator T const & () const noexcept { return retval; }
+    operator T       & ()     & noexcept { return retval; }
+    operator T      && ()    && noexcept { return std::move(retval); }
+};
 
 struct Vec3 {
     float x, y, z;
@@ -17,6 +31,77 @@ struct Vertex
     sly::gfx::color_t color;
 };
 
+class Other {
+public:
+    Other() : _random(0) {
+
+    }
+
+    virtual ~Other() {}
+
+    virtual void setData(u32 value) {
+        _random = value;
+    }
+protected:
+    u32 _random;
+};
+
+class TestClass : public sly::ISerializable
+ {
+public:
+    _GET_TYPE_INFO();
+
+    TestClass() : _data(0) {
+
+    }
+
+    virtual ~TestClass() {}
+
+    virtual void setData(u32 value) {
+        _data = value;
+    }
+        
+    virtual void serialize(sly::ISerializer& data) {
+        data.write("_data", _data);
+        //sly::BinaryWriter writer(stream);
+        //writer.write(_data);
+        //writer.write(17);
+    }
+
+    virtual void deserialize(sly::IDeserializer& data) {
+        //data.read("_data", &_data);
+        //sly::BinaryReader reader(stream);
+        //_data = reader.read<u32>();
+        //u32 test = reader.read<u32>();
+    }
+
+protected:
+    u32 _data;
+};
+
+// desc no registration
+/*    sly::IOutputStream* pDataFile;
+    sly::Engine::OS().FileSystem().create(&pDataFile, u8"output.dat");
+    sly::BinarySerializer serializer(*pDataFile);
+
+    sly::gfx::InputElementBuilder test1;
+    test1.setSemanticName("POSITION")
+        .setFormat(sly::gfx::eDataFormat_R32G32B32_FLOAT)
+        .setInputScope(sly::gfx::eDataInputClassification_PerVertex);
+
+    sly::TypeInfo type = sly::TypeInfo::get<sly::gfx::InputElementDesc>();
+    serializer.write(type, &test1.build(), sizeof(sly::gfx::InputElementDesc));
+
+    pDataFile->close();
+
+    sly::IInputStream* pInputFile;
+    sly::Engine::OS().FileSystem().open(&pInputFile, u8"output.dat");
+
+    sly::BinaryDeserializer deserializer(*pInputFile);
+    sly::gfx::InputElementDesc desc;
+    deserializer.read(&desc, sizeof(sly::gfx::InputElementDesc));
+
+    pInputFile->close();*/
 #ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 #else
@@ -25,6 +110,32 @@ int main()
 {   
     // load configuration, plugins, etc
     sly::Engine::init();
+
+    sly::IOutputStream* pDataFile;
+    sly::Engine::OS().FileSystem().create(&pDataFile, u8"output.dat");
+    sly::JSONSerializer serializer(*pDataFile);
+
+    TestClass data;  
+    data.setData(12);
+
+    sly::TypeInfo type = sly::TypeInfo::get<TestClass>();
+    serializer.write(type, &data);
+
+    pDataFile->close();
+
+    sly::IInputStream* pInputFile;
+    sly::Engine::OS().FileSystem().open(&pInputFile, u8"output.dat");
+
+    sly::TypeActivator activator;
+    activator.add<TestClass>();
+    sly::JSONDeserializer deserializer(*pInputFile, activator);
+    TestClass data2;
+    deserializer.read(&data2, sizeof(TestClass));
+
+    pInputFile->close();
+
+    return 0;
+
 
     // choosing between multiple render systems?
     sly::gfx::RenderSystemBuilder rsBuilder;
@@ -48,7 +159,7 @@ int main()
     
     // data
     Vertex* triangleVertices = nullptr;
-    sly::IFileInputStream* pVertexData;
+    sly::IInputStream* pVertexData;
     sly::Engine::OS().FileSystem().open(&pVertexData, u8"vertex.dat");
     size_t vtxsize = pVertexData->getSize();
     
@@ -73,7 +184,7 @@ int main()
     renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build()); 
 
     //shaders
-    sly::IFileInputStream* pShaderFile;
+    sly::IInputStream* pShaderFile;
     sly::Engine::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
 
     size_t vssize = pShaderFile->getSize();
