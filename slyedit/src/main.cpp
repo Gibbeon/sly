@@ -1,4 +1,4 @@
-#include <windows.h>
+//#include <windows.h>
 #include "sly.h"
 #include "sly/application.h"
 
@@ -17,7 +17,11 @@ struct Vertex
     sly::gfx::color_t color;
 };
 
+#ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
+#else
+int main()
+#endif
 {   
     // load configuration, plugins, etc
     sly::Engine::init();

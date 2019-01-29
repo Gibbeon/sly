@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(slyedit)
 
-SET(GFXAPI "D3D12" CACHE STRING "D3D12, D3D11, OPENGL4")
+SET(GFXAPI "MACOS" CACHE STRING "D3D12, D3D11, OPENGL4, MACOS")
 
 set(CMAKE_SUPPRESS_REGENERATION true)
 
@@ -31,8 +31,6 @@ include_directories(../slyengine/include)
 
 link_directories(../slycore/lib)
 link_directories(../slyengine/lib)
-link_directories(../slywin32/lib)
-link_directories(../slyd3d12/lib)
 link_directories(../slygl4/lib)
  
 #this isn't best practice
@@ -40,10 +38,17 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} slycore.lib)
-target_link_libraries(${PROJECT_NAME} slyengine.lib)
+find_library(SLYCORE_LIB slycore.a PATHS ../slycore/lib)
+find_library(SLYWIN32_LIB slyengine.a PATHS ../slyengine/lib)
+find_library(SLYMACOS_LIB slymacOS.a PATHS ../slymacOS/lib)
+
+target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
+target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
+target_link_libraries(${PROJECT_NAME} ${SLYMACOS_LIB})
 
 if(WIN32)
+    link_directories(../slywin32/lib)
+    link_directories(../slyd3d12/lib)
     target_link_libraries(${PROJECT_NAME} slywin32.lib)
     if(${GFXAPI} EQUAL "D3D12")
         target_link_libraries(${PROJECT_NAME} slyd3d12.dll)
@@ -56,6 +61,8 @@ if(WIN32)
     elseif(${GFXAPI} EQUAL "OPENGL4")
         target_link_libraries(${PROJECT_NAME} slygl4.lib)
     endif()
+else()
+
 endif()
 
 

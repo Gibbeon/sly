@@ -1,19 +1,17 @@
 #pragma once
 
-#include <windows.h>
 #include <stdio.h>
-#include <conio.h>
 
 #include <fstream>
 
-#include "sly/win32.h"
+#include "sly/macOS.h"
 #include "sly/os/os.h"
 
 namespace sly {
-    class Win32FileInputStream : public IFileInputStream {
+    class MacOSFileInputStream : public IFileInputStream {
     public:
-                Win32FileInputStream() {}
-        virtual ~Win32FileInputStream() {}
+                MacOSFileInputStream() {}
+        virtual ~MacOSFileInputStream() {}
 
         virtual void open(const char_t* file);
         virtual void read(vptr_t buffer, size_t size);
@@ -21,15 +19,14 @@ namespace sly {
         
         virtual void close();
     private:
-        HANDLE _handle;
         vptr_t _file;
         size_t _size;
     };
 
-    class Win32FileOutputStream : public IFileOutputStream {
+    class MacOSFileOutputStream : public IFileOutputStream {
     public:        
-        Win32FileOutputStream() {}
-        virtual ~Win32FileOutputStream() {}
+        MacOSFileOutputStream() {}
+        virtual ~MacOSFileOutputStream() {}
 
         virtual void open(const char_t* file);
         virtual void write(vptr_t buffer, size_t size);
@@ -38,24 +35,24 @@ namespace sly {
         std::fstream _file;
     };
 
-    class Win32FileSystem : public IFileSystem {
+    class MacOSFileSystem : public IFileSystem {
         virtual void open(IFileInputStream** ppStream, const char_t* file) {
-            (*ppStream) = new Win32FileInputStream();
+            (*ppStream) = new MacOSFileInputStream();
             (*ppStream)->open(file);
         }
 
         virtual void create(IFileOutputStream** ppStream, const char_t* file) {
-            (*ppStream) = new Win32FileOutputStream();
+            (*ppStream) = new MacOSFileOutputStream();
             (*ppStream)->open(file);
         }
     };
 
-    class Win32OperatingSystem : public IOperatingSystem {
+    class MacOSOperatingSystem : public IOperatingSystem {
     public:
         
 
-        Win32OperatingSystem();
-        virtual ~Win32OperatingSystem() {}
+        MacOSOperatingSystem();
+        virtual ~MacOSOperatingSystem() {}
 
         virtual void init();
         virtual size_t getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max);
@@ -65,6 +62,6 @@ namespace sly {
     protected:
 
     private:
-        Win32FileSystem _fs;
+        MacOSFileSystem _fs;
     };
 }
