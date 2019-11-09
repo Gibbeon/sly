@@ -24,13 +24,20 @@ if(MSVC)
 endif()
 
 include_directories(./include)
+include_directories(./../3rdparty)
 include_directories(./../slycore/include)
 
 link_directories(../slycore/lib)
  
 #this isn't best practice
-file(GLOB_RECURSE SOURCES "src/*.cpp" )
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE OBJC_SOURCES "./../3rdparty/mtlpp/src/*.mm" "./../3rdparty/mtlpp/examples/window*.mm" )
+
+set(CMAKE_CXX_FLAGS "-x objective-c++")
+
+add_library(${PROJECT_NAME} STATIC ${SOURCES} ${OBJC_SOURCES})
+
+#set_source_files_properties(${OBJC_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 
 target_link_libraries(${PROJECT_NAME} slycore)
 

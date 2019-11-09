@@ -44,6 +44,10 @@ typedef void* vptr_t;
 typedef u64 size_t;
 #endif
 
+#ifndef UINT_MAX
+#define UINT_MAX (0xffffffff)
+#endif
+
 
 #ifdef FALSE
 #undef FALSE

@@ -1,4 +1,4 @@
-#include <windows.h>
+//#include <windows.h>
 #include "sly.h"
 
 #include "sly/os/os.h"
@@ -102,8 +102,11 @@ protected:
     deserializer.read(&desc, sizeof(sly::gfx::InputElementDesc));
 
     pInputFile->close();*/
-
+#ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
+#else
+int main()
+#endif
 {   
     // load configuration, plugins, etc
     sly::Engine::init();
