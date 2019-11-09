@@ -1,21 +1,28 @@
-[submodule "3rdparty/PhysX"]
-	path = 3rdparty/PhysX
+
+[submodule "packages/PhysX"]
+	path = packages/PhysX
 	url = https://github.com/NVIDIAGameWorks/PhysX.git
-[submodule "3rdparty/glm"]
-	path = 3rdparty/glm
+[submodule "packages/LuaJIT"]
+	path = packages/LuaJIT
+	url = https://github.com/LuaJIT/LuaJIT.git
+[submodule "packages/glm"]
+	path = packages/glm
 	url = https://github.com/g-truc/glm
-[submodule "3rdparty/v8"]
-	path = 3rdparty/v8
-	url = https://github.com/v8/v8.git
-[submodule "3rdparty/googletest"]
-	path = 3rdparty/googletest
-	url = https://github.com/google/googletest.git
-[submodule "3rdparty/HLSLcc"]
-	path = 3rdparty/HLSLcc
+[submodule "packages/openal-soft"]
+	path = packages/openal-soft
+	url = https://github.com/kcat/openal-soft
+[submodule "packages/gli"]
+	path = packages/gli
+	url = https://github.com/g-truc/gli
+[submodule "packages/glfw"]
+	path = packages/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "packages/Chipmunk2d"]
+	path = packages/Chipmunk2d
+	url = https://github.com/slembcke/Chipmunk2D.git
+[submodule "packages/HLSLcc"]
+	path = packages/HLSLcc
 	url = https://github.com/Unity-Technologies/HLSLcc.git
-[submodule "mtlpp"]
-	path = mtlpp
+[submodule "packages/mtlpp"]
+	path = packages/mtlpp
 	url = https://github.com/naleksiev/mtlpp.git
-[submodule "3rdparty/rapidjson"]
-	path = 3rdparty/rapidjson
-	url = https://github.com/Tencent/rapidjson.git
