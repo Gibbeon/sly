@@ -7,6 +7,24 @@
 
 namespace sly {
 
+    class Alloc {
+        vptr_t data;
+        size_t size;
+    };
+
+    template<typename TChar = char_t>
+    class BaseString {
+        BaseString(Alloc ptr);
+
+        BaseString()
+    };
+
+    using String = BaseString<char_t>;
+
+}
+
+    /*
+
     enum eValue {
         eTest_Value = 1
     };
@@ -17,6 +35,11 @@ namespace sly {
 DEFINE_ENUM(eValue) {
     ENUM_VALUE(eTest_Value),
 };
+
+
+
+
+
 
     
     class IString {
@@ -90,17 +113,30 @@ DEFINE_ENUM(eValue) {
         eEnumType_Entry1, "eEnumType_Entry1"
     };
 
+    template<typename TType>
+    class IConvertTo {
+    public:
+        virtual void convertTo(TType* value) = 0;
+    };
+
+    template<typename TType>
+    class IConvertFrom {
+    public:
+        virtual void convertFrom(TType& value) = 0;
+    };
+
     template<enum TEnumType, size_t N>
-    class Enum : public IConvertable {
+    class Enum : public IConvertTo<IString>, public IConvertTo<IStream>, public IConvertFrom<IString> {
     public:
         Enum() : _value(0) {}
+        Enum(TEnumType value) : _value(value) {}
         virtual ~Enum*() {}
         
-        virtual void toString(const MutableString& string) = 0;
-        virtual void fromString(const IString& string) = 0;
+        virtual void convertTo(const MutableString& string) = 0;
+        virtual void convertTo(IOutputStream& stream) = 0;
 
-        virtual void toStream(IOutputStream& stream) = 0;
-        virtual void fromStream(IInputStream& stream) = 0;
+        virtual void convertFrom(const IString& string) = 0;
+        virtual void convertFrom(IInputStream& stream) = 0;
 
         bool_t hasFlag(TEnumType value);
         bool_t setFlag(TEnumType flag);
@@ -236,3 +272,4 @@ DEFINE_ENUM(eValue) {
         IDeserializer() {}
     };
 }
+*/
