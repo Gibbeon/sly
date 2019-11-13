@@ -80,7 +80,12 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "regex": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "optional": "cpp",
+        "future": "cpp",
+        "csignal": "cpp",
+        "shared_mutex": "cpp",
+        "string_view": "cpp"
     },
     "python.pythonPath": "C:\\Users\\me\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
     "search.exclude": {

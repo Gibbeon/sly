@@ -4,72 +4,50 @@
 #include "sly/io/ostream.h"
 #include "sly/runtime/serialization/serializable.h"
 #include "sly/runtime/hastypeinfo.h"
+#include "sly/static_hash.h"
 
-namespace sly {
+namespace sly {    
+    template<typename TType>
+    class IConvertTo {
+    public:
+        virtual void convertTo(TType* value) = 0;
+    };
 
-    class Alloc {
-        vptr_t data;
-        size_t size;
+    template<typename TType>
+    class IConvertFrom {
+    public:
+        virtual void convertFrom(TType& value) = 0;
+    };
+
+    /*class String {
+        public:
+            template<typename TChar = char_t>
+            String(const TChar* data) :
+                _data(data) 
+            {
+
+            }
+
+            const TChar* data() { return _data; }
+
+            size_t length() { return _length; }
+
+            u32 getHashCode() {
+                return static_hash(_data);
+            }
+
+        private:
+            const TChar* _data;
     };
 
     template<typename TChar = char_t>
-    class BaseString {
-        BaseString(Alloc ptr);
-
-        BaseString()
-    };
-
-    using String = BaseString<char_t>;
-
-}
-
-    /*
-
-    enum eValue {
-        eTest_Value = 1
-    };
-
-#define DEFINE_ENUM(x) static const std::pair<const char*, size_t> _ENUM_ ## x[] = 
-#define ENUM_VALUE(x) { std::pair<const char*, size_t>(STRINGIFY(x), x) }
-
-DEFINE_ENUM(eValue) {
-    ENUM_VALUE(eTest_Value),
-};
-
-
-
-
-
-
-    
-    class IString {
+    class MutableString {
     public:
-        virtual const char_t* data() = 0;
-        virtual size_t length() = 0;
-    };
-
-    template<typename TChar = char_t>
-    class BaseString : public IString {
-    public:
-        BaseString(): _data(NULL) {}
-        BaseString(const TChar* data) : _data(data) {}
-        virtual ~BaseString() {}
-
-        virtual size_t length() { return TChar* data = data(); size_t index = 0; while(data[index]) { ++index; }; return index; }
-        virtual const TChar* data() { return _data; }
-
-    protected:
-        const TChar* _data;
-    };
-
-    
-    template<typename TChar = char_t>
-    class BaseMutableString : public IString {
-    public:
-        BaseMutableString() {
+        MutableString() {
             _string.insert(_string.begin(), (TChar) '\0');
         }
-        virtual ~BaseMutableString() {}
+
+        virtual ~MutableString() {}
 
         virtual char_t get(size_t index) {
             return _string[index];
@@ -90,74 +68,26 @@ DEFINE_ENUM(eValue) {
         virtual size_t length() {
             return _string.size() - 1;
         }
+
+        String toString() {
+            return String(_string.data(), sizeof(TChar), length());
+        }
     
     protected:
         std::vector<TChar> _string;
-    };
-   
-    using String = BaseString<>;
-    using MutableString = BaseMutableString<>;
+    };*/
 
-    class IConvertable {
-    public:
-        virtual ~IConvertable() {} 
 
-        virtual void toString(const MutableString& string) = 0;
-        virtual void fromString(const IString& string) = 0;
+    
+ 
 
-        virtual void toStream(IOutputStream& stream) = 0;
-        virtual void fromStream(IInputStream& stream) = 0;
-    };    
-
-    std::pair<TEnumType, String> tagEnumType_NameValuePairs = {
-        eEnumType_Entry1, "eEnumType_Entry1"
-    };
-
-    template<typename TType>
-    class IConvertTo {
-    public:
-        virtual void convertTo(TType* value) = 0;
-    };
-
-    template<typename TType>
-    class IConvertFrom {
-    public:
-        virtual void convertFrom(TType& value) = 0;
-    };
-
-    template<enum TEnumType, size_t N>
-    class Enum : public IConvertTo<IString>, public IConvertTo<IStream>, public IConvertFrom<IString> {
-    public:
-        Enum() : _value(0) {}
-        Enum(TEnumType value) : _value(value) {}
-        virtual ~Enum*() {}
-        
-        virtual void convertTo(const MutableString& string) = 0;
-        virtual void convertTo(IOutputStream& stream) = 0;
-
-        virtual void convertFrom(const IString& string) = 0;
-        virtual void convertFrom(IInputStream& stream) = 0;
-
-        bool_t hasFlag(TEnumType value);
-        bool_t setFlag(TEnumType flag);
-
-        operator TEnumType() { return _value; }
-    protected:
-        TEnumType _value;
-
-        Array<IString&> _names;
-        Array<TEnumType> _values;
-    };
-
+/*
     class IConverter {
     public:
         virtual ~IConverter() {} 
 
         virtual void toString(vptr_t value, size_t length, const MutableString& string) = 0;
-        virtual void fromString(const IString& string, vptr_t value, size_t length) = 0;
-
-        virtual void toStream(vptr_t value, size_t length, IOutputStream& stream) = 0;
-        virtual void fromStream(IInputStream& stream, vptr_t value, size_t length) = 0;
+        virtual void fromString(const String& string, vptr_t value, size_t length) = 0;
     };
 
     class IntegerConverter : public IConverter {
@@ -212,8 +142,6 @@ DEFINE_ENUM(eValue) {
     protected:
         size_t _base;
     };
-
-
 
     class Converter {
     public:
@@ -270,6 +198,5 @@ DEFINE_ENUM(eValue) {
 
     protected:
         IDeserializer() {}
-    };
+    };*/
 }
-*/

@@ -4,12 +4,12 @@
 
 namespace sly {
     namespace gfx {
-        typedef enum  {
+        ENUM_DECL(eDataFormat,
             eDataFormat_R32G32B32_FLOAT,
             eDataFormat_R32G32B32A32_FLOAT,
             eDataFormat_R8G8B8A8_UNORM,
             eDataFormat_Max,
-            eDataFormat_Default = eDataFormat_R8G8B8A8_UNORM,
-        } eDataFormat;     
+            eDataFormat_Default = eDataFormat_R8G8B8A8_UNORM
+         );     
     }
 }

@@ -48,7 +48,6 @@ typedef u64 size_t;
 #define UINT_MAX (0xffffffff)
 #endif
 
-
 #ifdef FALSE
 #undef FALSE
 #endif

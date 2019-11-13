@@ -4,10 +4,10 @@
 
 namespace sly {
     namespace gfx {
-        typedef enum  {
+        ENUM_DECL(ePrimativeType, 
             ePrimativeType_Triangle,
             ePrimativeType_Max,
             ePrimativeType_Default = ePrimativeType_Triangle
-        } ePrimativeType;         
+        );         
     }
 }

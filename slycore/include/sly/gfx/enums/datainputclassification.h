@@ -4,11 +4,11 @@
 
 namespace sly {
     namespace gfx {
-        typedef enum  {
+        ENUM_DECL(eDataInputClassification, 
             eDataInputClassification_PerVertex,
             eDataInputClassification_PerInstance,
             eDataInputClassification_Max,
-            eDataInputClassification_Default = eDataInputClassification_PerVertex,
-        } eDataInputClassification;          
+            eDataInputClassification_Default = eDataInputClassification_PerVertex
+        );          
     }
 }

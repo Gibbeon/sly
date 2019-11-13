@@ -9,6 +9,16 @@
 typedef u32 type_id;
 
 namespace sly {
+    template <typename T, typename = typename std::is_enum<T>::type>
+    struct safe_underlying_type {
+        using type = int;
+    };
+
+    template <typename T>
+    struct safe_underlying_type<T, std::true_type> {
+        using type = std::underlying_type_t<T>; 
+    };
+
     class ISerializable;
     class TypeInfo {
     public:
@@ -18,16 +28,19 @@ namespace sly {
                     bool_t isSerializable,
                     bool_t isPolymophic,
                     bool_t isArray,
-                    const TypeInfo& arrayType) :
+                    bool_t isEnum,
+                    const TypeInfo& underlyingType) :
             _name(typeName),
-            _id(static_hash(typeName)),
+            _id(dynamic_crc32(typeName)),
             _isPolymophic(isPolymophic),
             _size(byteSize),
             _ctor(ctor),
             _isSerializable(isSerializable),
             _isArray(isArray),
-            _arrayType(&arrayType)
+            _isEnum(isEnum),
+            _underlyingType(&underlyingType)
         {
+            
         }
         
         template <typename T>
@@ -38,7 +51,8 @@ namespace sly {
                 std::is_convertible<T*, sly::ISerializable*>::value,
                 std::is_polymorphic<T>::value,
                 std::is_array<T>::value,
-                TypeInfo::getArrayType<T>()
+                std::is_enum<T>::value,
+                TypeInfo::getUnderlyingType<T>()
                 );
         }
        
@@ -47,7 +61,7 @@ namespace sly {
         inline type_id getId() const { return _id; }
         inline bool_t isPolymophic() const { return _isPolymophic; }
         inline bool_t isSerializable() const { return _isSerializable; }
-        inline const TypeInfo& getArrayType() const { return *_arrayType; }
+        inline const TypeInfo& getUnderlyingType() const { return *_underlyingType; }
         inline bool_t isArray() const { return _isArray; }
         inline std::function<vptr_t(vptr_t)> const getDefaultConstructor() { return _ctor; }
         
@@ -60,97 +74,40 @@ namespace sly {
         bool_t _isSerializable;
         bool_t _isPolymophic;
         bool_t _isArray;
-        const TypeInfo* _arrayType;
+        bool_t _isEnum;
+        const TypeInfo* _underlyingType;
 
         std::function<vptr_t(vptr_t)> _ctor;
 
         template <typename T>
         static const std::function<vptr_t(vptr_t)> buildConstructor() {
-            static const std::function<vptr_t(vptr_t)> ctor = std::is_abstract<T>::value ? (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return (vptr_t)nullptr; } : (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return reinterpret_cast<vptr_t>(new (buffer) std::conditional<std::is_abstract<T>::value, u8, T>::type()); };
+            static const std::function<vptr_t(vptr_t)> ctor = std::is_abstract<T>::value ? //nullptr : nullptr;
+                (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return (vptr_t)nullptr; } : 
+                (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return reinterpret_cast<vptr_t>(new (buffer) std::conditional<std::is_abstract<T>::value, u8, T>::type()); };
             return ctor;
         } 
         
         template <typename T>
-        static const TypeInfo& getArrayType() {
-            static const TypeInfo arrayInfo = std::is_array<T>::value ? get<std::remove_extent<T>::type>() : TypeInfo();
+        static const TypeInfo& getUnderlyingType() {
+
+            static TypeInfo arrayInfo = 
+                std::is_array<T>::value ? get<std::remove_extent<T>::type>() : TypeInfo();
+                    (std::is_enum<T>::value ? get<safe_underlying_type<T>::type>() : TypeInfo());
+
+
             return arrayInfo;
         }
 
         TypeInfo() :
             _name("void"),
-            _id(static_hash("void")),
+            _id(static_crc32("void")),
             _isPolymophic(false),
             _size(0),
             _ctor(nullptr),
             _isSerializable(false),
             _isArray(false),
-            _arrayType(nullptr) {
+            _isEnum(false),
+            _underlyingType(nullptr) {
         }
     };
 }
-    
-    /* struct TypeInfoData
-    {
-        TypeInfoData()
-        :   typeIdCounter(0)
-        {
-
-        }
-
-        static TypeInfoData& instance() {
-            static TypeInfoData _internal;
-            return _internal;
-        }
-
-        template<typename T>
-        TypeInfo registerType() {
-            typeNames[result] = TOSTRING(T);
-            //ctors[result]= [] () { return reinterpret_cast<vptr_t>(new T()); };
-
-            return TypeInfo(typeNames[result], result, ctors[result]);
-        };
-
-        type_id                 typeIdCounter;
-        std::string             typeNames[MAX_TYPE_COUNT];
-        std::function<vptr_t()> ctors[MAX_TYPE_COUNT];
-    };
-
-    template<typename T>                                                                          
-    struct MetaTypeInfo                                                       
-    {                                                                                       
-        static const TypeInfo& getType()                                                        
-        {                                                                                   
-            static const TypeInfo result = TypeInfoData::instance().registerType<T>();                    
-            return result;                                                                  
-        }                                                                                   
-    };  
-}
-
-#define REGISTER_TYPEID(T)                                                                      \
-namespace sly                                                                                   \
-{                                                                                               \
-    template<>                                                                                  \
-    struct MetaTypeInfo< T >                                                                    \
-    {                                                                                           \
-        static const TypeInfo& getType()                                                      \
-        {                                                                                       \
-            static const TypeInfo result = TypeInfoData::instance().registerType<T>();          \
-            return result;                                                                      \
-        }                                                                                       \
-    };                                                                                          \
-}
-
-#define REGISTER_CLASS_TYPEID(T)                                                                \
-namespace sly                                                                                   \
-{                                                                                               \
-    class T;                                                                                    \
-}                                                                                               \
-REGISTER_TYPEID(T)  
-
-#define REGISTER_STRUCT_TYPEID(T)                                                               \
-namespace sly                                                                                   \
-{                                                                                               \
-    struct T;                                                                                   \
-}                                                                                               \
-REGISTER_TYPEID(T)  
- */

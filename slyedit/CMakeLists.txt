@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(slyedit)
 
-SET(GFXAPI "MACOS" CACHE STRING "D3D12, D3D11, OPENGL4, MACOS")
+SET(GFXAPI "D3D12" CACHE STRING "D3D12, D3D11, OPENGL4, MACOS")
 
 set(CMAKE_SUPPRESS_REGENERATION true)
 
@@ -31,27 +31,40 @@ include_directories(../slyengine/include)
 
 link_directories(../slycore/lib)
 link_directories(../slyengine/lib)
-link_directories(../slygl4/lib)
+#link_directories(../slygl4/lib)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
-find_library(SLYCORE_LIB slycore.a PATHS ../slycore/lib)
-find_library(SLYWIN32_LIB slyengine.a PATHS ../slyengine/lib)
-find_library(SLYMACOS_LIB slymacOS.a PATHS ../slymacOS/lib)
+#find_library(SLYCORE_LIB slycore.a PATHS ../slycore/lib)
+#find_library(SLYWIN32_LIB slyengine.a PATHS ../slyengine/lib)
+#find_library(SLYMACOS_LIB slymacOS.a PATHS ../slymacOS/lib)
+
+#target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
+#target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
+#target_link_libraries(${PROJECT_NAME} ${SLYMACOS_LIB})
+
+link_directories(../slywin32/lib)
+include_directories(../slywin32/include)
+
+find_library(SLYCORE_LIB slycore.lib PATHS ../slycore/lib)
+find_library(SLYENGINE_LIB slyengine.lib PATHS ../slyengine/lib)
+find_library(SLYWIN32_LIB slywin32.lib PATHS ../slywin32/lib)
 
 target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
+target_link_libraries(${PROJECT_NAME} ${SLYENGINE_LIB})
 target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
-target_link_libraries(${PROJECT_NAME} ${SLYMACOS_LIB})
 
 if(WIN32)
-    link_directories(../slywin32/lib)
+    include_directories(../slyd3d12/include)
     link_directories(../slyd3d12/lib)
-    target_link_libraries(${PROJECT_NAME} slywin32.lib)
+
     if(${GFXAPI} EQUAL "D3D12")
         target_link_libraries(${PROJECT_NAME} slyd3d12.dll)
+        target_link_libraries(${PROJECT_NAME} dxgi.lib)
+        target_link_libraries(${PROJECT_NAME} d3dcompiler.lib)
 
     elseif(${GFXAPI} EQUAL "D3D11")
         target_link_libraries(${PROJECT_NAME} slyd3d11.lib)
