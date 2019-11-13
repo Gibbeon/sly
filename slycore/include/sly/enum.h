@@ -7,6 +7,48 @@
 #include <cstddef>
 #include <string>
 
+#ifdef __APPLE__
+    #include "TargetConditionals.h"
+    #ifdef TARGET_OS_MAC
+        // this needs to be global
+        #define __iscsym(_c) (isalnum(_c) || ((_c)=='_'))
+
+        // Extra functions for MinGW. Most of these are the _s functions which are in
+        // the Microsoft Visual Studio C++ CRT.
+        #define _TRUNCATE 0
+        #define STRUNCATE 80
+
+        int strncpy_s(char* dest, size_t dest_size, const char* source, size_t count) {
+        //CHECK(source != nullptr);
+        //CHECK(dest != nullptr);
+        //CHECK_GT(dest_size, 0);
+
+        if (count == _TRUNCATE) {
+            while (dest_size > 0 && *source != 0) {
+            *(dest++) = *(source++);
+            --dest_size;
+            }
+            if (dest_size == 0) {
+            *(dest - 1) = 0;
+            return STRUNCATE;
+            }
+        } else {
+            while (dest_size > 0 && count > 0 && *source != 0) {
+            *(dest++) = *(source++);
+            --dest_size;
+            --count;
+            }
+        }
+        //CHECK_GT(dest_size, 0);
+        *dest = 0;
+        return 0;
+        }
+    #endif
+#endif 
+
+
+
+
 #define MAP(macro, ...) \
     IDENTITY( \
         APPLY(CHOOSE_MAP_START, COUNT(__VA_ARGS__)) \
@@ -97,7 +139,7 @@ namespace sly {
             using underlying_type = __underlying_type(T);
             using type = T;
 
-            //static const TypeInfo& getType();
+            static const TypeInfo& getType();
 
             static const char_t* const toString(T value);                
             static const T parse(const char_t* name);                                                              
@@ -137,11 +179,11 @@ namespace sly {
         return _names;
     }
 
-    //template<typename T>
-    //const TypeInfo& getType() {
-    //    static const TypeInfo instance = TypeInfo::get<std::remove_reference<decltype(*this)>::type>();
-    //    return instance;
-   // }
+    template<typename T>
+    const TypeInfo& getType() {
+        static const TypeInfo instance = TypeInfo::get<T>();
+        return instance;
+    }
     
     template<typename T>
     const char_t* const Enum<T>::toString(T value)              
@@ -185,7 +227,7 @@ namespace sly {
     
     template<typename T>
     template<size_t N, size_t L>
-    static bool_t Enum<T>::init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[L]) {
+    bool_t Enum<T>::init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[L]) {
 
         static char_t*  nameary_buffer[ L ];
         static char_t   names_buffer[ (sizeof(raw_names) + L + 1) ];

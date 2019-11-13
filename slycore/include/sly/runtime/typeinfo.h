@@ -83,7 +83,7 @@ namespace sly {
         static const std::function<vptr_t(vptr_t)> buildConstructor() {
             static const std::function<vptr_t(vptr_t)> ctor = std::is_abstract<T>::value ? //nullptr : nullptr;
                 (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return (vptr_t)nullptr; } : 
-                (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return reinterpret_cast<vptr_t>(new (buffer) std::conditional<std::is_abstract<T>::value, u8, T>::type()); };
+                (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return reinterpret_cast<vptr_t>(new (buffer) typename std::conditional<std::is_abstract<T>::value, u8, T>::type()); };
             return ctor;
         } 
         
@@ -91,8 +91,8 @@ namespace sly {
         static const TypeInfo& getUnderlyingType() {
 
             static TypeInfo arrayInfo = 
-                std::is_array<T>::value ? get<std::remove_extent<T>::type>() : TypeInfo();
-                    (std::is_enum<T>::value ? get<safe_underlying_type<T>::type>() : TypeInfo());
+                std::is_array<T>::value ? get<typename std::remove_extent<T>::type>() : TypeInfo();
+                    (std::is_enum<T>::value ? get<typename safe_underlying_type<T>::type>() : TypeInfo());
 
 
             return arrayInfo;
