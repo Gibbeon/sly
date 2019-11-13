@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "sly/global.h"
 #include "sly/io/ostream.h"
 #include "sly/runtime/serialization/serializable.h"
@@ -38,7 +40,113 @@ namespace sly {
 
         private:
             const TChar* _data;
+    template<typename T>
+    class IIterator {
+    public:
+        virtual T current() = 0;
+        virtual bool_t next() = 0;
+    private:
+
     };
+
+    template<typename T>
+    class WhereIterator : public IIterator<T> {
+    public:
+        WhereIterator(IIterator iterator) : _iterator(iterator) {}
+
+        virtual T current() {
+            return _iterator.current();
+        }
+
+        virtual bool_t next() {
+            while(_iterator.next()) {
+                if(_fn(_iterator.current())) {
+                    return TRUE;
+                }
+            }
+            return FALSE;
+        }
+    protected:
+        IIterator<T> _iterator;
+        std::function<bool_t(T& value)> _fn;
+    };
+
+    template<typename T>
+    class ICollection {
+    public:
+        typedef IIterator<T> Iterator;
+
+        virtual Iterator getIterator() = 0;
+
+        virtual T& get(size_t index) = 0;
+        virtual size_t length() = 0;
+    protected:
+
+    };
+
+    template<typename T>
+    class Array : public ICollection<T> {
+    public:
+        Array(const T* data, size_t length) : _data(data), _length(length) {}
+
+        Iterator getIterator() {
+            return ArrayIterator(*this);
+        }
+
+        virtual T& get(size_t index) {
+            return _data[index];
+        }
+
+        virtual size_t length() {
+            return _length;
+        }
+
+    protected:
+        T* _data;
+        size_t _length;
+    };
+
+    template<typename T>
+    class ArrayIterator : public IIterator<T> {
+        public:
+            ArrayIterator(Array<T>& array) : _array(array), _index(-1) {}
+
+            virtual T current() {
+                return _array[_index];
+            }
+
+            virtual bool_t next() {
+                if(_array.length() - 1 == _index) {
+                    return FALSE;
+                }
+                ++_index;
+                return TRUE;
+            }
+
+        protected:
+            Array<T>& _array;
+            size_t _index;
+        };
+
+    template<typename TChar = char_t>
+    class IString : public ICollection<TChar> {
+    public:
+        virtual ~IString() = default;
+
+        virtual TChar* data() = 0;
+        virtual size_t length() = 0;
+
+    protected:
+        IString() = default;
+    };
+    
+    template<typename TChar = const char_t>
+    class FixedString : public IString<TChar> {
+    public:
+        FixedString(): _data(NULL) {}
+        FixedString(TChar* data) : _data(data) {}
+
+        virtual ~FixedString() {}
 
     template<typename TChar = char_t>
     class MutableString {
@@ -48,10 +156,21 @@ namespace sly {
         }
 
         virtual ~MutableString() {}
+        virtual TChar& get(size_t index);
+        virtual size_t length() { return _array.length(); }
+        virtual const TChar* data() { return _data.data(); }
 
-        virtual char_t get(size_t index) {
-            return _string[index];
-        }
+    protected:
+        Array<TChar> _array;
+    };
+    
+    template<typename TChar = char_t>
+    class MutableString : public IString<TChar> {
+    public:
+        MutableString() { }
+        MutableString(const TChar* data) : _data(data) {}
+
+        virtual ~MutableString() {}
 
         void append(TChar value) {
             _string.insert(_string.end()--, value);
@@ -61,12 +180,15 @@ namespace sly {
             _string[index] = value;
         }
 
+        MutableString clone();
+        FixedString<TChar> substring(size_t start, size_t count);
+
         virtual const TChar* data() {
-            return (const TChar*)_string.data();
+            return (const TChar*)_string.c_str();
         }
 
         virtual size_t length() {
-            return _string.size() - 1;
+            return _string.size();
         }
 
         String toString() {
@@ -75,11 +197,49 @@ namespace sly {
     
     protected:
         std::vector<TChar> _string;
-    };*/
+    };
 
 
     
  
+        std::basic_string<TChar> _string;
+    };
+
+ 
+
+    class IConvertable {
+    public:
+        virtual ~IConvertable() {} 
+
+        virtual void toString(const MutableString<>& string) = 0;
+        virtual void fromString(const IString<>& string) = 0;
+
+        virtual void store(IOutputStream& stream) = 0;
+        virtual void load(IInputStream& stream) = 0;
+    };
+
+    template<enum TEnumType, size_t N>
+    class Enum : public IConvertable {
+    public:
+        Enum() : _value(0) {}
+        virtual ~Enum*() {}
+        
+        virtual void toString(const MutableString& string) = 0;
+        virtual void fromString(const IString& string) = 0;
+
+        virtual void toStream(IOutputStream& stream) = 0;
+        virtual void fromStream(IInputStream& stream) = 0;
+
+        bool_t hasFlag(TEnumType value);
+        bool_t setFlag(TEnumType flag);
+
+        operator TEnumType() { return _value; }
+    protected:
+        TEnumType _value;
+
+        static Array<FixedString> _names;
+        static Array<TEnumType> _values;
+    };
 
 /*
     class IConverter {
@@ -88,6 +248,11 @@ namespace sly {
 
         virtual void toString(vptr_t value, size_t length, const MutableString& string) = 0;
         virtual void fromString(const String& string, vptr_t value, size_t length) = 0;
+        virtual void toString(vptr_t value, size_t length, const MutableString<>& string) = 0;
+        virtual void fromString(const IString<>& string, vptr_t value, size_t length) = 0;
+
+        virtual void toStream(vptr_t value, size_t length, IOutputStream& stream) = 0;
+        virtual void fromStream(IInputStream& stream, vptr_t value, size_t length) = 0;
     };
 
     class IntegerConverter : public IConverter {
@@ -98,7 +263,7 @@ namespace sly {
 
         virtual ~IntegerConverter() {}
 
-        virtual void toString(vptr_t value, size_t length, const MutableString& string) {
+        virtual void toString(vptr_t value, size_t length, const MutableString<>& string) {
             size_t nIndex = 0;
             s64 integer = 0;
 
@@ -120,7 +285,7 @@ namespace sly {
             --length;
         }
 
-        virtual void fromString(const IString& string, vptr_t value, size_t length) {
+        virtual void fromString(const IString<>& string, vptr_t value, size_t length) {
             s64 integer = 0;
             for(size_t i = 0; i < string.length(); i++) {
                 integer += string[i] - '0' * (string.length() - 1) * 10;
@@ -184,7 +349,7 @@ namespace sly {
         
         virtual void write(const char* name, ISerializable& value) = 0;
         virtual void write(const char* name, u32 value) = 0;
-        virtual void write(const char* name, Enum value) = 0;
+        virtual void write(const char* name, IConvertable& value) = 0;
 
     protected:
         ISerializer() {}

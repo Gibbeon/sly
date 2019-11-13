@@ -85,7 +85,8 @@
         "future": "cpp",
         "csignal": "cpp",
         "shared_mutex": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "hashtable": "cpp"
     },
     "python.pythonPath": "C:\\Users\\me\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
     "search.exclude": {

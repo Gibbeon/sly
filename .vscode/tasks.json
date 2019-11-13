@@ -27,12 +27,32 @@
             "type": "shell",
             "windows": {
                 "command": "py.exe",
-                "args": [
-                    "./build-x64.py"
-                ],
             },
+            "command": "python3",
+            "args": [
+                "build-x64.py"
+            ],
             "options": {
                 "cwd": "${workspaceRoot}/slyengine"
+            },
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build slymacOS",
+            "type": "shell",
+            "windows": {
+                "command": "py.exe",
+            },
+            "command": "python3",
+            "args": [
+                "build-x64.py"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/slymacOS"
             },
             "group": "build",
             "presentation": {
@@ -45,12 +65,13 @@
             "type": "shell",
             "windows": {
                 "command": "py.exe",
-                "args": [
-                    "${workspaceRoot}/build-all-x64.py"
-                ],
             },
+            "command": "python3",
+            "args": [
+                "build-x64.py"
+            ],
             "options": {
-                "cwd": "${workspaceRoot}"
+                "cwd": "${workspaceRoot}/slyedit"
             },
             "group": "build",
             "presentation": {
