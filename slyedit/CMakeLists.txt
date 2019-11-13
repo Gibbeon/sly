@@ -7,9 +7,9 @@ endif()
 
 if(WIN32)
   SET(GFXAPI "D3D12" CACHE STRING "D3D12, D3D11, OPENGL4, METAL")
-else
-  SET(GFXAPI "OPENGL4" CACHE STRING "D3D12, D3D11, OPENGL4, METAL")
-endif
+else()
+  SET(GFXAPI "METAL" CACHE STRING "D3D12, D3D11, OPENGL4, METAL")
+endif()
 
 set(CMAKE_SUPPRESS_REGENERATION true)
 
@@ -34,20 +34,22 @@ if (MSVC)
 endif()
 
 include_directories(./include)
+
 include_directories(../slycore/include)
 include_directories(../slyengine/include)
 
 link_directories(../slycore/lib)
 link_directories(../slyengine/lib)
-#link_directories(../slygl4/lib)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
-find_library(SLYCORE_LIB slycore.${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../slycore/lib)
-find_library(SLYENGINE_LIB slyengine.${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../slyengine/lib)
+message(${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+find_library(SLYCORE_LIB slycore${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../slycore/lib)
+find_library(SLYENGINE_LIB slyengine${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../slyengine/lib)
 
 target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
 target_link_libraries(${PROJECT_NAME} ${SLYENGINE_LIB})
@@ -55,27 +57,27 @@ target_link_libraries(${PROJECT_NAME} ${SLYENGINE_LIB})
 if(${GFXAPI} EQUAL "D3D12")
     include_directories(../slyd3d12/include)
     link_directories(../slyd3d12/lib)
-    target_link_libraries(${PROJECT_NAME} slyd3d12.${CMAKE_SHARED_LIBRARY_SUFFIX})
-    target_link_libraries(${PROJECT_NAME} dxgi.${CMAKE_STATIC_LIBRARY_SUFFIX})
-    target_link_libraries(${PROJECT_NAME} d3dcompiler.${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} slyd3d12${CMAKE_SHARED_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} dxgi${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} d3dcompiler${CMAKE_STATIC_LIBRARY_SUFFIX})
 elseif(${GFXAPI} EQUAL "D3D11")
-    target_link_libraries(${PROJECT_NAME} slyd3d11.${CMAKE_STATIC_LIBRARY_SUFFIX})
-    target_link_libraries(${PROJECT_NAME} d3d11.${CMAKE_STATIC_LIBRARY_SUFFIX})
-    target_link_libraries(${PROJECT_NAME} dxgi.${CMAKE_STATIC_LIBRARY_SUFFIX})
-    target_link_libraries(${PROJECT_NAME} d3dcompiler.${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} slyd3d11${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} d3d11${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} dxgi${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} d3dcompiler${CMAKE_STATIC_LIBRARY_SUFFIX})
 elseif(${GFXAPI} EQUAL "OPENGL4")
-    target_link_libraries(${PROJECT_NAME} slygl4.${CMAKE_STATIC_LIBRARY_SUFFIX} )
+    target_link_libraries(${PROJECT_NAME} slygl4${CMAKE_STATIC_LIBRARY_SUFFIX} )
 endif()
 
 if(WIN32)
     link_directories(../slywin32/lib)
     include_directories(../slywin32/include)
-    find_library(SLYWIN32_LIB slywin32.${CMAKE_STATIC_LIBRARY_SUFFIX} PATHS ../slywin32/lib)
+    find_library(SLYWIN32_LIB slywin32${CMAKE_STATIC_LIBRARY_SUFFIX} PATHS ../slywin32/lib)
     target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
 elseif(MACOSX)
     link_directories(../slymacos/lib)
     include_directories(../slymacos/include)
-    find_library(SLYMACOS_LIB slymacos.${CMAKE_STATIC_LIBRARY_SUFFIX} PATHS ../slymacos/lib)
+    find_library(SLYMACOS_LIB slymacos${CMAKE_STATIC_LIBRARY_SUFFIX} PATHS ../slymacos/lib)
     target_link_libraries(${PROJECT_NAME} ${SLYMACOS_LIB})
 endif()
 

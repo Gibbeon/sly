@@ -1,6 +1,10 @@
 
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
+
+
 #include "sly.h"
 
 #include "sly/os/os.h"

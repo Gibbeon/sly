@@ -58,7 +58,7 @@ void MacOSFileInputStream::open(const char_t* file) {
     //return outError;
 }
 
-void MacOSFileInputStream::read(vptr_t buffer, size_t size) {
+size_t MacOSFileInputStream::read(vptr_t buffer, size_t size) {
 
 }
 

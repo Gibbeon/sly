@@ -14,3 +14,18 @@ void MacOSFileOutputStream::write(vptr_t buffer, size_t size) {
 void MacOSFileOutputStream::close() {
     _file.close();
 }
+
+void MacOSFileOutputStream::seek(size_t offset) {
+    _file.seekp(offset, std::ios_base::cur);
+}
+
+size_t MacOSFileOutputStream::getPosition() {
+    return _file.tellp();
+}
+void MacOSFileOutputStream::setPosition(size_t position) {
+    _file.seekp(position);
+}
+
+size_t MacOSFileOutputStream::getSize() {
+    return _file.tellg();
+}

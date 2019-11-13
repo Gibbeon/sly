@@ -162,6 +162,9 @@ def main(): #dir_list = ['slyd3d11','slyd3d12','slygl4', 'slycore', 'slyengine',
 	dir_list = ['slycore', 'slyengine']
 	if(PLATFORM == "Windows"):
 		dir_list.append('slywin32')
+	if(PLATFORM == "Darwin"):
+		dir_list.append('slymacos')
+
 	cmake_all(dir_list)
 	stop_on_error()
 
