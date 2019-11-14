@@ -6,7 +6,7 @@
 #include "sly/gfx/shader.h"
 #include "sly/gfx/rendersystem.h"
 #include "sly/gfx/texture.h"
-#include "sly/gfx/window.h"
+#include "sly/gfx/rendercontext.h"
 #include "sly/gfx/vertexbuffer.h"
 #include "sly/gfx/indexbuffer.h"
 #include "sly/gfx/inputelement.h"

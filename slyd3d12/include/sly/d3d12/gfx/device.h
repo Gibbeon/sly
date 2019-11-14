@@ -11,7 +11,7 @@ namespace sly {
             D3D12DeviceImpl(IRenderSystem& system);
             virtual void init(DeviceDesc& desc);
             
-            virtual void createWindow(IWindow** ppWindow, WindowDesc& desc);
+            virtual void createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc);
             virtual void createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc);
             virtual void createCommandList(ICommandList** ppWindow, CommandListDesc& desc);
             virtual void createRenderState(IRenderState** ppWindow, RenderStateDesc& desc);

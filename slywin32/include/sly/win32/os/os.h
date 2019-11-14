@@ -9,7 +9,8 @@
 #include "sly/win32.h"
 #include "sly/os/os.h"
 
-namespace sly {
+namespace sly { 
+namespace os {
     class Win32FileInputStream : public IInputStream {
     public:
                 Win32FileInputStream() {}
@@ -81,4 +82,4 @@ namespace sly {
     private:
         Win32FileSystem _fs;
     };
-}
+}}

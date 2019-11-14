@@ -14,10 +14,10 @@ namespace sly {
         class D3D12CommandQueueImpl;
 
         class D3D12DeviceImpl;
-        class D3D12WindowImpl : public IWindow {
+        class D3D12RenderContextImpl : public IRenderContext {
         public:
-            D3D12WindowImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window);
-            virtual void init(WindowDesc& desc);
+            D3D12RenderContextImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window);
+            virtual void init(RenderContextDesc& desc);
 
             // window control
             virtual void setVisible(bool_t show);

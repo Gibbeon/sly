@@ -1,28 +1,31 @@
 #pragma once
 
 #include <string>
+#include "sly/os/os.h"
 #include "sly/win32.h"
 
 namespace sly {
     namespace os {
-        class Win32Window
+
+        class Win32Window : public IWindow
         {
-            public:
-                Win32Window(uint_t width, uint_t height, std::string pszTitle);
+        public:
+        
+            virtual ~Win32Window() {} 
 
-                virtual void OnRender();
+            virtual void init(WindowDesc& desc);
+            virtual void onRender();
+            virtual bool_t show() { return ShowWindow(m_hWND, SW_SHOWDEFAULT); }
 
-                virtual bool_t Show() { return ShowWindow(m_hWND, SW_SHOWDEFAULT); }
+            // Accessors.
+            virtual uint_t getWidth() const         { return m_width; }
+            virtual uint_t getHeight() const        { return m_height; }
+            virtual std::string getTitle() const       { return m_title; }
 
-                // Accessors.
-                virtual uint_t GetWidth() const         { return m_width; }
-                virtual uint_t GetHeight() const        { return m_height; }
-                virtual std::string GetTitle() const       { return m_title; }
+            virtual HWND getHwnd() const { return m_hWND; }
+            virtual void setHwnd(HWND hWND) { m_hWND = hWND; }
 
-                virtual HWND GetHwnd() const { return m_hWND; }
-                virtual void SetHwnd(HWND hWND) { m_hWND = hWND; }
-
-                virtual bool_t ProcessMessages();
+            virtual bool_t processMessages();
 
         protected:
             static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

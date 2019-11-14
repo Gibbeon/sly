@@ -1,10 +1,10 @@
-#include "sly/d3d12/gfx/window.h"
+#include "sly/d3d12/gfx/rendercontext.h"
 #include "sly/d3d12/gfx/device.h"
 #include "sly/d3d12/gfx/commandqueue.h"
-#include "sly/win32/os/window.h"
+#include "sly/win32/os/rendercontext.h"
 
 using namespace sly::gfx;
-D3D12WindowImpl::D3D12WindowImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window) :
+D3D12RenderContextImpl::D3D12RenderContextImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window) :
     _window(&window),
     _fence(device),
     _directCommandQueue(device),
@@ -12,7 +12,7 @@ D3D12WindowImpl::D3D12WindowImpl(D3D12DeviceImpl& device, sly::os::Win32Window& 
     _device(&device) {
 }
 
-void D3D12WindowImpl::init(WindowDesc& desc) {
+void D3D12RenderContextImpl::init(RenderContextDesc& desc) {
     D3D12riptorTableBuilder descTableBuilder;
 
     descTableBuilder.setCapacity(2);
@@ -63,17 +63,17 @@ void D3D12WindowImpl::init(WindowDesc& desc) {
     }    
 }
 
-void  D3D12WindowImpl::processMessages()
+void  D3D12RenderContextImpl::processMessages()
 {
     _window->ProcessMessages();
 }
 
-void D3D12WindowImpl::setVisible(bool_t show)
+void D3D12RenderContextImpl::setVisible(bool_t show)
 {
     _window->Show();
 }
 
-void D3D12WindowImpl::swapBuffers()
+void D3D12RenderContextImpl::swapBuffers()
 {
     // Present the frame.
     if(FAILED(_swapChain->Present(1, 0)))

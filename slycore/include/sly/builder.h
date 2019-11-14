@@ -10,6 +10,10 @@ namespace sly {
         virtual ~Builder() {}
         virtual TType& build();
 
+        virtual void init(const TType& initial) {
+            desc_ = initial;
+        }
+
     protected:        
         Builder()  {}
         Builder(TType initial) : desc_(initial) {}

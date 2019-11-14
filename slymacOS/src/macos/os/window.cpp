@@ -1,4 +1,4 @@
-#include "sly/macOS/os/window.h"
+#include "sly/macos/os/window.h"
 
 #include "mtlpp/mtlpp.hpp"
 #include "mtlpp/examples/window.hpp"
@@ -55,10 +55,10 @@ mtlpp::RenderPassDescriptor g_RenderPassDescriptor;
 
 MtlView m_view;
 
-MacOSWindow::MacOSWindow(uint_t width, uint_t height, std::string pszTitle) :
-    m_width(width),
-    m_height(height),
-    m_title(pszTitle)
+MacOSWindow::init(WindowDesc& desc) :
+    m_width(desc.width),
+    m_height(desc.height),
+    m_title(desc.pszTitle)
 {
 
     NSRect frame = NSMakeRect(0, 0, width, height);
@@ -87,7 +87,7 @@ MacOSWindow::MacOSWindow(uint_t width, uint_t height, std::string pszTitle) :
     m_view = ns::Handle{ (__bridge void*)view };
 }
 
-bool_t MacOSWindow::ProcessMessages()
+bool_t MacOSWindow::processMessages()
 {
     const char shadersSrc[] = R"""(
         #include <metal_stdlib>
@@ -147,7 +147,7 @@ bool_t MacOSWindow::ProcessMessages()
     return true;
 }
 
-void MacOSWindow::OnRender(const sly::os::MacOSWindow& window)
+void MacOSWindow::onRender(const sly::os::MacOSWindow& window)
 {
 while(true) {
         mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer();

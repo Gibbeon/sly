@@ -9,7 +9,7 @@ namespace sly {
 		class GL4Device : public IDevice {
 			virtual void init(Device& desc) {}
 
-            virtual void createWindow(IWindow** ppWindow, Window& desc) {
+            virtual void createWindow(IRenderContext** ppWindow, Window& desc) {
 				(*ppWindow) = new GL4Window();
 			}
 

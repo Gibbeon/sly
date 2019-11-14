@@ -174,12 +174,12 @@ public:
 
 
 
-class WindowBuilder : public Builder<Window> {
+class RenderContextBuilder : public Builder<Window> {
 public:
-    WindowBuilder& SetBounds(RECT rect) { _desc.bounds = rect; return *this; }
-    WindowBuilder& SetTitle(std::string title) { _desc.title = title; return *this; }
-    WindowBuilder& SetColorDepth(int_t colorDepth) { _desc.colorDepth = colorDepth; return *this; }
-    WindowBuilder& SetBufferCount(int_t bufferCount) { _desc.bufferCount = bufferCount;  return *this;}
+    RenderContextBuilder& SetBounds(RECT rect) { _desc.bounds = rect; return *this; }
+    RenderContextBuilder& SetTitle(std::string title) { _desc.title = title; return *this; }
+    RenderContextBuilder& SetColorDepth(int_t colorDepth) { _desc.colorDepth = colorDepth; return *this; }
+    RenderContextBuilder& SetBufferCount(int_t bufferCount) { _desc.bufferCount = bufferCount;  return *this;}
 
 protected:
 

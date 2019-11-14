@@ -1,28 +1,31 @@
 #pragma once
 
 #include <string>
+#include "sly/os/os.h"
 #include "sly/macOS.h"
 
 namespace sly {
     namespace os {
-        class MacOSWindow
+
+        class MacOSWindow : public IWindow
         {
-            public:
-                MacOSWindow(uint_t width, uint_t height, std::string pszTitle);
+        public:
+        
+            virtual ~MacOSWindow() {} 
 
-                static void OnRender(const sly::os::MacOSWindow& window);
+            virtual void init(WindowDesc& desc);
+            static void onRender(const sly::os::MacOSWindow& window);
+            virtual bool_t show() { return true; }
 
-                virtual bool_t Show() { return true; }
+            // Accessors.
+            virtual uint_t getWidth() const         { return m_width; }
+            virtual uint_t getHeight() const        { return m_height; }
+            virtual std::string getTitle() const       { return m_title; }
 
-                // Accessors.
-                virtual uint_t GetWidth() const         { return m_width; }
-                virtual uint_t GetHeight() const        { return m_height; }
-                virtual std::string GetTitle() const       { return m_title; }
+            //virtual HWND GetHwnd() const { return m_hWND; }
+            //virtual void SetHwnd(HWND hWND) { m_hWND = hWND; }
 
-                //virtual HWND GetHwnd() const { return m_hWND; }
-                //virtual void SetHwnd(HWND hWND) { m_hWND = hWND; }
-
-                virtual bool_t ProcessMessages();
+            virtual bool_t processMessages();
 
         protected:
             //static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

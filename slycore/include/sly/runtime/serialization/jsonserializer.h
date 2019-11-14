@@ -65,13 +65,13 @@ namespace sly {
         const char* END_RECORD = "}";
     };   
 
-    class JSONDeserializer : public IDeserializer {
+    class LuaDeserializer : public IDeserializer {
     public:
-        JSONDeserializer(IInputStream& stream, TypeActivator& activator) : _stream(stream), _reader(stream), _activator(activator) {}
-        virtual ~JSONDeserializer() {}
+        LuaDeserializer(IInputStream& stream, TypeActivator& activator) : _stream(stream), _reader(stream), _activator(activator) {}
+        virtual ~LuaDeserializer() {}
 
         virtual void read(vptr_t buffer, size_t size) {
-            if(_reader.read<u32>() != START_RECORD) {
+           /* if(_reader.read<u32>() != START_RECORD) {
                 return;
             }
 
@@ -93,7 +93,19 @@ namespace sly {
 
             if(_reader.read<u32>() != END_RECORD) {
                  return;   
-            }           
+            } */
+
+                size_t scope = 0;
+                while(!_reader.eof())
+                {
+                    char value = _reader.read<char>();
+                    
+                    if(value == '{')
+                        scope++;
+                }
+            
+
+
         }
 
     protected:

@@ -5,7 +5,7 @@
 
 namespace sly {
     namespace gfx {  
-        class IWindow;
+        class IRenderContext;
         class ICommandList;
         class IResource;
         class IShader;
@@ -15,7 +15,7 @@ namespace sly {
         class IVertexBuffer;
         class IRenderState;
 
-        struct WindowDesc;
+        struct RenderContextDesc;
         struct CommandListDesc;
         struct ResourceDesc;
         struct ShaderDesc;
@@ -30,7 +30,7 @@ namespace sly {
             virtual ~IDevice() {} 
             virtual void init(DeviceDesc& desc) =0;
 
-            virtual void createWindow(IWindow** ppWindow, WindowDesc& desc) = 0;
+            virtual void createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc) = 0;
             virtual void createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) = 0;
             virtual void createCommandList(ICommandList** ppWindow, CommandListDesc& desc) = 0;
             virtual void createRenderState(IRenderState** ppWindow, RenderStateDesc& desc) = 0;

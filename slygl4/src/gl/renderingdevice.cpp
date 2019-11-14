@@ -1,5 +1,5 @@
 #include "sly/gl4/renderingdevice.h"
-#include "sly/win32/os/window.h"
+#include "sly/win32/os/rendercontext.h"
 
 using namespace sly::gfx;
 

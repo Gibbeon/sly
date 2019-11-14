@@ -45,7 +45,7 @@ namespace sly {
         
         template <typename T>
         static const TypeInfo get() {
-            return TypeInfo(typeid(T).name(), 
+            static TypeInfo typeInfo = TypeInfo(typeid(T).name(), 
                 sizeof(T), 
                 TypeInfo::buildConstructor<T>(),
                 std::is_convertible<T*, sly::ISerializable*>::value,
@@ -54,7 +54,12 @@ namespace sly {
                 std::is_enum<T>::value,
                 TypeInfo::getUnderlyingType<T>()
                 );
+
+            return typeInfo;
         }
+
+        template <typename T>
+        static const TypeInfo create(vptr_t args = 0) { return reinterpret_cast<T*>(get<T>().create(args)); }
        
         inline const char* getName() const { return _name; }
         inline size_t getSize() const { return _size; }
@@ -64,6 +69,7 @@ namespace sly {
         inline const TypeInfo& getUnderlyingType() const { return *_underlyingType; }
         inline bool_t isArray() const { return _isArray; }
         inline std::function<vptr_t(vptr_t)> const getDefaultConstructor() { return _ctor; }
+        inline vptr_t const create(vptr_t args = 0) { return _ctor(args); }
         
         operator type_id() const { return this->_id; }
         operator const char*() const { return this->_name; }

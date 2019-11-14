@@ -148,8 +148,8 @@ int main()
     renderSystem->createDevice(&renderDevice, rdBuilder.build());
 
     // create 1 or more windows
-    sly::gfx::WindowBuilder winBuilder;
-    sly::gfx::IWindow* window = nullptr;
+    sly::gfx::RenderContextBuilder winBuilder;
+    sly::gfx::IRenderContext* window = nullptr;
     renderDevice->createWindow(&window, winBuilder.build());
 
     // create a command list to draw an object
@@ -309,7 +309,7 @@ int main()
     ENSURE(gfx->CreateDevice(&device, gfxDeviceBuilder.Build()), "Failed to create GfxSystem");
             
     te::IGfxWindow* window = nullptr;
-    te::WindowBuilder window;
+    te::RenderContextBuilder window;
     window.SetBounds(te::RECT(0, 0, 1024, 768))
             .SetColorDepth(32)
             .SetBufferCount(2);

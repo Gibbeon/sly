@@ -1,0 +1,14 @@
+[
+    {
+        "name": "shaders",
+        "file": "c:\\shaders.hlsl",
+        "entryPoint": "VSMain",
+        "target": "vs_5_0"
+    },
+    {
+        "name": "shaders",
+        "file": "c:\\shaders.hlsl",
+        "entryPoint": "PSMain",
+        "target": "ps_5_0"
+    }
+]

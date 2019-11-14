@@ -2,10 +2,10 @@
 
 using namespace sly::os;
 
-Win32Window::Win32Window(uint_t width, uint_t height, std::string pszTitle) :
-    m_width(width),
-    m_height(height),
-    m_title(pszTitle)
+Win32Window::init(WindowDesc& desc) :
+    m_width(desc.width),
+    m_height(desc.height),
+    m_title(desc.pszTitle)
 {
     HINSTANCE hInstance= GetModuleHandle(NULL);
     // Initialize the window class.
@@ -38,7 +38,7 @@ Win32Window::Win32Window(uint_t width, uint_t height, std::string pszTitle) :
     ShowWindow(m_hWND, SW_SHOWDEFAULT);
 }
 
-bool_t Win32Window::ProcessMessages()
+bool_t Win32Window::processMessages()
 {
     MSG msg = {};
     bool_t process = true;
@@ -58,7 +58,7 @@ bool_t Win32Window::ProcessMessages()
     return static_cast<char>(msg.wParam);
 }
 
-void Win32Window::OnRender()
+void Win32Window::onRender()
 {
 
 }

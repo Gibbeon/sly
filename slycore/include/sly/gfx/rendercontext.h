@@ -1,15 +1,15 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/gfx/builders/windowbuilder.h"
+#include "sly/gfx/builders/rendercontextbuilder.h"
 
 namespace sly {
     namespace gfx {
         class ICommandQueue;
-        class IWindow {
+        class IRenderContext {
         public:
-            virtual ~IWindow() {}
-            virtual void init(WindowDesc& desc) = 0;
+            virtual ~IRenderContext() {}
+            virtual void init(RenderContextDesc& desc) = 0;
 
             virtual void processMessages() = 0;
             virtual void swapBuffers() = 0;
@@ -20,7 +20,7 @@ namespace sly {
             virtual ICommandQueue& getDirectCommandQueue() = 0;
 
         protected:
-            IWindow() {}
+            IRenderContext() {}
         };
     }
 }

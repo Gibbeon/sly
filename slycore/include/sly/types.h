@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <limits.h>
 
 #if defined(_WIN32)
     #include <tchar.h>
@@ -42,10 +43,6 @@ typedef void* vptr_t;
 
 #if !defined(_SIZE_T)
 typedef u64 size_t;
-#endif
-
-#ifndef UINT_MAX
-#define UINT_MAX (0xffffffff)
 #endif
 
 #ifdef FALSE

@@ -3,7 +3,7 @@
 
 using namespace sly;
 
-IOperatingSystem* _GetOperatingSystem() {
-    static sly::MacOSOperatingSystem instance;
+os::IOperatingSystem* _GetOperatingSystem() {
+    static sly::os::MacOSOperatingSystem instance;
     return &instance;
 }

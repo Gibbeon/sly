@@ -2,11 +2,11 @@
 
 #include "sly/gl4.h"
 #include "sly/gfx.h"
-#include "sly/win32/os/window.h"
+#include "sly/win32/os/rendercontext.h"
 
 namespace sly {
 	namespace gfx {
-		class GL4Window : public IWindow {
+		class GL4Window : public IRenderContext {
 		public:
 			GL4Window();
 

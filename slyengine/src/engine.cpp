@@ -27,7 +27,7 @@ Engine& Engine::getInstance() {
     return instance;
 }
 
-void Engine::init() {
+void Engine::init(EngineDesc& desc) {
     static MallocHeap heap;
     setGlobalHeap(heap);
 
@@ -47,6 +47,6 @@ void Engine::init() {
     }
 }
 
-void Engine::createRenderSystem(gfx::IRenderSystem** outRenderSystem) {
+void Engine::createRenderSystem(gfx::IRenderSystem** outRenderSystem, gfx::RenderSystemDesc& desc) {
     (*outRenderSystem) = Plugins().get<gfx::IRenderSystem>();
 }

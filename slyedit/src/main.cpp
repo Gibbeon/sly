@@ -22,7 +22,17 @@ struct Vertex
     sly::gfx::color_t color;
 };
 
+namespace sly {
 
+    template<size_t N, typename TType = u8>
+    struct StackAlloc
+    {
+        TType buffer[N];
+        size_t size = N;
+
+        operator TType* const() { return buffer; } 
+    };
+}
 
 #ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
@@ -30,37 +40,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 int main()
 #endif
 {  
-     // load configuration, plugins, etc
-    sly::Engine::init();    
+    sly::EngineBuilder engBuilder;
+    sly::StackAlloc<4096> buffer;
 
-     // choosing between multiple render systems?
-    sly::gfx::RenderSystemBuilder rsBuilder;
+    engBuilder
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Default,    sly::MemoryHeapBuilder().setBytes(buffer, buffer.size).setDebug(true).build())
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Resources,  sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Debug,      sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
+        .setLogLevel(sly::eLogLevel_Info);
+
+    // load configuration, plugins, etc
+    sly::Engine::init(engBuilder.build());    
+
+    // choosing between multiple render systems? -- this points to an API d3d12, opengl, etc.
     sly::gfx::IRenderSystem* renderSystem = nullptr;
-    sly::Engine::createRenderSystem(&renderSystem);//, rsBuilder.build());
+    sly::Engine::createRenderSystem(&renderSystem, sly::gfx::RenderSystemBuilder().build());
 
-    // create a device
-    sly::gfx::DeviceBuilder rdBuilder;
-    sly::gfx::IDevice* renderDevice = nullptr;
-    renderSystem->createDevice(&renderDevice, rdBuilder.build());
+    // create a device context, this managers resources for the render system
+    sly::gfx::IDevice* renderDevice = nullptr; // device becomes renderer???
+    renderSystem->createDevice(&renderDevice, sly::gfx::DeviceBuilder().build());
+
+    // create window
+    sly::gfx::IRenderContext* context = nullptr;
+    renderDevice->createRenderContext(&context, sly::gfx::RenderContextBuilder().build());
 
     // create 1 or more windows
-    sly::gfx::WindowBuilder winBuilder;
-    sly::gfx::IWindow* window = nullptr;
-    renderDevice->createWindow(&window, winBuilder.build());
+    //renderDevice->setRender(&window, winBuilder.build());
 
-    // create a command list to draw an object
-    sly::gfx::CommandListBuilder rclBuilder;
+    // create a command list to draw an object 
     sly::gfx::ICommandList* list = nullptr;
-    renderDevice->createCommandList(&list, rclBuilder.build());
-    
-    // data
-    Vertex* triangleVertices = nullptr;
-    sly::IInputStream* pVertexData;
-    sly::Engine::OS().FileSystem().open(&pVertexData, u8"vertex.dat");
-    size_t vtxsize = pVertexData->getSize();
-    
-    triangleVertices = (Vertex*)malloc(vtxsize);
-    pVertexData->read(triangleVertices, vtxsize);
+    renderDevice->createCommandList(&list, sly::gfx::CommandListBuilder().build());
+
+    sly::gfx::ShaderBuilder psspBuilder;
+    sly::gfx::ShaderBuilder vsspBuilder;
+
+    sly::gfx::VertexBufferBuilder vbBuilder;
 
     sly::gfx::InputElementBuilder posBuilder1;
     posBuilder1.setSemanticName("POSITION")
@@ -73,38 +87,69 @@ int main()
         .setInputScope(sly::gfx::eDataInputClassification_PerVertex)
         .setOffset(12);
 
-    sly::gfx::VertexBufferBuilder vbBuilder;
-    vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
+    //#define TEST_ASSETREADER 1
+    #if !TEST_ASSETREADER
+    
+        Vertex* triangleVertices = nullptr;
+        sly::IInputStream* pVertexData;
+        sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.dat");
+
+        size_t vtxsize = pVertexData->getSize();
+        
+        triangleVertices = (Vertex*)malloc(vtxsize);
+        pVertexData->read(triangleVertices, vtxsize);
+
+        vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
+
+        //shaders
+        sly::IInputStream* pShaderFile;
+        sly::Engine::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
+
+        size_t vssize = pShaderFile->getSize();
+        
+        char* vsbuf = (char*)malloc(vssize);
+        pShaderFile->read(vsbuf, vssize);
+
+        vsspBuilder.setData(vsbuf, vssize)
+                    .setEntryPoint("VSMain")
+                    .setName("shaders")
+                    .setTarget("vs_5_0");
+
+
+        psspBuilder.setData(vsbuf, vssize)
+                    .setEntryPoint("PSMain")
+                    .setName("shaders")
+                    .setTarget("ps_5_0");
+   
+    #else
+        sly::TypeActivator activator;
+
+        sly::IInputStream* pVertexData;
+        sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.json");
+        sly::JSONDeserializer vbReader(pVertexData, activator);
+        sly::gfx::VertexBufferDesc vbDesc = vbReader.read<sly::gfx::VertexBufferDesc>();
+        pVertexData->close();
+
+        vbBuilder.init(vbDesc);
+
+        sly::IInputStream* pShaderData;
+        sly::Engine::OS().FileSystem().open(&pShaderData, "shaders.json");
+        sly::JSONDeserializer shaderReader(pShaderData, activator);
+        sly::gfx::ShaderBuilder vsspDesc = shaderReader.read<sly::gfx::ShaderBuilder>();
+        sly::gfx::ShaderBuilder psspDesc = shaderReader.read<sly::gfx::ShaderBuilder>();
+        pShaderData->close();
+
+        psspBuilder.init(psspDesc);
+        vsspBuilder.init(vsspDesc);
+    #endif
 
     sly::gfx::IVertexBuffer* vertexBuffer = nullptr;
     renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build()); 
 
-    //shaders
-    sly::IInputStream* pShaderFile;
-    sly::Engine::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
-
-    size_t vssize = pShaderFile->getSize();
-    
-    char* vsbuf = (char*)malloc(vssize);
-    pShaderFile->read(vsbuf, vssize);
-
-    
-    sly::gfx::ShaderBuilder vsspBuilder;
-    vsspBuilder.setData(vsbuf, vssize)
-                .setEntryPoint("VSMain")
-                .setName("shaders")
-                .setTarget("vs_5_0");
-
-    sly::gfx::IShader* vsshader = nullptr;
-    renderDevice->createShader(&vsshader, vsspBuilder.build()); 
-
-     sly::gfx::ShaderBuilder psspBuilder;
-    psspBuilder.setData(vsbuf, vssize)
-                .setEntryPoint("PSMain")
-                .setName("shaders")
-                .setTarget("ps_5_0");
-
     sly::gfx::IShader* psshader = nullptr;
+    sly::gfx::IShader* vsshader = nullptr;
+
+    renderDevice->createShader(&vsshader, vsspBuilder.build()); 
     renderDevice->createShader(&psshader, psspBuilder.build()); 
 
     // render state
@@ -133,7 +178,7 @@ int main()
         // loop
         list->begin();
         list->setRenderState(*rsState);
-        list->setRenderTarget(window->getDrawBuffer());
+        list->setRenderTarget(context->getDrawBuffer());
         list->setViewport(viewport);    
         list->setScissorRect(scissorRect);
         list->clear(clearColor);
@@ -141,12 +186,10 @@ int main()
         list->draw(3, 1, 0, 0);
         list->end(); 
 
-        //application->processMessages();
-
-        window->processMessages();        
-        window->getDirectCommandQueue().executeCommandList(list);
-        window->getDirectCommandQueue().flush();
-        window->swapBuffers();
+        context->processMessages();        
+        context->getDirectCommandQueue().executeCommandList(list);
+        context->getDirectCommandQueue().flush();
+        context->swapBuffers();
     }
 
     return 0;

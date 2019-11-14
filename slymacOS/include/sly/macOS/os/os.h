@@ -8,6 +8,7 @@
 #include "sly/os/os.h"
 
 namespace sly {
+    namespace os {
     class MacOSFileInputStream : public IInputStream {
     public:
                 MacOSFileInputStream() {}
@@ -78,4 +79,4 @@ namespace sly {
     private:
         MacOSFileSystem _fs;
     };
-}
+}}
