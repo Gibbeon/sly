@@ -158,7 +158,7 @@ namespace sly {
 
     template<typename T>
     const TypeInfo& getType() {
-        static const TypeInfo instance = TypeInfo::get<T>();
+        static const TypeInfo instance = TypeInfo::get<typename std::remove_reference<decltype(*this)>::type>();
         return instance;
     }
     
