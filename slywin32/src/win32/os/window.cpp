@@ -2,11 +2,12 @@
 
 using namespace sly::os;
 
-Win32Window::init(WindowDesc& desc) :
-    m_width(desc.width),
-    m_height(desc.height),
-    m_title(desc.pszTitle)
+void Win32Window::init(WindowDesc& desc)
 {
+    m_width = desc.width;
+    m_height = desc.height;
+    m_title = desc.pszTitle;
+
     HINSTANCE hInstance= GetModuleHandle(NULL);
     // Initialize the window class.
     WNDCLASSEX windowClass = { 0 }; 

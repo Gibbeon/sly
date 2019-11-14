@@ -26,3 +26,6 @@
 [submodule "packages/mtlpp"]
 	path = packages/mtlpp
 	url = https://github.com/naleksiev/mtlpp.git
+[submodule "packages/json"]
+	path = packages/json
+	url = https://github.com/nlohmann/json.git

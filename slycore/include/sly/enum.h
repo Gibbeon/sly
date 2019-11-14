@@ -74,6 +74,8 @@
 #define COUNT(...) \
     IDENTITY(EVALUATE_COUNT(__VA_ARGS__, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
 
+#define STRING_LEN(...) sizeof( #__VA_ARGS__ )
+
 struct ignore_assign {
     ignore_assign(int value) : _value(value) { }
     operator int() const { return _value; }
@@ -121,8 +123,8 @@ namespace sly {
             static const char_t* const toString(T value);                
             static const T parse(const char_t* name);                                                              
 
-            template<size_t N, size_t L>
-            static bool_t init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[L]);
+            template<size_t N, size_t NSize>
+            static bool_t init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]);
 
             static size_t count();
             static const s32* values();
@@ -158,7 +160,7 @@ namespace sly {
 
     template<typename T>
     const TypeInfo& getType() {
-        static const TypeInfo instance = TypeInfo::get<typename std::remove_reference<decltype(*this)>::type>();
+        static const TypeInfo instance = TypeInfo::get<T>();
         return instance;
     }
     
@@ -202,14 +204,20 @@ namespace sly {
         return (T)result;                                       
     }    
     
-    template<typename T>
-    template<size_t N, size_t L>
-    bool_t Enum<T>::init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[L]) {
+    template<size_t N>
+    static constexpr size_t sizeof_r(const char_t* const (&raw_names)[N], size_t index = N) {
+        index--;
+        return strlen(raw_names[index]) + sizeof_r(raw_names, index);
+    }
 
-        static char_t*  nameary_buffer[ L ];
-        static char_t   names_buffer[ (sizeof(raw_names) + L + 1) ];
-        static u32      hashes_buffer[ L ];
-        static s32      values_buffer[ L ];
+    template<typename T>
+    template<size_t N, size_t NSize>
+    bool_t Enum<T>::init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]) {
+
+        static char_t*  nameary_buffer[ N ];
+        static char_t   names_buffer[ ( NSize + 1) ];
+        static u32      hashes_buffer[ N ];
+        static s32      values_buffer[ N ];
         static bool_t   initialized = false;
 
         if(!initialized) {        
@@ -257,4 +265,4 @@ typedef enum  {                                                        \
     __VA_ARGS__                                                        \
 } EnumName;                                                            \
                                                                        \
-namespace { bool_t EnumName ## _initialized = ::sly::Enum<EnumName>::init( IDENTITY(COUNT(__VA_ARGS__)) , { IDENTITY(STRINGIZE(__VA_ARGS__)) }, { IDENTITY(IGNORE_ASSIGN(__VA_ARGS__)) });  }                                                                 
+namespace { bool_t EnumName ## _initialized = ::sly::Enum<EnumName>::init<IDENTITY(COUNT(__VA_ARGS__)),STRING_LEN(__VA_ARGS__)>( IDENTITY(COUNT(__VA_ARGS__)) , { IDENTITY(STRINGIZE(__VA_ARGS__)) }, { IDENTITY(IGNORE_ASSIGN(__VA_ARGS__)) });  }                                                                 

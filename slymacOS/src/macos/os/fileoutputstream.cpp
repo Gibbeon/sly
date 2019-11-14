@@ -1,7 +1,7 @@
 #include "sly/macOS/os/os.h"
 #include "sly/gfx/rendersystem.h"
 
-using namespace sly;
+using namespace sly::os;
 
 void MacOSFileOutputStream::open(const char_t* file) {
     _file = std::fstream(file, std::ios::out | std::ios::binary);

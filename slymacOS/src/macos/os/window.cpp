@@ -55,13 +55,14 @@ mtlpp::RenderPassDescriptor g_RenderPassDescriptor;
 
 MtlView m_view;
 
-MacOSWindow::init(WindowDesc& desc) :
-    m_width(desc.width),
-    m_height(desc.height),
-    m_title(desc.pszTitle)
+void MacOSWindow::init(WindowDesc& desc) 
 {
+    m_width = desc.width;
+    m_height = desc.height;
+    m_title = desc.pszTitle;
 
-    NSRect frame = NSMakeRect(0, 0, width, height);
+
+    NSRect frame = NSMakeRect(0, 0, m_width, m_height);
     NSWindow* window = [[NSWindow alloc] initWithContentRect:frame
 #if MTLPP_IS_AVAILABLE_MAC(10_12)
         styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable)
@@ -72,7 +73,7 @@ MacOSWindow::init(WindowDesc& desc) :
         defer:NO];
     window.title = [[NSProcessInfo processInfo] processName];
     WindowViewController* viewController = [WindowViewController new];
-    viewController->m_render = OnRender;
+    viewController->m_render = onRender;
     viewController->m_window = this;
 
     MTKView* view = [[MTKView alloc] initWithFrame:frame];

@@ -3,9 +3,12 @@
 #include "sly/global.h"
 #include "sly/io/istream.h"
 #include "sly/io/ostream.h"
+#include "sly/builder.h"
 #include "sly/ext/pluginmanager.h"
 
 namespace sly {
+        
+        typedef void (*pfRegisterPlugins) (sly::IPluginManager& );
     namespace os {
 
         class IFileSystem {
@@ -17,8 +20,6 @@ namespace sly {
             IFileSystem() {}
 
         };
-        
-        typedef void (*pfRegisterPlugins) (sly::IPluginManager& );
 
         class IOperatingSystem {
         public:
@@ -39,7 +40,7 @@ namespace sly {
             std::string pszTitle;
         };
 
-        class WindowBuilder : Builder<WindowDesc>
+        class WindowBuilder : sly::Builder<WindowDesc>
         {
 
         };

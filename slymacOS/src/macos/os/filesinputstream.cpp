@@ -8,7 +8,7 @@
 
 #define BUF_SIZE 256
 
-using namespace sly;
+using namespace sly::os;
 
 void MacOSFileInputStream::open(const char_t* file) {
     int outError;

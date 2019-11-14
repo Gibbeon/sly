@@ -31,6 +31,8 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 #sample doesn't work without this, we should figure out why
 if (MSVC)
   add_compile_options("/sdl")
+else()
+  add_compile_options("-g")
 endif()
 
 include_directories(./include)
