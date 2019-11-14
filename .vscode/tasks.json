@@ -88,6 +88,7 @@
                     "./build-x64.py"
                 ],
             },
+            "command": "python3",
             "options": {
                 "cwd": "${workspaceRoot}/slyd3d12"
             },
@@ -106,6 +107,7 @@
                     "./build-x64.py"
                 ],
             },
+            "command": "python3",
             "options": {
                 "cwd": "${workspaceRoot}/slygl4"
             },
@@ -124,6 +126,7 @@
                     "./build-x64.py"
                 ],
             },
+            "command": "python3",
             "options": {
                 "cwd": "${workspaceRoot}/slywin32"
             },

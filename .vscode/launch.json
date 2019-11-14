@@ -10,14 +10,18 @@
             "request": "launch",
             "program": "slyedit/bin/slyedit.exe",
             "args": [],
-            "stopAtEntry": true,
+            //"stopAtEntry": true,
             "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
+            //"environment": [],
+            //"externalConsole": false,
             "osx": {
-                "type": "cppdbg",
+                "type": "lldb",
                 "program": "${workspaceFolder}/slyedit/bin/slyedit",
-                "MIMode": "lldb"
+                "MIMode": "lldb",
+                //"miDebuggerPath": "/Users/riwoods/.vscode/extensions/ms-vscode.cpptools-0.26.1/debugAdapters/lldb/bin/lldb-mi"
+                "logging": { "trace": true, "traceResponse": true, "engineLogging": true
+                
+                }
             }
         }
     ]
