@@ -4,6 +4,10 @@
 #include <windows.h>
 #endif
 
+#include "nlohmann/json.hpp"
+
+// for convenience
+using json = nlohmann::json;
 
 #include "sly.h"
 
@@ -11,6 +15,7 @@
 #include "sly/gfx.h"
 
 #include "sly/runtime/serialization/serializer.h"
+#include "sly/io/binarywriter.h"
 
 struct Vec3 {
     float x, y, z;
@@ -87,7 +92,7 @@ int main()
         .setInputScope(sly::gfx::eDataInputClassification_PerVertex)
         .setOffset(12);
 
-    //#define TEST_ASSETREADER 1
+    #define TEST_ASSETREADER 1
     #if !TEST_ASSETREADER
     
         Vertex* triangleVertices = nullptr;
@@ -122,7 +127,32 @@ int main()
                     .setTarget("ps_5_0");
    
     #else
-        sly::TypeActivator activator;
+
+        sly::IInputStream* pShaderJson;
+        sly::Engine::OS().FileSystem().open(&pShaderJson, "shaders.json");        
+        sly::TextReader reader(*pShaderJson);
+
+        auto j3 = json::parse(reader.readAll());
+
+        sly::IInputStream* pShaderFile;
+        sly::Engine::OS().FileSystem().open(&pShaderFile, j3[0]["file"].get<std::string>().c_str());        
+
+        size_t vssize = pShaderFile->getSize();
+        char* vsbuf = (char*)malloc(vssize);
+        pShaderFile->read(vsbuf, vssize);
+
+        vsspBuilder.setData(vsbuf, vssize)
+                    .setEntryPoint(j3[0]["entryPoint"].get<std::string>().c_str())
+                    .setName(j3[0]["name"].get<std::string>().c_str())
+                    .setTarget(j3[0]["target"].get<std::string>().c_str());
+
+        psspBuilder.setData(vsbuf, vssize)
+                    .setEntryPoint(j3[1]["entryPoint"].get<std::string>().c_str())
+                    .setName(j3[1]["name"].get<std::string>().c_str())
+                    .setTarget(j3[1]["target"].get<std::string>().c_str());
+
+        
+        /*sly::TypeActivator activator;
 
         sly::IInputStream* pVertexData;
         sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.json");
@@ -140,7 +170,7 @@ int main()
         pShaderData->close();
 
         psspBuilder.init(psspDesc);
-        vsspBuilder.init(vsspDesc);
+        vsspBuilder.init(vsspDesc);*/
     #endif
 
     sly::gfx::IVertexBuffer* vertexBuffer = nullptr;

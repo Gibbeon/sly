@@ -40,9 +40,15 @@ namespace sly {
 
     class TextReader {
     public:
-        TextReader(IInputStream& stream) : _stream(stream) {}
+        TextReader(IInputStream& stream) : _stream(stream), _offset(0) {}
 
-        template<typename T> 
+        std::string readAll() {
+            std::string result(_stream.getSize(), ' ');
+            _stream.read(const_cast<char*>(result.c_str()), _stream.getSize());
+            return result;
+        }
+
+        /*template<typename T> 
         T read() {
             //write(reinterpret_cast<vptr_t>(&object), sizeof(T));
         };
@@ -60,7 +66,7 @@ namespace sly {
             char* ptr = &_buffer[_offset];
             data = atoi(ptr);
             return data;
-        };
+        };*/
     protected:
         IInputStream& _stream;
         char _buffer[4096];
