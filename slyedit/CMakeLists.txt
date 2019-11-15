@@ -36,6 +36,7 @@ else()
 endif()
 
 include_directories(./include)
+include_directories(../packages/json/single_include)
 
 include_directories(../slycore/include)
 include_directories(../slyengine/include)
@@ -55,6 +56,7 @@ find_library(SLYENGINE_LIB slyengine${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../sly
 
 target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
 target_link_libraries(${PROJECT_NAME} ${SLYENGINE_LIB})
+
 
 if(${GFXAPI} EQUAL "D3D12")
     include_directories(../slyd3d12/include)
