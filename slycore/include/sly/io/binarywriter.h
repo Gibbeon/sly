@@ -19,24 +19,30 @@ namespace sly {
         }
 
         template<typename T> 
-        void write(T object) {
-            //write(reinterpret_cast<vptr_t>(&object), sizeof(T));
-        };
+        void write(T object);
 
-        template<> 
-        void write<u32>(u32 value) {
-            _itoa_s(value, buffer, 10);
-            write(buffer);
-        };
-        template<> 
-        void write<size_t>(size_t value) {
-            _i64toa_s(value, buffer, sizeof(buffer), 10);
-            write(buffer);
-        };
     protected:
         IOutputStream& _stream;
         char buffer[128];
     };    
+
+    template<typename T> 
+    void TextWriter::write(T object) {
+        //write(reinterpret_cast<vptr_t>(&object), sizeof(T));
+    };
+
+    template<> 
+    void TextWriter::write<u32>(u32 value) {
+        static char _buffer[32];
+        sprintf(buffer, "%lu", value);
+        write(_buffer);
+    };
+    //template<> 
+    //void TextWriter::write<size_t>(size_t value) {
+    //    static char _buffer[32];
+    //    sprintf(buffer, "%lu", value);
+    //    write(_buffer);
+    //};
 
     class TextReader {
     public:
