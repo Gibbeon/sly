@@ -13,7 +13,7 @@ namespace sly {
 namespace os {
     class Win32FileInputStream : public IInputStream {
     public:
-                Win32FileInputStream() {}
+                Win32FileInputStream() : IInputStream() {}
         virtual ~Win32FileInputStream() {}
 
         virtual void open(const char_t* file);

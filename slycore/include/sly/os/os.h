@@ -1,8 +1,8 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/io/istream.h"
-#include "sly/io/ostream.h"
+#include "sly/io/inputstream.h"
+#include "sly/io/outputstream.h"
 #include "sly/builder.h"
 #include "sly/ext/pluginmanager.h"
 

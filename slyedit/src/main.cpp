@@ -92,9 +92,7 @@ int main()
         .setInputScope(sly::gfx::eDataInputClassification_PerVertex)
         .setOffset(12);
 
-    #define TEST_ASSETREADER 1
-    #if !TEST_ASSETREADER
-    
+
         Vertex* triangleVertices = nullptr;
         sly::IInputStream* pVertexData;
         sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.dat");
@@ -106,6 +104,9 @@ int main()
 
         vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
 
+    #define TEST_ASSETREADER 1
+    #if !TEST_ASSETREADER
+    
         //shaders
         sly::IInputStream* pShaderFile;
         sly::Engine::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
@@ -132,7 +133,7 @@ int main()
         sly::Engine::OS().FileSystem().open(&pShaderJson, "shaders.json");        
         sly::TextReader reader(*pShaderJson);
 
-        auto j3 = json::parse(reader.readAll());
+        auto j3 = json::parse((const char_t*)reader.readAll());
 
         sly::IInputStream* pShaderFile;
         sly::Engine::OS().FileSystem().open(&pShaderFile, j3[0]["file"].get<std::string>().c_str());        
@@ -150,7 +151,7 @@ int main()
                     .setEntryPoint(j3[1]["entryPoint"].get<std::string>().c_str())
                     .setName(j3[1]["name"].get<std::string>().c_str())
                     .setTarget(j3[1]["target"].get<std::string>().c_str());
-
+                    
         
         /*sly::TypeActivator activator;
 

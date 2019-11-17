@@ -3,7 +3,7 @@
 #include <string>
 
 #include "sly/global.h"
-#include "sly/io/ostream.h"
+#include "sly/io/outputstream.h"
 #include "sly/runtime/serialization/serializable.h"
 #include "sly/runtime/hastypeinfo.h"
 #include "sly/static_hash.h"

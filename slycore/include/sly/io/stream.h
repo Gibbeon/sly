@@ -15,6 +15,8 @@ namespace sly {
 
         virtual void flush() = 0;
         virtual void close() = 0;
+
+        
     protected:
         IStream() {}
     }; 
