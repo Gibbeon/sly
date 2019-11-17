@@ -210,7 +210,9 @@ namespace sly {
     template<size_t NBufferSize = 4096>
     class TextReader {
     public:
-        TextReader(IInputStream& stream) : _stream(stream), _offset(0), _size(0) { readChunk(); }
+        TextReader(IInputStream& stream) : _stream(stream), _offset(0), _size(0), _position(-1) { 
+            fill(); 
+            }
 
         char_t* current()
         {
@@ -225,7 +227,7 @@ namespace sly {
         {
             if(exhausted() && !eof())
             {
-                return readChunk();
+                return fill();
             } else {
                 _offset++;
             }
@@ -242,16 +244,25 @@ namespace sly {
         String read(std::function<bool_t(char_t)> until = std::isspace) {            
             std::string sb;
 
-            size_t offset = _offset;
-
-            while(increment() && !(until(*current()))) {
-                if(exhausted()) {
-                     sb.append(&_buffer[offset], _size - offset);
-                     offset = 0; 
-                }
+            if(_position != _stream.getPosition()) {
+                fill();
             }
 
-            sb.append(&_buffer[offset], _size - offset);
+            size_t offset = _offset;
+
+            while(!(until(*current()))&& !eof()) {
+                if(exhausted()) {
+                     sb.append(&_buffer[offset], _size - offset);                     
+                     _stream.seek(_size - offset); // on flush move the stream 
+                     _size = offset = 0;
+                }
+                increment();
+            }
+
+            sb.append(&_buffer[offset], _size - offset); // on flush move the stream
+            _stream.seek(_size - offset);
+
+            _position = _stream.getPosition();
                         
             return Convert<T>::parse(sb);
         };
@@ -264,9 +275,10 @@ namespace sly {
             return read<String>([](char_t n) -> bool_t{ return false; });
         };
 
-        bool_t readChunk() {
+        bool_t fill() {
             if(! (_stream.getPosition() >= _stream.getSize())) {
-                _size = _stream.read(_buffer, min(NBufferSize,  _stream.getSize() - _stream.getPosition()));                
+                _size = _stream.read(_buffer, min(NBufferSize,  _stream.getSize() - _stream.getPosition()));     
+                _stream.seek(-((s32)_size)); // so we don't want to increment the stream until we actually read the data from the reader       
                 _offset = 0;
                 return true;
             }
@@ -278,5 +290,6 @@ namespace sly {
         char _buffer[NBufferSize];
         size_t _offset;
         size_t _size;
+        size_t _position;
     };    
 }

@@ -9,7 +9,7 @@ namespace sly {
 
         virtual size_t getSize() = 0;
         
-        virtual void seek(size_t offset) = 0;
+        virtual void seek(s32 offset) = 0;
         virtual size_t getPosition() = 0;
         virtual void setPosition(size_t position) = 0;
 

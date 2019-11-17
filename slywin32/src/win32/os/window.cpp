@@ -23,9 +23,9 @@ void Win32Window::init(WindowDesc& desc)
     AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
     
     // Create the window and store a handle to it.
-    this->SetHwnd(CreateWindow(
+    this->setHwnd(CreateWindow(
         windowClass.lpszClassName,
-        GetTitle().c_str(),
+        getTitle().c_str(),
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,

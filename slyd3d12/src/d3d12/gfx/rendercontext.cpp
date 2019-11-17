@@ -1,7 +1,7 @@
 #include "sly/d3d12/gfx/rendercontext.h"
 #include "sly/d3d12/gfx/device.h"
 #include "sly/d3d12/gfx/commandqueue.h"
-#include "sly/win32/os/rendercontext.h"
+#include "sly/win32/os/window.h"
 
 using namespace sly::gfx;
 D3D12RenderContextImpl::D3D12RenderContextImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window) :
@@ -24,8 +24,8 @@ void D3D12RenderContextImpl::init(RenderContextDesc& desc) {
     // ribe and create the swap chain.
     DXGI_SWAP_CHAIN_DESC1 swapChain = {};
     swapChain.BufferCount = 2; // how many buffers we will have, 2 allows us to have one actively being written to whilest the other is displayed
-    swapChain.Width = _window->GetWidth();
-    swapChain.Height = _window->GetHeight();
+    swapChain.Width = _window->getWidth();
+    swapChain.Height = _window->getHeight();
     swapChain.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // the color format for the buffer
     swapChain.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // how this buffer is to be used
     swapChain.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // discard the buffer after it's displayed
@@ -33,7 +33,7 @@ void D3D12RenderContextImpl::init(RenderContextDesc& desc) {
 
     reinterpret_cast<D3D12DeviceImpl*>(&getDevice())->getIDXGIFactory4().CreateSwapChainForHwnd(
         &_directCommandQueue.getID3D12CommandQueue(),        // Swap chain needs the queue so that it can force a flush on it.
-        _window->GetHwnd(),
+        _window->getHwnd(),
         &swapChain,
         nullptr,
         nullptr,
@@ -65,12 +65,12 @@ void D3D12RenderContextImpl::init(RenderContextDesc& desc) {
 
 void  D3D12RenderContextImpl::processMessages()
 {
-    _window->ProcessMessages();
+    _window->processMessages();
 }
 
 void D3D12RenderContextImpl::setVisible(bool_t show)
 {
-    _window->Show();
+    _window->show();
 }
 
 void D3D12RenderContextImpl::swapBuffers()

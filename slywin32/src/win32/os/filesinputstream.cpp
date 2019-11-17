@@ -7,7 +7,7 @@
 
 #define BUF_SIZE 256
 
-using namespace sly;
+using namespace sly::os;
 
 void Win32FileInputStream::open(const char_t* file) {
 

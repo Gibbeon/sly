@@ -10,10 +10,6 @@ namespace sly {
 
         virtual size_t read(vptr_t buffer, size_t size) = 0;
 
-        virtual bool_t eof() { 
-            return getPosition() >= getSize(); 
-        }
-        
     protected:
         IInputStream() : IStream() {}
     }; 

@@ -15,7 +15,7 @@ void MacOSFileOutputStream::close() {
     _file.close();
 }
 
-void MacOSFileOutputStream::seek(size_t offset) {
+void MacOSFileOutputStream::seek(s32 offset) {
     _file.seekp(offset, std::ios_base::cur);
 }
 

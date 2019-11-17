@@ -26,7 +26,7 @@ namespace sly {
             virtual ~IOperatingSystem() {}            
 
             virtual void init() = 0;
-            virtual size_t getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max) = 0;
+            virtual size_t getPluginRegistrationFunctions(sly::pfRegisterPlugins* ppfRegisterPlugins, size_t max) = 0;
 
             virtual IFileSystem& FileSystem() = 0;
         protected:
@@ -40,9 +40,15 @@ namespace sly {
             std::string pszTitle;
         };
 
-        class WindowBuilder : sly::Builder<WindowDesc>
+        class WindowBuilder : public sly::Builder<WindowDesc>
         {
+        public:
+            WindowBuilder() : Builder() {}
+            virtual ~WindowBuilder() {}
 
+            WindowBuilder& setTitle(std::string name) { desc_.pszTitle = name; return * this ;}
+            WindowBuilder& setWidth(uint_t width) {desc_.width = width; return * this;}
+            WindowBuilder& setHeight(uint_t height) {desc_.height = height; return * this;}
         };
 
         class IWindow

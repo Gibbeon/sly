@@ -7,7 +7,7 @@
 #include "sly/d3d12/gfx/shader.h"
 #include "sly/d3d12/gfx/renderstate.h"
 #include "sly/d3d12/gfx/texture.h"
-#include "sly/win32/os/rendercontext.h"
+#include "sly/win32/os/window.h"
 
 using namespace sly::gfx;
 
@@ -47,8 +47,16 @@ void D3D12DeviceImpl::init(DeviceDesc& desc)
     }
 }
 
-void D3D12DeviceImpl::createWindow(IRenderContext** ppWindow, RenderContextDesc& desc) {
-    (*ppWindow) = new D3D12RenderContextImpl(*this, *(new sly::os::Win32Window(1024,768,"Hi!")));
+void D3D12DeviceImpl::createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc) {
+    sly::os::WindowBuilder builder;
+    builder.setHeight(768).setWidth(1024).setTitle("Hi!");
+
+
+    auto window = new sly::os::Win32Window();
+    window->init(builder.build());
+
+    
+    (*ppWindow) = new D3D12RenderContextImpl(*this, *window);
     (*ppWindow)->init(desc);
 }
 

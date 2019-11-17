@@ -20,7 +20,8 @@ namespace os {
         virtual size_t read(vptr_t buffer, size_t size);
         virtual size_t getSize();
 
-        virtual void seek(size_t offset)  { _offset += offset; }
+        virtual void seek(s32 offset) { _offset += offset; }
+
         virtual size_t getPosition()  { return _offset; }
         virtual void setPosition(size_t position)  { _offset = position; };
 
@@ -30,7 +31,7 @@ namespace os {
         HANDLE _handle;
         vptr_t _file;
         size_t _size;
-        size_t _offset;
+        s32 _offset;
     };
 
     class Win32FileOutputStream : public IOutputStream {
@@ -44,7 +45,7 @@ namespace os {
 
         virtual size_t getSize();
 
-        virtual void seek(size_t offset);
+        virtual void seek(s32 offset);
         virtual size_t getPosition();
         virtual void setPosition(size_t position);
 
