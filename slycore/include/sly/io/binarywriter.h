@@ -175,27 +175,29 @@ namespace sly {
         IInputStream& _stream;
     };    
 
-    
+    template<typename T, bool_t>
+    struct Convert;
+
     template<typename T, bool_t = true>
     struct Convert {
     public:
         using type = T;
 
-        template<typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
-        static T parse(String str) {
+        template<typename U, typename std::enable_if<std::is_integral<U>::value, int>::type = 0>
+        static U parse(String str) {
             char_t* end;
             return (T)std::strtoull(str.c_str(), &end, 10);
         }
 
-        template<typename T, typename std::enable_if<std::is_floating_point<T>::value, float>::type = 0>
-        static T parse(String str) {
+        template<typename U, typename std::enable_if<std::is_floating_point<U>::value, float>::type = 0>
+        static U parse(String str) {
             char_t* end;
-             return (T)std::strtold(str.c_str(), &end, 10);
+             return (U)std::strtold(str.c_str(), &end);
         }
 
-        template<typename T, typename std::enable_if<std::is_enum<T>::value, int>::type = 0>
-        static T parse(String str) {
-            return Enum<T>::parse(str);
+        template<typename U, typename std::enable_if<std::is_enum<U>::value, int>::type = 0>
+        static U parse(String str) {
+            return Enum<U>::parse(str);
         }
 
         //template<typename T, typename std::enable_if<std::is_enum<T>::value, int>::type = 0>
@@ -204,7 +206,7 @@ namespace sly {
         }
     };  
 
-    template <typename T, bool_t> Convert(String, std::true_type) -> Convert<String>;
+    //template <typename U, bool_t> Convert(String) -> Convert<String, true>;
 
     
     template<size_t NBufferSize = 4096>
@@ -241,7 +243,7 @@ namespace sly {
         }
 
         template<typename T> 
-        String read(std::function<bool_t(char_t)> until = std::isspace) {            
+        String read(std::function<bool_t(char_t)> until = [](char_t n) -> bool_t{ return std::isspace(n); } ) {            
             std::string sb;
 
             if(_position != _stream.getPosition()) {
@@ -268,7 +270,7 @@ namespace sly {
         };
 
         String readLine() {
-            return read(+[](char_t n) -> bool_t{ return n != '\n'; });
+            return read([](char_t n) -> bool_t{ return n != '\n'; });
         };
 
         String readAll() {

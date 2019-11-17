@@ -5,6 +5,9 @@
 #define FILE_LINE __FILE__ ":" STRINGIFY(__LINE__)
 #define NOOP() (void(0))
 
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 #define THROW(message)  throw Exception(__LINE__, __FILE__, message)
 
 
