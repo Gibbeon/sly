@@ -61,7 +61,6 @@ void MacOSWindow::init(WindowDesc& desc)
     m_height = desc.height;
     m_title = desc.pszTitle;
 
-
     NSRect frame = NSMakeRect(0, 0, m_width, m_height);
     NSWindow* window = [[NSWindow alloc] initWithContentRect:frame
 #if MTLPP_IS_AVAILABLE_MAC(10_12)
@@ -75,6 +74,9 @@ void MacOSWindow::init(WindowDesc& desc)
     WindowViewController* viewController = [WindowViewController new];
     viewController->m_render = onRender;
     viewController->m_window = this;
+
+    g_device = mtlpp::Device::CreateSystemDefaultDevice();
+    
 
     MTKView* view = [[MTKView alloc] initWithFrame:frame];
     view.device = (__bridge id<MTLDevice>)g_device.GetPtr();
@@ -111,7 +113,7 @@ bool_t MacOSWindow::processMessages()
         -1.0f, -1.0f, 0.0f,
          1.0f, -1.0f, 0.0f,
     };
-    g_device = mtlpp::Device::CreateSystemDefaultDevice();
+    
     g_commandQueue = g_device.NewCommandQueue();
 
     mtlpp::Library library = g_device.NewLibrary(shadersSrc, mtlpp::CompileOptions(), nullptr);
@@ -130,27 +132,24 @@ bool_t MacOSWindow::processMessages()
     NSApplication * application = [NSApplication sharedApplication];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
 
-    NSMenu* menubar = [NSMenu new];
-    NSMenuItem* appMenuItem = [NSMenuItem new];
-    NSMenu* appMenu = [NSMenu new];
-    NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(stop:) keyEquivalent:@"q"];
-    [menubar addItem:appMenuItem];
-    [appMenu addItem:quitMenuItem];
-    [appMenuItem setSubmenu:appMenu];
-    [NSApp setMainMenu:menubar];
+    //NSMenu* menubar = [NSMenu new];
+    //NSMenuItem* appMenuItem = [NSMenuItem new];
+    //NSMenu* appMenu = [NSMenu new];
+    //NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(stop:) keyEquivalent:@"q"];
+    //[menubar addItem:appMenuItem];
+    //[appMenu addItem:quitMenuItem];
+    //[appMenuItem setSubmenu:appMenu];
+    //[NSApp setMainMenu:menubar];
 
     [NSApp activateIgnoringOtherApps:YES];
     [NSApp run];
-    
-    
-
 
     return true;
 }
 
 void MacOSWindow::onRender(const sly::os::MacOSWindow& window)
 {
-while(true) {
+//while(true) {
         mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer();
         
         mtlpp::RenderPassDescriptor renderPassDesc = m_view.GetRenderPassDescriptor();
@@ -166,5 +165,5 @@ while(true) {
 
         commandBuffer.Commit();
         commandBuffer.WaitUntilCompleted();
-    }
+    //}
 }

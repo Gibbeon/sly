@@ -275,11 +275,11 @@ namespace sly {
 
         String readAll() {
             return read<String>([](char_t n) -> bool_t{ return false; });
-        };
+        }; 
 
         bool_t fill() {
             if(! (_stream.getPosition() >= _stream.getSize())) {
-                _size = _stream.read(_buffer, min(NBufferSize,  _stream.getSize() - _stream.getPosition()));     
+                _size = _stream.read(_buffer, MIN(NBufferSize,  _stream.getSize() - _stream.getPosition()));     
                 _stream.seek(-((s32)_size)); // so we don't want to increment the stream until we actually read the data from the reader       
                 _offset = 0;
                 return true;

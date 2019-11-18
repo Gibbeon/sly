@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/builder.h"
+#include "sly/gfx/builders/rendersystembuilder.h"
 #include "sly/gfx/device.h"
 #include "sly/plugin.h"
 
@@ -9,14 +9,6 @@
 
 namespace sly {
     namespace gfx {
-        struct RenderSystemDesc {
-        public:
-        };
-
-        class RenderSystemBuilder : public Builder<RenderSystemDesc> {
-        public:
-            RenderSystemBuilder() : Builder() {}
-        };
 
         class IDevice;
         struct Device;

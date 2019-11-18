@@ -1,5 +1,6 @@
 #include "sly/macOS/os/os.h"
 #include "sly/gfx/rendersystem.h"
+#include "sly/metal/gfx/rendersystem.h"
 
 using namespace sly::os;
 
@@ -13,8 +14,14 @@ void MacOSOperatingSystem::init() {
 
 }   
 
+void _RegisterMetalPlugin(sly::IPluginManager& manager) {
+    static sly::gfx::METALRenderSystemImpl instance;
+
+    manager.set<sly::gfx::IRenderSystem>(instance);
+}
+
 size_t MacOSOperatingSystem::getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max) {
-    /* HMODULE h = LoadLibraryA("c:/dev/sly/slyd3d12/bin/slyd3d12.dll");
+    /* HMODULE h = LoadLibraryA("c:/dev/sly/slyMETAL/bin/slyMETAL.dll");
     
     auto pf = GetProcAddress(h, "_RegisterPlugins");
     
@@ -22,5 +29,9 @@ size_t MacOSOperatingSystem::getPluginRegistrationFunctions(pfRegisterPlugins* p
     ppfRegisterPlugins[count] = (pfRegisterPlugins)pf;
     count++; */
 
-    return 0;
+    size_t count = 0;
+    ppfRegisterPlugins[count] = (pfRegisterPlugins)_RegisterMetalPlugin;
+    count++;
+
+    return count;
 }

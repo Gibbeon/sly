@@ -17,6 +17,8 @@ using json = nlohmann::json;
 #include "sly/runtime/serialization/serializer.h"
 #include "sly/io/binarywriter.h"
 
+#include "sly/macos/os/window.h"
+
 struct Vec3 {
     float x, y, z;
 };
@@ -65,6 +67,23 @@ int main()
     sly::gfx::IDevice* renderDevice = nullptr; // device becomes renderer???
     renderSystem->createDevice(&renderDevice, sly::gfx::DeviceBuilder().build());
 
+    sly::os::MacOSWindow window;
+    sly::os::WindowBuilder builder;
+
+    builder.setHeight(768).setWidth(1024).setTitle("Title");
+
+    window.init(builder.build());
+
+    window.show();
+
+    window.processMessages();
+
+    while(true) {
+    }
+    
+    return  0;
+
+#ifdef TURN_OFF
     // create window
     sly::gfx::IRenderContext* context = nullptr;
     renderDevice->createRenderContext(&context, sly::gfx::RenderContextBuilder().build());
@@ -224,4 +243,5 @@ int main()
     }
 
     return 0;
+#endif
 }

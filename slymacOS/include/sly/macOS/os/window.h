@@ -10,7 +10,7 @@ namespace sly {
         class MacOSWindow : public IWindow
         {
         public:
-        
+                    MacOSWindow() : IWindow() {}
             virtual ~MacOSWindow() {} 
 
             virtual void init(WindowDesc& desc);
@@ -24,6 +24,8 @@ namespace sly {
 
             //virtual HWND GetHwnd() const { return m_hWND; }
             //virtual void SetHwnd(HWND hWND) { m_hWND = hWND; }
+
+            virtual void onRender() {}
 
             virtual bool_t processMessages();
 

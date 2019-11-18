@@ -49,7 +49,14 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
-message(${CMAKE_STATIC_LIBRARY_SUFFIX})
+# Link shared library with apple OS libraries
+if (MACOSX)
+	find_library(CoreFoundation CoreFoundation)
+	target_link_libraries(${PROJECT_NAME} ${CoreFoundation})
+  target_link_libraries(${PROJECT_NAME} "-framework Metal")
+  target_link_libraries(${PROJECT_NAME} "-framework AppKit")
+  target_link_libraries(${PROJECT_NAME} "-framework MetalKit")
+endif()
 
 find_library(SLYCORE_LIB slycore${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../slycore/lib)
 find_library(SLYENGINE_LIB slyengine${CMAKE_STATIC_LIBRARY_SUFFIX}  PATHS ../slyengine/lib)
