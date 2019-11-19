@@ -7,7 +7,7 @@ using namespace sly::gfx;
 
 METALRenderStateImpl::METALRenderStateImpl(METALDeviceImpl& device) : 
     //_pipelineState(nullptr), 
-    _device(&device) {
+    _device(device) {
 
 }
 

@@ -22,6 +22,7 @@ namespace sly {
         protected:
             //ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
             //ID3DBlob* _data;
+            mtlpp::Function _data;
             METALDeviceImpl* _device;           
             
             using IShader::IShader;

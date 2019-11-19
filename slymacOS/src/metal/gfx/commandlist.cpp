@@ -5,7 +5,9 @@
 
 using namespace sly::gfx;
 
-METALCommandListImpl::METALCommandListImpl(METALDeviceImpl& device) : _device(&device), _renderState(NULL) {
+METALCommandListImpl::METALCommandListImpl(METALDeviceImpl& device) : _device(device)
+//, _renderState(NULL) 
+{
 
 }
 

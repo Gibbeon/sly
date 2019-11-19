@@ -19,13 +19,13 @@ namespace sly {
             size_t getStrideInBytes() { return  _strideInBytes; }
 
             //ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
-            virtual IDevice& getDevice() { return *_device; } 
+            virtual IDevice& getDevice() { return _device; } 
                        
         protected:
             virtual void write(vptr_t data, size_t count, size_t stride);
 
         private:
-            METALDeviceImpl* _device; 
+            METALDeviceImpl& _device; 
             //ID3D12Resource* _resource;
             size_t _bufferLocation;
             size_t _sizeInBytes;

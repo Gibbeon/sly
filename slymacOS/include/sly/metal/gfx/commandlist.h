@@ -28,17 +28,18 @@ namespace sly {
             virtual void clear(color_t color);
             virtual void draw(size_t, size_t, size_t, size_t);
 
-            //ID3D12CommandList&      getID3D12CommandList() { return *_list; }
+            mtlpp::CommandBuffer&      getMETALCommandList() { return _list; }
             //ID3D12CommandAllocator& getID3D12CommandAllocator() { return *_allocator; }
-            //ID3D12Device& getID3D12Device() { return _device->getID3D12Device(); }
-            virtual IDevice& getDevice() { return *_device; }  
+            mtlpp::Device& getMETALDevice()   { return _device.getMETALDevice(); }
+            virtual IDevice& getDevice() { return _device; }  
 
         private:
-            METALDeviceImpl* _device;
+            METALDeviceImpl& _device;
+            mtlpp::CommandBuffer _list;
             //ID3D12GraphicsCommandList* _list;
             //ID3D12CommandAllocator* _allocator;
-            METALRenderTargetImpl* _target;
-            METALRenderStateImpl* _renderState;
+            //METALRenderTargetImpl* _target;
+            //METALRenderStateImpl* _renderState;
         };
     }
 }

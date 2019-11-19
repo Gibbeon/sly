@@ -7,16 +7,19 @@
 #include "sly/metal/gfx/shader.h"
 #include "sly/metal/gfx/renderstate.h"
 #include "sly/metal/gfx/texture.h"
+#include "mtlpp/mtlpp.hpp"
 
 using namespace sly::gfx;
 
-METALDeviceImpl::METALDeviceImpl(IRenderSystem& system) : _system(&system)
+METALDeviceImpl::METALDeviceImpl(IRenderSystem& system) : _system(system)
 {
-
+    
 }
 
 void METALDeviceImpl::init(DeviceDesc& desc) 
 {
+    _device = mtlpp::Device::CreateSystemDefaultDevice();
+    
     /*UINT dxgiFactoryFlags = 0;
 
     #ifdef _DEBUG

@@ -52,7 +52,6 @@ mtlpp::RenderPipelineState g_renderPipelineState;
 mtlpp::Drawable g_Drawable;
 mtlpp::RenderPassDescriptor g_RenderPassDescriptor;
 
-
 MtlView m_view;
 
 void MacOSWindow::init(WindowDesc& desc) 
@@ -75,9 +74,10 @@ void MacOSWindow::init(WindowDesc& desc)
     viewController->m_render = onRender;
     viewController->m_window = this;
 
+    // IDevice
     g_device = mtlpp::Device::CreateSystemDefaultDevice();
     
-
+    // Hooking Device into RenderContext
     MTKView* view = [[MTKView alloc] initWithFrame:frame];
     view.device = (__bridge id<MTLDevice>)g_device.GetPtr();
     view.delegate = viewController;
@@ -88,11 +88,9 @@ void MacOSWindow::init(WindowDesc& desc)
     [window orderFrontRegardless];
 
     m_view = ns::Handle{ (__bridge void*)view };
-}
 
-bool_t MacOSWindow::processMessages()
-{
-    const char shadersSrc[] = R"""(
+    // shader
+        const char shadersSrc[] = R"""(
         #include <metal_stdlib>
         using namespace metal;
         vertex float4 vertFunc(
@@ -107,6 +105,7 @@ bool_t MacOSWindow::processMessages()
         }
     )""";
 
+    // vertextbuffer
     const float vertexData[] =
     {
          0.0f,  1.0f, 0.0f,
@@ -114,56 +113,63 @@ bool_t MacOSWindow::processMessages()
          1.0f, -1.0f, 0.0f,
     };
     
+    // commandQueue
     g_commandQueue = g_device.NewCommandQueue();
 
+    // shader file
     mtlpp::Library library = g_device.NewLibrary(shadersSrc, mtlpp::CompileOptions(), nullptr);
+    
+    // shader proram
     mtlpp::Function vertFunc = library.NewFunction("vertFunc");
     mtlpp::Function fragFunc = library.NewFunction("fragFunc");
 
+    // vertex buffer
     g_vertexBuffer = g_device.NewBuffer(vertexData, sizeof(vertexData), mtlpp::ResourceOptions::CpuCacheModeDefaultCache);
 
+    // render state
     mtlpp::RenderPipelineDescriptor renderPipelineDesc;
     renderPipelineDesc.SetVertexFunction(vertFunc);
     renderPipelineDesc.SetFragmentFunction(fragFunc);
     renderPipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
     g_renderPipelineState = g_device.NewRenderPipelineState(renderPipelineDesc, nullptr);
 
-    //Window win(g_device, &OnRender, 320, 240);
+
+    // not sure what this is, set up allocation loop/settings?
     NSApplication * application = [NSApplication sharedApplication];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-
-    //NSMenu* menubar = [NSMenu new];
-    //NSMenuItem* appMenuItem = [NSMenuItem new];
-    //NSMenu* appMenu = [NSMenu new];
-    //NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(stop:) keyEquivalent:@"q"];
-    //[menubar addItem:appMenuItem];
-    //[appMenu addItem:quitMenuItem];
-    //[appMenuItem setSubmenu:appMenu];
-    //[NSApp setMainMenu:menubar];
-
     [NSApp activateIgnoringOtherApps:YES];
-    [NSApp run];
+}
+
+bool_t MacOSWindow::processMessages()
+{
+    // main event loop
+
+    NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                        untilDate:[NSDate distantFuture]
+                                           inMode:NSDefaultRunLoopMode
+                                          dequeue:YES];
+    [NSApp sendEvent:event];
 
     return true;
 }
 
 void MacOSWindow::onRender(const sly::os::MacOSWindow& window)
 {
-//while(true) {
-        mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer();
-        
-        mtlpp::RenderPassDescriptor renderPassDesc = m_view.GetRenderPassDescriptor();
-        if (renderPassDesc)
-        {
-            mtlpp::RenderCommandEncoder renderCommandEncoder = commandBuffer.RenderCommandEncoder(renderPassDesc);
-            renderCommandEncoder.SetRenderPipelineState(g_renderPipelineState);
-            renderCommandEncoder.SetVertexBuffer(g_vertexBuffer, 0, 0);
-            renderCommandEncoder.Draw(mtlpp::PrimitiveType::Triangle, 0, 3);
-            renderCommandEncoder.EndEncoding();
-            commandBuffer.Present(m_view.GetDrawable());
-        }
+    // main rendering loop
 
-        commandBuffer.Commit();
-        commandBuffer.WaitUntilCompleted();
-    //}
+    mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer();
+    
+    mtlpp::RenderPassDescriptor renderPassDesc = m_view.GetRenderPassDescriptor();
+    if (renderPassDesc)
+    {
+        mtlpp::RenderCommandEncoder renderCommandEncoder = commandBuffer.RenderCommandEncoder(renderPassDesc);
+        renderCommandEncoder.SetRenderPipelineState(g_renderPipelineState);
+        renderCommandEncoder.SetVertexBuffer(g_vertexBuffer, 0, 0);
+        renderCommandEncoder.Draw(mtlpp::PrimitiveType::Triangle, 0, 3);
+        renderCommandEncoder.EndEncoding();
+        commandBuffer.Present(m_view.GetDrawable());
+    }
+
+    commandBuffer.Commit();
+    commandBuffer.WaitUntilCompleted();
 }

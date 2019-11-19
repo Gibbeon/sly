@@ -5,8 +5,8 @@
 using namespace sly::gfx;
 
 METALCommandQueueImpl::METALCommandQueueImpl(METALDeviceImpl& device):
-    _device(&device),
-    _fence(device) 
+    _device(device)
+    //,_fence(device) 
 {
 
 }

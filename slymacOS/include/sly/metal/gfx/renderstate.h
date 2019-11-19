@@ -14,7 +14,7 @@ namespace sly {
             METALRenderStateImpl(METALDeviceImpl& device);
             virtual void init(RenderStateDesc& desc);
 
-            //ID3D12PipelineState&  getID3D12PipelineState() { return *_pipelineState; }
+            mtlpp::RenderPipelineState&  getMETALPipelineState() { return _pipelineState; }
             //ID3D12RootSignature&  getID3D12RootSignature() { return *_rootSignature; }
         
         protected:
@@ -22,10 +22,12 @@ namespace sly {
             void initPipelineState();
 
         private:                
-            virtual IDevice& getDevice() { return *_device; } 
-            //ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
-            METALDeviceImpl* _device;     
+            virtual IDevice& getDevice() { return _device; } 
+            mtlpp::Device& getMETALDevice()   { return _device.getMETALDevice(); }
+            
+            METALDeviceImpl& _device;     
 
+            mtlpp::RenderPipelineState _pipelineState;
             //ID3D12PipelineState* _pipelineState;
             //ID3D12RootSignature* _rootSignature;  
 

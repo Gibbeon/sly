@@ -6,7 +6,7 @@
 using namespace sly::gfx;
 
 METALResourceImpl::METALResourceImpl(METALDeviceImpl& device) :
-    _device(&device) 
+    _device(device) 
 {
 }
 

@@ -14,7 +14,7 @@ namespace sly {
 
             virtual void write(vptr_t data, size_t size, size_t stride);
 
-            //ID3D12Resource& getID3D12Resource() { return *_resource; }
+            mtlpp::Buffer& getMETALResource() { return _resource; }
             virtual size_t getBufferLocation() { return _bufferLocation; }
             virtual size_t getSizeInBytes() { return _sizeInBytes; }
             virtual size_t getStrideInBytes() { return _strideInBytes; }
@@ -28,6 +28,7 @@ namespace sly {
             METALDeviceImpl* _device;     
 
         private:
+            mtlpp::Buffer _resource;
             //ID3D12Resource* _resource;
             size_t _bufferLocation;
             size_t _sizeInBytes;

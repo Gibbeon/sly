@@ -16,15 +16,16 @@ namespace sly {
 
             virtual void flush();
             
-            //ID3D12CommandQueue& getID3D12CommandQueue() { return *_queue; }
-            //ID3D12Device& getID3D12Device()   { return _device->getIMETALDevice(); }
-            virtual IDevice& getDevice() { return *_device; } 
+            mtlpp::CommandQueue& getMETALCommandQueue() { return _queue; }
+            mtlpp::Device& getMETALDevice()   { return _device.getMETALDevice(); }
+
+            virtual IDevice& getDevice() { return _device; } 
 
         private:
-            //ID3D12CommandQueue* _queue;
-            METALDeviceImpl* _device; 
+            mtlpp::CommandQueue _queue;
+            METALDeviceImpl& _device; 
 
-            METALFenceImpl _fence;
+            //METALFenceImpl _fence;
         };
     }
 }

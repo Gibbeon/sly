@@ -22,13 +22,13 @@ namespace sly {
  
             //IDXGIAdapter1& getIDXGIAdapter1()   { return *_adapter; }
             //IDXGIFactory4& getIDXGIFactory4()   { return *_factory; }
-            //ID3D12Device& getID3D12Device()   { return *_device; }
+            mtlpp::Device& getMETALDevice()   { return _device; }
 
         private:
-            IRenderSystem* _system;
+            IRenderSystem& _system;
+            mtlpp::Device  _device;
             //IDXGIFactory4*  _factory;
             //IDXGIAdapter1*  _adapter;
-            //ID3D12Device*   _device;
         };
     }
 }

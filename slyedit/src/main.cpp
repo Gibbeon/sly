@@ -67,6 +67,10 @@ int main()
     sly::gfx::IDevice* renderDevice = nullptr; // device becomes renderer???
     renderSystem->createDevice(&renderDevice, sly::gfx::DeviceBuilder().build());
 
+    sly::gfx::IRenderContext* context = nullptr;
+    renderDevice->createRenderContext(&context, sly::gfx::RenderContextBuilder().build());
+    
+    
     sly::os::MacOSWindow window;
     sly::os::WindowBuilder builder;
 
@@ -76,9 +80,9 @@ int main()
 
     window.show();
 
-    window.processMessages();
 
     while(true) {
+        window.processMessages();
     }
     
     return  0;
