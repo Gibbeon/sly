@@ -69,30 +69,8 @@ int main()
 
     sly::gfx::IRenderContext* context = nullptr;
     renderDevice->createRenderContext(&context, sly::gfx::RenderContextBuilder().build());
-    
-    
-    sly::os::MacOSWindow window;
-    sly::os::WindowBuilder builder;
 
-    builder.setHeight(768).setWidth(1024).setTitle("Title");
-
-    window.init(builder.build());
-
-    window.show();
-
-
-    while(true) {
-        window.processMessages();
-    }
-    
-    return  0;
-
-#ifdef TURN_OFF
-    // create window
-    sly::gfx::IRenderContext* context = nullptr;
-    renderDevice->createRenderContext(&context, sly::gfx::RenderContextBuilder().build());
-
-    // create 1 or more windows
+        // create 1 or more windows
     //renderDevice->setRender(&window, winBuilder.build());
 
     // create a command list to draw an object 
@@ -115,40 +93,119 @@ int main()
         .setInputScope(sly::gfx::eDataInputClassification_PerVertex)
         .setOffset(12);
 
+    Vertex* triangleVertices = nullptr;
+    sly::IInputStream* pVertexData;
+    sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.dat");
 
-        Vertex* triangleVertices = nullptr;
-        sly::IInputStream* pVertexData;
-        sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.dat");
+    size_t vtxsize = pVertexData->getSize();
+    
+    triangleVertices = (Vertex*)malloc(vtxsize);
+    pVertexData->read(triangleVertices, vtxsize);
+    //pVertexData->close();
 
-        size_t vtxsize = pVertexData->getSize();
-        
-        triangleVertices = (Vertex*)malloc(vtxsize);
-        pVertexData->read(triangleVertices, vtxsize);
+    vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
 
-        vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
+    //shaders [ duh, of course this doesn't work on mac... ]
+        //sly::IInputStream* pShaderFile;
+        //sly::Engine::OS().FileSystem().open(&pShaderFile, "c:\\shaders.hlsl");
+
+        //size_t vssize = pShaderFile->getSize();
+    
+        //char* vsbuf = (char*)malloc(vssize);
+        //pShaderFile->read(vsbuf, vssize);
+
+    // shader
+        const char shadersSrc[] = R"""(
+        #include <metal_stdlib>
+        using namespace metal;
+        vertex float4 VSMain(
+            const device packed_float3* vertexArray [[buffer(0)]],
+            unsigned int vID[[vertex_id]])
+        {
+            return float4(vertexArray[vID], 1.0);
+        }
+        fragment half4 PSMain()
+        {
+            return half4(1.0, 0.0, 0.0, 1.0);
+        }
+    )""";
+
+
+    vsspBuilder.setData((vptr_t)shadersSrc, sizeof(shadersSrc))
+                .setEntryPoint("VSMain")
+                .setName("shaders")
+                .setTarget("vs_5_0");
+
+    psspBuilder.setData((vptr_t)shadersSrc, sizeof(shadersSrc))
+                .setEntryPoint("PSMain")
+                .setName("shaders")
+                .setTarget("ps_5_0");
+
+    sly::gfx::IVertexBuffer* vertexBuffer = nullptr;
+    renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build()); 
+
+    sly::gfx::IShader* psshader = nullptr;
+    sly::gfx::IShader* vsshader = nullptr;
+
+    renderDevice->createShader(&vsshader, vsspBuilder.build()); 
+    renderDevice->createShader(&psshader, psspBuilder.build()); 
+
+    // render state
+    sly::gfx::RenderStateBuilder rstBuilder;
+    rstBuilder
+        .setVSShader(*vsshader) //renderPipelineDesc.SetVertexFunction(vertFunc);
+        .setPSShader(*psshader) //renderPipelineDesc.SetFragmentFunction(fragFunc);
+        .setSampleMax(UINT_MAX)
+        .setPrimitiveType(sly::gfx::ePrimativeType_Triangle)
+        .setNumberRenderTargets(1)
+        .setRTVFormats(0, sly::gfx::eDataFormat_R8G8B8A8_UNORM) //renderPipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
+        .setSampleDesc(1)
+        .addInputElementDesriptor(posBuilder1.build())
+        .addInputElementDesriptor(posBuilder2.build());
+
+    // render state
+    //mtlpp::RenderPipelineDescriptor renderPipelineDesc;
+    sly::gfx::IRenderState* rsState = nullptr;
+    renderDevice->createRenderState(&rsState, rstBuilder.build()); //g_renderPipelineState = g_device.NewRenderPipelineState(renderPipelineDesc, nullptr);
+
+
+        //mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer(); // to get list
+        // loop
+        //list->begin(); //    mtlpp::RenderCommandEncoder renderCommandEncoder = commandBuffer.RenderCommandEncoder(renderPassDesc);
+        //list->setRenderState(*rsState); //    renderCommandEncoder.SetRenderPipelineState(g_renderPipelineState);
+        //list->setRenderTarget(context->getDrawBuffer());
+        //list->setViewport(viewport);    
+        //list->setScissorRect(scissorRect);
+        //list->clear(clearColor);
+        //list->setVertexBuffer(*vertexBuffer); //    renderCommandEncoder.SetVertexBuffer(g_vertexBuffer, 0, 0);
+        //list->draw(3, 1, 0, 0); //    renderCommandEncoder.Draw(mtlpp::PrimitiveType::Triangle, 0, 3);
+        //list->end();  //    renderCommandEncoder.EndEncoding();
+
+        //context->processMessages();        
+        //context->getDirectCommandQueue().executeCommandList(list); //    commandBuffer.Present(m_view.GetDrawable());
+        //context->getDirectCommandQueue().flush(); //commandBuffer.Commit();
+        //context->swapBuffers(); 
+    //commandBuffer.WaitUntilCompleted();
+
+    // state
+    sly::gfx::Viewport viewport(0, 0, 1024, 768);
+    sly::rect_t scissorRect(0, 0, 1024, 768);
+    sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);
+
+    while(true) {
+        context->processMessages();
+    }
+    
+    return  0;
+
+#ifdef TURN_OFF
+
+
 
     #define TEST_ASSETREADER 1
     #if !TEST_ASSETREADER
     
-        //shaders
-        sly::IInputStream* pShaderFile;
-        sly::Engine::OS().FileSystem().open(&pShaderFile, u8"c:\\shaders.hlsl");
-
-        size_t vssize = pShaderFile->getSize();
         
-        char* vsbuf = (char*)malloc(vssize);
-        pShaderFile->read(vsbuf, vssize);
-
-        vsspBuilder.setData(vsbuf, vssize)
-                    .setEntryPoint("VSMain")
-                    .setName("shaders")
-                    .setTarget("vs_5_0");
-
-
-        psspBuilder.setData(vsbuf, vssize)
-                    .setEntryPoint("PSMain")
-                    .setName("shaders")
-                    .setTarget("ps_5_0");
    
     #else
 
@@ -196,36 +253,7 @@ int main()
         psspBuilder.init(psspDesc);
         vsspBuilder.init(vsspDesc);*/
     #endif
-
-    sly::gfx::IVertexBuffer* vertexBuffer = nullptr;
-    renderDevice->createVertexBuffer(&vertexBuffer, vbBuilder.build()); 
-
-    sly::gfx::IShader* psshader = nullptr;
-    sly::gfx::IShader* vsshader = nullptr;
-
-    renderDevice->createShader(&vsshader, vsspBuilder.build()); 
-    renderDevice->createShader(&psshader, psspBuilder.build()); 
-
-    // render state
-    sly::gfx::RenderStateBuilder rstBuilder;
-    rstBuilder
-        .setVSShader(*vsshader)
-        .setPSShader(*psshader)
-        .setSampleMax(UINT_MAX)
-        .setPrimitiveType(sly::gfx::ePrimativeType_Triangle)
-        .setNumberRenderTargets(1)
-        .setRTVFormats(0, sly::gfx::eDataFormat_R8G8B8A8_UNORM)
-        .setSampleDesc(1)
-        .addInputElementDesriptor(posBuilder1.build())
-        .addInputElementDesriptor(posBuilder2.build());
-
-    sly::gfx::IRenderState* rsState = nullptr;
-    renderDevice->createRenderState(&rsState, rstBuilder.build());
-
-    // state
-    sly::gfx::Viewport viewport(0, 0, 1024, 768);
-    sly::rect_t scissorRect(0, 0, 1024, 768);
-    sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);   
+   
 
     while(true)
     {

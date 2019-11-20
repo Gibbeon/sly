@@ -1,14 +1,16 @@
 #include "sly/metal/gfx/rendercontext.h"
 #include "sly/metal/gfx/device.h"
 #include "sly/metal/gfx/commandqueue.h"
+#include "sly/macos/os/window.h"
 
 using namespace sly::gfx;
-METALRenderContextImpl::METALRenderContextImpl(METALDeviceImpl& device, sly::os::Win32Window& window) :
+METALRenderContextImpl::METALRenderContextImpl(METALDeviceImpl& device, sly::os::MacOSWindow& window) :
     _window(&window),
     _fence(device),
     _directCommandQueue(device),
     _desctriptorTable(device),
     _device(&device) {
+
 }
 
 void METALRenderContextImpl::init(RenderContextDesc& desc) {
@@ -64,7 +66,7 @@ void METALRenderContextImpl::init(RenderContextDesc& desc) {
 
 void  METALRenderContextImpl::processMessages()
 {
-    //_window->processMessages();
+    _window->processMessages();
 }
 
 void METALRenderContextImpl::setVisible(bool_t show)

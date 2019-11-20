@@ -12,6 +12,9 @@ METALCommandQueueImpl::METALCommandQueueImpl(METALDeviceImpl& device):
 }
 
 void METALCommandQueueImpl::init(CommandQueueDesc& desc) {
+
+    _queue = getMETALDevice().NewCommandQueue();
+
     // ribe and create the command queue.
     //METAL_COMMAND_QUEUE_DESC queue = {};
     //queue.Flags = METAL_COMMAND_QUEUE_FLAG_NONE;

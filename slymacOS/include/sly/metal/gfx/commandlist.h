@@ -36,10 +36,11 @@ namespace sly {
         private:
             METALDeviceImpl& _device;
             mtlpp::CommandBuffer _list;
+            mtlpp::CommandEncoder _encoder;
             //ID3D12GraphicsCommandList* _list;
             //ID3D12CommandAllocator* _allocator;
             //METALRenderTargetImpl* _target;
-            //METALRenderStateImpl* _renderState;
+            METALRenderStateImpl* _renderState;
         };
     }
 }

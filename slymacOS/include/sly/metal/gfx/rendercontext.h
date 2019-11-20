@@ -7,7 +7,7 @@
 
 namespace sly {
     namespace os {
-        class Win32Window;
+        class MacOSWindow;
     }
 
     namespace gfx {
@@ -16,7 +16,7 @@ namespace sly {
         class METALDeviceImpl;
         class METALRenderContextImpl : public IRenderContext {
         public:
-            METALRenderContextImpl(METALDeviceImpl& device, sly::os::Win32Window& window);
+            METALRenderContextImpl(METALDeviceImpl& device, sly::os::MacOSWindow& window);
             virtual void init(RenderContextDesc& desc);
 
             // window control
@@ -40,7 +40,7 @@ namespace sly {
             METALRenderTargetImpl _renderTargets[2];
             size_t _drawFrameIndex;
             
-            sly::os::Win32Window* _window;
+            sly::os::MacOSWindow    * _window;
 
             METALFenceImpl _fence;
             METALCommandQueueImpl _directCommandQueue;

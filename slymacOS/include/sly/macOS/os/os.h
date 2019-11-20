@@ -25,7 +25,8 @@ namespace sly {
         virtual void flush() {}
         virtual void close();
     private:
-        vptr_t _file;
+        int _file;
+        vptr_t _data;
         size_t _size;
         size_t _offset;
     };

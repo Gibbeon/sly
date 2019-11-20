@@ -28,6 +28,7 @@ namespace sly {
             METALDeviceImpl& _device;     
 
             mtlpp::RenderPipelineState _pipelineState;
+            mtlpp::RenderPipelineDescriptor _pipelineDesc;
             //ID3D12PipelineState* _pipelineState;
             //ID3D12RootSignature* _rootSignature;  
 

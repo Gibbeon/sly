@@ -12,35 +12,34 @@ using namespace sly::os;
 
 void MacOSFileInputStream::open(const char_t* file) {
     int outError;
-    int fileDescriptor;
     struct stat statInfo;
  
     // Return safe values on error.
     outError = 0;
  
     // Open the file.
-    fileDescriptor = ::open( file, O_RDONLY, 0 );
-    if( fileDescriptor < 0 )
+    _file = ::open( file, O_RDONLY, 0 );
+    if( _file < 0 )
     {
        outError = errno;
     }
     else
     {
         // We now know the file exists. Retrieve the file size.
-        if( fstat( fileDescriptor, &statInfo ) != 0 )
+        if( fstat( _file, &statInfo ) != 0 )
         {
             outError = errno;
         }
         else
         {
             // Map the file into a read-only memory region.
-            _file = mmap(NULL,
+            _data =         mmap(NULL,
                                 statInfo.st_size,
                                 PROT_READ,
-                                0,
-                                fileDescriptor,
+                                MAP_PRIVATE,
+                                _file,
                                 0);
-            if( _file == MAP_FAILED )
+            if( _data == MAP_FAILED )
             {
                 outError = errno;
             }
@@ -52,14 +51,15 @@ void MacOSFileInputStream::open(const char_t* file) {
         }
  
         // Now close the file. The kernel doesn’t use our file descriptor.
-        ::close( fileDescriptor );
+        
     }
  
     //return outError;
 }
 
 size_t MacOSFileInputStream::read(vptr_t buffer, size_t size) {
-    return 0;
+    memcpy(buffer, _data, size);
+    return size;
 }
 
 size_t MacOSFileInputStream::getSize() {
@@ -67,5 +67,6 @@ size_t MacOSFileInputStream::getSize() {
 }
 
 void MacOSFileInputStream::close() {
-    munmap( _file, _size );
+    munmap( _data, _size );
+    ::close( _file );
 }

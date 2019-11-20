@@ -24,8 +24,8 @@ namespace sly {
 
         protected:
             
-            //ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
-            METALDeviceImpl* _device;     
+            mtlpp::Device& getMETALDevice()   { return _device.getMETALDevice(); }
+            METALDeviceImpl _device;     
 
         private:
             mtlpp::Buffer _resource;

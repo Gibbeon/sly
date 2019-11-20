@@ -6,18 +6,19 @@
 using namespace sly::gfx;
 
 METALVertexBufferImpl::METALVertexBufferImpl(METALDeviceImpl& device) :
-    _device(&device) 
+    _device(device) 
 {
 
 }
             
 IDevice& METALVertexBufferImpl::getDevice() 
 { 
-    return *_device; 
+    return _device; 
 } 
 
 void METALVertexBufferImpl::init(VertexBufferDesc& desc) {
 
+    _resource = getMETALDevice().NewBuffer(desc.data, desc.sizeInBytes, mtlpp::ResourceOptions::CpuCacheModeDefaultCache);
     /*getIMETALDevice().CreateCommittedResource(
          &CD3DX12_HEAP_PROPERTIES(METAL_HEAP_TYPE_UPLOAD),
          METAL_HEAP_FLAG_NONE,

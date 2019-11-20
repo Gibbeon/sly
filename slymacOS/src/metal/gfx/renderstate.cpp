@@ -6,12 +6,16 @@
 using namespace sly::gfx;
 
 METALRenderStateImpl::METALRenderStateImpl(METALDeviceImpl& device) : 
-    //_pipelineState(nullptr), 
     _device(device) {
 
 }
 
 void METALRenderStateImpl::init(RenderStateDesc& desc) {
+    _pipelineDesc.SetVertexFunction(reinterpret_cast<METALShaderImpl*>(desc.vsShader)->getMETALFunction());
+    _pipelineDesc.SetFragmentFunction(reinterpret_cast<METALShaderImpl*>(desc.vsShader)->getMETALFunction());
+    _pipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
+    _pipelineState = getMETALDevice().NewRenderPipelineState(_pipelineDesc, nullptr);
+
     /*CD3DX12_ROOT_SIGNATURE_DESC rootSignature;
     rootSignature.Init(0, nullptr, 0, nullptr, METAL_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 

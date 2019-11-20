@@ -7,6 +7,7 @@
 #include "sly/metal/gfx/shader.h"
 #include "sly/metal/gfx/renderstate.h"
 #include "sly/metal/gfx/texture.h"
+#include "sly/macos/os/window.h"
 #include "mtlpp/mtlpp.hpp"
 
 using namespace sly::gfx;
@@ -50,42 +51,45 @@ void METALDeviceImpl::init(DeviceDesc& desc)
 }
 
 void METALDeviceImpl::createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc) {
-    /*sly::os::WindowBuilder builder;
+    
+    sly::os::WindowBuilder builder;
     builder.setHeight(768).setWidth(1024).setTitle("Hi!");
 
-
-    auto window = new sly::os::Win32Window();
+    auto window = new sly::os::MacOSWindow();
     window->init(builder.build());
 
+    window->show();
     
     (*ppWindow) = new METALRenderContextImpl(*this, *window);
-    (*ppWindow)->init(desc);*/
+    (*ppWindow)->init(desc);
 }
 
 void METALDeviceImpl::createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) {
-    //(*queue) = new METALCommandQueueImpl(*this);
-    //(*queue)->init(desc);
+    (*queue) = new METALCommandQueueImpl(*this);
+    (*queue)->init(desc);
 }
 
 void METALDeviceImpl::createCommandList(ICommandList** ppWindow, CommandListDesc& desc) {
-    //(*ppWindow) = new METALCommandListImpl(*this);
-    //(*ppWindow)->init(desc);
+    (*ppWindow) = new METALCommandListImpl(*this);
+    (*ppWindow)->init(desc);
 }
 
 void METALDeviceImpl::createRenderState(IRenderState** ppWindow, RenderStateDesc& desc) {
-    //(*ppWindow) = new METALRenderStateImpl(*this);
-    //(*ppWindow)->init(desc);
+    (*ppWindow) = new METALRenderStateImpl(*this);
+    (*ppWindow)->init(desc);
 }
 
 void METALDeviceImpl::createShader(IShader** ppWindow, ShaderDesc& desc) {
-    //(*ppWindow) = new METALShaderImpl(*this);
-    //(*ppWindow)->init(desc);
+    (*ppWindow) = new METALShaderImpl(*this);
+    (*ppWindow)->init(desc);
 }
 
 void METALDeviceImpl::createTexture(ITexture** ppWindow, TextureDesc& desc) {}
+
 void METALDeviceImpl::createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc) {
-    //(*ppWindow) = new METALVertexBufferImpl(*this);
-    //(*ppWindow)->init(desc);
+    (*ppWindow) = new METALVertexBufferImpl(*this);
+    (*ppWindow)->init(desc);
 }
+
 void METALDeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc) {}
 

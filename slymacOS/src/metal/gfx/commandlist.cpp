@@ -5,8 +5,7 @@
 
 using namespace sly::gfx;
 
-METALCommandListImpl::METALCommandListImpl(METALDeviceImpl& device) : _device(device)
-//, _renderState(NULL) 
+METALCommandListImpl::METALCommandListImpl(METALDeviceImpl& device) : _device(device), _renderState(NULL) 
 {
 
 }
@@ -18,6 +17,7 @@ void METALCommandListImpl::init(CommandListDesc& desc) {
 }
 
 void METALCommandListImpl::begin() {
+    _encoder = _list.RenderCommandEncoder(renderPassDesc);
     //_allocator->Reset();
     //_list->Reset(_allocator, _renderState == nullptr ? nullptr : &_renderState->getIMETALPipelineState()); // need to see if we should have pipeline state be here 
 }

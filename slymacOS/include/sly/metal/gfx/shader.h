@@ -9,7 +9,7 @@ namespace sly {
     
         class METALShaderImpl : public IShader {
         public:
-            METALShaderImpl(METALDeviceImpl& device) : _device(&device) {}
+            METALShaderImpl(METALDeviceImpl& device) : _device(device) {}
             virtual void init(ShaderDesc& desc);
 
             vptr_t getBuffer() { return nullptr; } //_data->GetBufferPointer(); }
@@ -17,13 +17,15 @@ namespace sly {
 
             virtual void write(vptr_t data, size_t size, size_t stride) {}
             
-            virtual IDevice& getDevice() { return *_device; } 
+            virtual IDevice& getDevice() { return _device; } 
+            mtlpp::Function& getMETALFunction() { return _data; }
         
         protected:
-            //ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
+            mtlpp::Device& getMETALDevice()   { return _device.getMETALDevice(); }
             //ID3DBlob* _data;
+            mtlpp::Library _library;
             mtlpp::Function _data;
-            METALDeviceImpl* _device;           
+            METALDeviceImpl _device;           
             
             using IShader::IShader;
         };
