@@ -2,6 +2,11 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <io.h>
+#include <fcntl.h>
+
+#include <iostream>
+#include <cstdio>
 #endif
 
 #include "nlohmann/json.hpp"
@@ -16,8 +21,6 @@ using json = nlohmann::json;
 
 #include "sly/runtime/serialization/serializer.h"
 #include "sly/io/binarywriter.h"
-
-#include "sly/macos/os/window.h"
 
 struct Vec3 {
     float x, y, z;
@@ -47,6 +50,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 int main()
 #endif
 {  
+    // how to do a debug console with windows
+    /*
+    if (AllocConsole()) {
+        int fout = 0;
+        _sopen_s(&fout, "CONOUT$", _O_WRONLY, _SH_DENYNO, _S_IWRITE);
+        char *hello = "Hello world!\n";
+        _write(fout, hello, strlen (hello));
+
+        LPSTR goodbye = "Goodbye, cruel world!\n";
+        DWORD length = strlen(goodbye);
+        DWORD written;
+        WriteConsole((HANDLE)_get_osfhandle(fout), goodbye, length, &written, NULL);
+
+        _close(fout);
+        //ReadConsole(GetStdHandle(STD_INPUT_HANDLE), &c, 1, &n, 0);
+    }*/
+
     sly::EngineBuilder engBuilder;
     sly::StackAlloc<4096> buffer;
 
@@ -105,17 +125,8 @@ int main()
 
     vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
 
-    //shaders [ duh, of course this doesn't work on mac... ]
-        //sly::IInputStream* pShaderFile;
-        //sly::Engine::OS().FileSystem().open(&pShaderFile, "c:\\shaders.hlsl");
-
-        //size_t vssize = pShaderFile->getSize();
-    
-        //char* vsbuf = (char*)malloc(vssize);
-        //pShaderFile->read(vsbuf, vssize);
-
-    // shader
-        const char shadersSrc[] = R"""(
+    // MacOS shader
+    /*const char shadersSrc[] = R"""(
         #include <metal_stdlib>
         using namespace metal;
         vertex float4 VSMain(
@@ -127,6 +138,29 @@ int main()
         fragment half4 PSMain()
         {
             return half4(1.0, 0.0, 0.0, 1.0);
+        }
+    )""";*/
+
+    const char shadersSrc[] = R"""(
+        struct PSInput
+        {
+            float4 position : SV_POSITION;
+            float4 color : COLOR;
+        };
+
+        PSInput VSMain(float4 position : POSITION, float4 color : COLOR)
+        {
+            PSInput result;
+
+            result.position = position;
+            result.color = color;
+
+            return result;
+        }
+
+        float4 PSMain(PSInput input) : SV_TARGET
+        {
+            return input.color;
         }
     )""";
 
@@ -168,23 +202,22 @@ int main()
     sly::gfx::IRenderState* rsState = nullptr;
     renderDevice->createRenderState(&rsState, rstBuilder.build()); //g_renderPipelineState = g_device.NewRenderPipelineState(renderPipelineDesc, nullptr);
 
+    //mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer(); // to get list
+    // loop
+    //list->begin(); //    mtlpp::RenderCommandEncoder renderCommandEncoder = commandBuffer.RenderCommandEncoder(renderPassDesc);
+    //list->setRenderState(*rsState); //    renderCommandEncoder.SetRenderPipelineState(g_renderPipelineState);
+    //list->setRenderTarget(context->getDrawBuffer());
+    //list->setViewport(viewport);    
+    //list->setScissorRect(scissorRect);
+    //list->clear(clearColor);
+    //list->setVertexBuffer(*vertexBuffer); //    renderCommandEncoder.SetVertexBuffer(g_vertexBuffer, 0, 0);
+    //list->draw(3, 1, 0, 0); //    renderCommandEncoder.Draw(mtlpp::PrimitiveType::Triangle, 0, 3);
+    //list->end();  //    renderCommandEncoder.EndEncoding();
 
-        //mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer(); // to get list
-        // loop
-        //list->begin(); //    mtlpp::RenderCommandEncoder renderCommandEncoder = commandBuffer.RenderCommandEncoder(renderPassDesc);
-        //list->setRenderState(*rsState); //    renderCommandEncoder.SetRenderPipelineState(g_renderPipelineState);
-        //list->setRenderTarget(context->getDrawBuffer());
-        //list->setViewport(viewport);    
-        //list->setScissorRect(scissorRect);
-        //list->clear(clearColor);
-        //list->setVertexBuffer(*vertexBuffer); //    renderCommandEncoder.SetVertexBuffer(g_vertexBuffer, 0, 0);
-        //list->draw(3, 1, 0, 0); //    renderCommandEncoder.Draw(mtlpp::PrimitiveType::Triangle, 0, 3);
-        //list->end();  //    renderCommandEncoder.EndEncoding();
-
-        //context->processMessages();        
-        //context->getDirectCommandQueue().executeCommandList(list); //    commandBuffer.Present(m_view.GetDrawable());
-        //context->getDirectCommandQueue().flush(); //commandBuffer.Commit();
-        //context->swapBuffers(); 
+    //context->processMessages();        
+    //context->getDirectCommandQueue().executeCommandList(list); //    commandBuffer.Present(m_view.GetDrawable());
+    //context->getDirectCommandQueue().flush(); //commandBuffer.Commit();
+    //context->swapBuffers(); 
     //commandBuffer.WaitUntilCompleted();
 
     // state
@@ -193,7 +226,21 @@ int main()
     sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);
 
     while(true) {
-        context->processMessages();
+        // loop
+        list->begin();
+        list->setRenderState(*rsState);
+        list->setRenderTarget(context->getDrawBuffer());
+        list->setViewport(viewport);    
+        list->setScissorRect(scissorRect);
+        list->clear(clearColor);
+        list->setVertexBuffer(*vertexBuffer);
+        list->draw(3, 1, 0, 0);
+        list->end(); 
+
+        context->processMessages();        
+        context->getDirectCommandQueue().executeCommandList(list);
+        context->getDirectCommandQueue().flush();
+        context->swapBuffers(); 
     }
     
     return  0;
