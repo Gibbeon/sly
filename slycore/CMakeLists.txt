@@ -42,6 +42,6 @@ add_library(${PROJECT_NAME} STATIC ${SOURCES})
       # Prevent D9025 warning for targets that have exception handling
       # turned off (/EHs-c- flag). Where required, exceptions are explicitly
       # re-enabled using the cxx_exception_flags variable.
-      string(REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
+      #string(REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
     endforeach()
   endif()

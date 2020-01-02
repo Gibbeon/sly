@@ -55,6 +55,10 @@ typedef u64 size_t;
 #undef NULL
 #endif 
 
+#ifndef _WIN32
+#define INFINITE ((u32)-1)
+#endif
+
 #define FALSE false
 #define TRUE true
 #define NULL nullptr

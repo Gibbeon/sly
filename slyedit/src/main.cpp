@@ -258,6 +258,8 @@ int main()
     doRenderStuff();
 }
 
+int test(sly::gfx::IRenderSystem* renderSystem);
+
 int doRenderStuff() {
 
     // choosing between multiple render systems? -- this points to an API d3d12, opengl, etc.

@@ -15,7 +15,7 @@ namespace sly {
         class IRenderSystem : public IPlugin {
         public: 
             virtual ~IRenderSystem() {}
-            virtual retval<std::unique_ptr<IDevice>>  createDevice(DeviceDesc& desc) = 0;
+            virtual sly::retval<std::unique_ptr<IDevice>>  createDevice(DeviceDesc& desc) = 0;
 
         protected:
             IRenderSystem() {}

@@ -19,10 +19,11 @@ namespace sly {
 
         retval(const retval&) = delete;
         retval& operator =(const retval&) = delete;
+        ~retval() = default;
 
-        T result() { return std::move(_value); }        
-        operator T() { return result(); }
-        T operator->() { return result(); }
+        T& result() { return _value; }        
+        operator T&() { return result(); }
+        T& operator->() { return result(); }
 
         StatusCode statusCode() const { return _statusCode; }
 
@@ -56,7 +57,8 @@ namespace sly {
 
     template <typename T>
     retval<T> return_value(const T& value) {
-        return retval<T> ( value );
+        auto result = retval<T> ( std::move(value) ) ;
+        return result;
     }
 
     template <typename T>
