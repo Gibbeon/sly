@@ -11,7 +11,7 @@ GL4RenderSystemImpl::GL4RenderSystemImpl() {
 
 }
 
-void GL4RenderSystemImpl::createDevice(IDevice** pAdapter, Device& desc) {
+retval<std::unique_ptr<IDevice>> GL4RenderSystemImpl::createDevice(Device& desc) {
     (*pAdapter) = new GL4Device();
 }
         

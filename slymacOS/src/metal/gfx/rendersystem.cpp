@@ -3,7 +3,7 @@
 
 using namespace sly::gfx;
 
-void METALRenderSystemImpl::createDevice(IDevice** result, DeviceDesc& desc)
+retval<std::unique_ptr<IDevice>> METALRenderSystemImpl::createDevice(DeviceDesc& desc)
 {
     (*result) = new METALDeviceImpl(*this);
     (*result)->init(desc);

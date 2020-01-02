@@ -6,7 +6,7 @@ namespace sly {
         class D3D12RenderSystemImpl : public IRenderSystem {
             _GET_TYPE_INFO();
 
-            virtual void createDevice(IDevice** outDevice, DeviceDesc& desc);
+            virtual retval<std::unique_ptr<IDevice>>  createDevice(DeviceDesc& desc);
         };  
     }
 }

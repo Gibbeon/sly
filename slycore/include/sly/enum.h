@@ -125,10 +125,10 @@ namespace sly {
             template<size_t N, size_t NSize>
             static retval<bool_t> init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]);
 
-            static retval<size_t> count();
-            static retval<gsl::span<const s32*>> values();
-            static retval<gsl::span<const u32*>> hashes();
-            static retval<gsl::span<const char_t* const*>> names();
+            static size_t count();
+            static gsl::span<const s32*> values();
+            static gsl::span<const u32*> hashes();
+            static gsl::span<const char_t* const*> names();
 
         protected:
             static size_t _count;
@@ -138,29 +138,29 @@ namespace sly {
     };
 
     template<typename T>
-    retval<size_t> Enum<T>::count() {
+    size_t Enum<T>::count() {
         return _count;
     }
        
     template<typename T>
-    retval<gsl::span<const s32*>> Enum<T>::values() {
+    gsl::span<const s32*> Enum<T>::values() {
         return gsl::make_span(_values, _count );
     }
         
     template<typename T>
-    retval<gsl::span<const u32*>> Enum<T>::hashes() {
+    gsl::span<const u32*> Enum<T>::hashes() {
         return gsl::make_span(_hashes, _count );
     }
 
     template<typename T>
-    retval<gsl::span<const char_t* const*>> Enum<T>::names() {
+    gsl::span<const char_t* const*> Enum<T>::names() {
         return gsl::make_span(_names, _count );
     }
 
     template<typename T>
     retval<const TypeInfo&> getType() {
         static const TypeInfo instance = TypeInfo::get<T>();
-        return instance;
+        return return_reference(instance);
     }
     
     template<typename T>
@@ -171,7 +171,7 @@ namespace sly {
                 return names()[index];                                 
         }                                                              
                                                                     
-        return NULL;                                                   
+        return return_error( SLY_NOTFOUND );                                                   
     }                                                                  
                 
     template<typename T>                                                          

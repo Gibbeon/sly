@@ -4,8 +4,10 @@
 
 using namespace sly::gfx;
 
-void D3D12RenderSystemImpl::createDevice(IDevice** result, DeviceDesc& desc)
+sly::retval<std::unique_ptr<IDevice>> D3D12RenderSystemImpl::createDevice(DeviceDesc& desc)
 {
-    (*result) = new D3D12DeviceImpl(*this);
-    (*result)->init(desc);
+    std::unique_ptr<IDevice> result = std::make_unique<IDevice>( new D3D12DeviceImpl(*this) );
+    result->init(desc);
+
+    return return_value(result);
 }

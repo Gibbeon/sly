@@ -1,7 +1,6 @@
 #pragma once 
 
 #include <windows.h>
-#include "sly/application.h"
 
 #include <stdio.h>
 #include <stdexcept>

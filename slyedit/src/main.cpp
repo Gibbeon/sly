@@ -233,13 +233,13 @@ int main()
 {  
     sly::EngineBuilder engBuilder;
 
-    //sly::StackAlloc<4096> buffer;
+    sly::StackAlloc<4096> buffer;
 
-    //engBuilder
-    //    .setSystemMemoryHeap(sly::eSystemMemoryHeap_Default,    sly::MemoryHeapBuilder().setBytes(buffer, buffer.size).setDebug(true).build())
-    //    .setSystemMemoryHeap(sly::eSystemMemoryHeap_Resources,  sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
-    //    .setSystemMemoryHeap(sly::eSystemMemoryHeap_Debug,      sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
-    //    .setLogLevel(sly::eLogLevel_Info);
+    engBuilder
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Default,    sly::MemoryHeapBuilder().setBytes(buffer, buffer.size).setDebug(true).build())
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Resources,  sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Debug,      sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
+        .setLogLevel(sly::eLogLevel_Info);
 
     // load configuration, plugins, etc
     sly::Engine::init(engBuilder.build());
@@ -261,15 +261,19 @@ int main()
 int doRenderStuff() {
 
     // choosing between multiple render systems? -- this points to an API d3d12, opengl, etc.
-    auto renderSystem = sly::Engine::createRenderSystem(sly::gfx::RenderSystemBuilder().build());
+    auto renderSystem = sly::Engine::createRenderSystem(sly::gfx::RenderSystemBuilder().build());    
 
     if(renderSystem.failed()) {
+        //sly::Engine::Logger().trace();
         // handle exception
     }
 
     // create a device context, this managers resources for the render system
-    sly::gfx::IDevice* renderDevice = nullptr; // device becomes renderer???
-    renderSystem->createDevice(&renderDevice, sly::gfx::DeviceBuilder().build());
+    auto renderDevice = renderSystem->createDevice(sly::gfx::DeviceBuilder().build());
+
+    if(renderDevice.failed()) {
+        // handle exception
+    }
 
     sly::gfx::IRenderContext* context = nullptr;
     renderDevice->createRenderContext(&context, sly::gfx::RenderContextBuilder().build());

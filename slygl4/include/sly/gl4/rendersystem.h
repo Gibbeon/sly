@@ -10,7 +10,7 @@ namespace sly {
         public:
             GL4RenderSystemImpl();
 
-            virtual void createDevice(IDevice** pAdapter, Device& desc);
+            virtual retval<std::unique_ptr<IDevice>> createDevice(Device& desc);
         private:
         };
     }

@@ -1,6 +1,7 @@
 
 #include <gsl/gsl>
 #include <stdio.h>
+#include <memory.h>
 
 #include "sly/macros.h"
 #include "sly/types.h"

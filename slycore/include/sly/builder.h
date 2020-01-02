@@ -10,9 +10,8 @@ namespace sly {
         virtual ~Builder() {}
         virtual retval<TType&> build();
 
-        virtual retval<void> init(const TType& initial) {
+        virtual void init(const TType& initial) {
             desc_ = initial;
-            return make_return();
         }
 
     protected:        
@@ -25,6 +24,6 @@ namespace sly {
 
     template <typename TType>
     retval<TType&> Builder<TType>::build() { 
-        return desc_; 
+        return return_reference(desc_); 
     }
 }
