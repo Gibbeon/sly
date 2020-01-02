@@ -13,9 +13,9 @@ namespace sly {
         class IDevice;
         struct Device;
         class IRenderSystem : public IPlugin {
-        public:
+        public: 
             virtual ~IRenderSystem() {}
-            virtual void createDevice(IDevice** outDevice, DeviceDesc& desc) = 0;
+            virtual retval<unique_ptr<IDevice>> createDevice(DeviceDesc& desc) = 0;
 
         protected:
             IRenderSystem() {}

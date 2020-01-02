@@ -22,6 +22,7 @@ if (MSVC)
 endif()
 
 include_directories(./include)
+include_directories(../packages/GSL/include)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )

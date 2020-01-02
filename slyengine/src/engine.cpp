@@ -47,6 +47,10 @@ void Engine::init(EngineDesc& desc) {
     }
 }
 
-void Engine::createRenderSystem(gfx::IRenderSystem** outRenderSystem, gfx::RenderSystemDesc& desc) {
-    (*outRenderSystem) = Plugins().get<gfx::IRenderSystem>();
+retval<std::unique_ptr<gfx::IRenderSystem>> Engine::createRenderSystem(gfx::RenderSystemDesc& desc) {
+
+    std::unique_ptr<gfx::IRenderSystem> pointer;
+    pointer.reset(Plugins().get<gfx::IRenderSystem>());
+
+    return std::move(pointer);
 }

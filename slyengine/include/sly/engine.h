@@ -58,7 +58,7 @@ namespace sly {
         static void init(EngineDesc& desc);
         static void shutdown();
 
-        static void createRenderSystem(gfx::IRenderSystem** outRenderSystem, gfx::RenderSystemDesc& desc);
+        static retval<std::unique_ptr<gfx::IRenderSystem>> createRenderSystem(gfx::RenderSystemDesc& desc);
 
         static os::IOperatingSystem& OS() { return *(getInstance()._os); }
         static IMemoryManager& MemoryManager() { return *(getInstance()._mem); }

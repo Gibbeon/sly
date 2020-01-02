@@ -104,7 +104,11 @@
         "__tuple": "cpp",
         "random": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "gsl": "cpp",
+        "gsl_assert": "cpp",
+        "pointers": "cpp",
+        "xthread": "cpp"
     },
     "search.exclude": {
         "**/3rdparty": true

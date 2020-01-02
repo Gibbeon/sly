@@ -4,7 +4,10 @@
 #define STRINGIFY(x) TOSTRING(x)
 #define FILE_LINE __FILE__ ":" STRINGIFY(__LINE__)
 #define NOOP() (void(0))
+
+#ifndef INFINITE
 #define INFINITE ((u32)-1)
+#endif
 
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))

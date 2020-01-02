@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sly/global.h"
-
 #include "sly/runtime/typeinfo.h"
 
 #include <cstddef>
@@ -91,13 +90,13 @@ struct ignore_assign {
 #define STRINGIZE_SINGLE(expression) #expression,
 #define STRINGIZE(...) IDENTITY(MAP(STRINGIZE_SINGLE, __VA_ARGS__))
 
-static char_t* ltrim(char* str) {
+static char_t* ltrim(char_t* str) {
     while (*str && isspace(*str++)) {}
     return str;
 }
 
-static char_t* rtrim(char* str) {
-    char* buffer = str;
+static char_t* rtrim(char_t* str) {
+    char_t* buffer = str;
     while (*str++); // move to end of string
     size_t end = str - buffer - 1; 
     while (end > 0 && isspace(buffer[end - 1])) --end; // backup over trailing spaces
@@ -105,7 +104,7 @@ static char_t* rtrim(char* str) {
     return str;
 }
 
-static char_t* trim(char* str) {
+static char_t* trim(char_t* str) {
     return ltrim(rtrim(str));
 }
 
@@ -118,18 +117,18 @@ namespace sly {
             using underlying_type = __underlying_type(T);
             using type = T;
 
-            static const TypeInfo& getType();
+            static retval<const TypeInfo&> getType();
 
-            static const char_t* const toString(T value);                
-            static const T parse(const char_t* name);                                                              
+            static retval<const char_t* const> toString(T value);                
+            static retval<const T> parse(const char_t* name);                                                              
 
             template<size_t N, size_t NSize>
-            static bool_t init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]);
+            static retval<bool_t> init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]);
 
-            static size_t count();
-            static const s32* values();
-            static const u32* hashes();
-            static const char_t* const* names();
+            static retval<size_t> count();
+            static retval<gsl::span<const s32*>> values();
+            static retval<gsl::span<const u32*>> hashes();
+            static retval<gsl::span<const char_t* const*>> names();
 
         protected:
             static size_t _count;
@@ -139,33 +138,33 @@ namespace sly {
     };
 
     template<typename T>
-    size_t Enum<T>::count() {
+    retval<size_t> Enum<T>::count() {
         return _count;
     }
        
     template<typename T>
-    const s32* Enum<T>::values() {
-        return _values;
+    retval<gsl::span<const s32*>> Enum<T>::values() {
+        return gsl::make_span(_values, _count );
     }
         
     template<typename T>
-    const u32* Enum<T>::hashes() {
-        return _hashes;
+    retval<gsl::span<const u32*>> Enum<T>::hashes() {
+        return gsl::make_span(_hashes, _count );
     }
 
     template<typename T>
-    const char_t* const* Enum<T>::names() {
-        return _names;
+    retval<gsl::span<const char_t* const*>> Enum<T>::names() {
+        return gsl::make_span(_names, _count );
     }
 
     template<typename T>
-    const TypeInfo& getType() {
+    retval<const TypeInfo&> getType() {
         static const TypeInfo instance = TypeInfo::get<T>();
         return instance;
     }
     
     template<typename T>
-    const char_t* const Enum<T>::toString(T value)              
+    retval<const char_t* const> Enum<T>::toString(T value)              
     {                                                                  
         for (size_t index = 0; index < count(); ++index) {             
             if (values()[index] == value)                             
@@ -176,7 +175,7 @@ namespace sly {
     }                                                                  
                 
     template<typename T>                                                          
-    const T Enum<T>::parse(const char_t* name)                    
+    retval<const T> Enum<T>::parse(const char_t* name)                    
     {                                                                  
         bool_t started = false;                                        
         size_t start_pos = 0;                                          
@@ -212,7 +211,7 @@ namespace sly {
 
     template<typename T>
     template<size_t N, size_t NSize>
-    bool_t Enum<T>::init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]) {
+    retval<bool_t> Enum<T>::init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]) {
 
         static char_t*  nameary_buffer[ N ];
         static char_t   names_buffer[ ( NSize + 1) ];
