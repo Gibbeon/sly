@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <gsl/gsl>
 
 #include "sly/macros.h"
 #include "sly/types.h"

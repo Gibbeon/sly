@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sly/global.h"
+#include "sly/errors.h"
 #include "sly/runtime/typeinfo.h"
 
 #include <cstddef>
@@ -126,9 +127,9 @@ namespace sly {
             static retval<bool_t> init(size_t count, const char_t* const (&raw_names)[N], const s32 (&values)[N]);
 
             static size_t count();
-            static gsl::span<const s32*> values();
-            static gsl::span<const u32*> hashes();
-            static gsl::span<const char_t* const*> names();
+            static gsl::span<s32> values();
+            static gsl::span<u32> hashes();
+            static gsl::span<char_t*> names();
 
         protected:
             static size_t _count;
@@ -143,24 +144,24 @@ namespace sly {
     }
        
     template<typename T>
-    gsl::span<const s32*> Enum<T>::values() {
+    gsl::span<s32> Enum<T>::values() {
         return gsl::make_span(_values, _count );
     }
         
     template<typename T>
-    gsl::span<const u32*> Enum<T>::hashes() {
+    gsl::span<u32> Enum<T>::hashes() {
         return gsl::make_span(_hashes, _count );
     }
 
     template<typename T>
-    gsl::span<const char_t* const*> Enum<T>::names() {
+    gsl::span<char_t*> Enum<T>::names() {
         return gsl::make_span(_names, _count );
     }
 
     template<typename T>
     retval<const TypeInfo&> getType() {
         static const TypeInfo instance = TypeInfo::get<T>();
-        return return_reference(instance);
+        return reference(instance);
     }
     
     template<typename T>
@@ -169,9 +170,11 @@ namespace sly {
         for (size_t index = 0; index < count(); ++index) {             
             if (values()[index] == value)                             
                 return names()[index];                                 
-        }                                                              
+        }                                      
+
+        static const StatusCode SLY_NOTFOUND = 0x02;                        
                                                                     
-        return return_error( SLY_NOTFOUND );                                                   
+        return failed<const char_t* const>( (StatusCode)SLY_NOTFOUND, "The value could not be parsed into an Enum name" );                                                   
     }                                                                  
                 
     template<typename T>                                                          

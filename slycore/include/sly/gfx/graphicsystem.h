@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "sly/global.h"
 #include "sly/gfx/renderer.h"
 #include "sly/gfx/builders/graphicsystembuilder.h"
@@ -13,7 +15,7 @@ namespace sly {
             virtual ~IGraphicSystem() {}
             
             virtual retval<void> init(GraphicSystemDesc&) = 0;
-            virtual gsl::span<const IRenderer* const> renderers() = 0;
+            virtual gsl::span<const IRenderer* const>  renderers() = 0;
         
         protected:
             IGraphicSystem() {}
@@ -25,7 +27,7 @@ namespace sly {
             virtual ~GraphicSystem() {}
 
             virtual retval<void> init(GraphicSystemDesc&) { return success(); }
-            virtual gsl::span<const IRenderer* const>  renderers() { return _availableRenderers; }
+            virtual gsl::span<const IRenderer* const> renderers() { return _availableRenderers; }
 
             static retval<void> addRenderer(IRenderer* system) {
                 _availableRenderers.push_back(system);
