@@ -34,11 +34,12 @@ using json = nlohmann::json;
 
 #include "sly.h"
 
-#include "sly/os/os.h"
 #include "sly/gfx.h"
+#include "sly/engine.h"
+#include "sly/os.h"
 
-#include "sly/runtime/serialization/serializer.h"
-#include "sly/io/binarywriter.h"
+//#include "sly/runtime/serialization/serializer.h"
+//#include "sly/io/binarywriter.h"
 
 struct Vec3 {
     float x, y, z;
@@ -221,29 +222,6 @@ namespace sly {
     };
 }
 
-    
-
-int doRenderStuff();
-
-#ifdef _WIN32
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
-#else
-int main()
-#endif
-{  
-    sly::EngineBuilder engBuilder;
-
-    sly::StackAlloc<4096> buffer;
-
-    engBuilder
-        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Default,    sly::MemoryHeapBuilder().setBytes(buffer, buffer.size).setDebug(true).build())
-        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Resources,  sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
-        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Debug,      sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
-        .setLogLevel(sly::eLogLevel_Info);
-
-    // load configuration, plugins, etc
-    sly::Engine::init(engBuilder.build());
-
     //int slot = sly::Engine::Resources()->mount(sly::eMountType_Directory, "./data");
     
     //sly::ResourceReader reader;
@@ -255,26 +233,39 @@ int main()
 
     //sly::Engine::Resources()->unmount(slot);
 
-    doRenderStuff();
-}
+#ifdef _WIN32
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
+#else
+int main()
+#endif
+{  
+    sly::Engine engine;
+    sly::EngineBuilder engineBuilder;
 
-int test(sly::gfx::IRenderSystem* renderSystem);
+    /*engBuilder
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Default,    sly::MemoryHeapBuilder().setBytes(buffer, buffer.size).setDebug(true).build())
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Resources,  sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
+        .setSystemMemoryHeap(sly::eSystemMemoryHeap_Debug,      sly::MemoryHeapBuilder().setSize(1024 * 1024 * 32).setDebug(true).build())
+        .setLogLevel(sly::eLogLevel_Info);*/
 
-int doRenderStuff() {
+    // load configuration, plugins, etc
+    auto engineResult = engine.init(engineBuilder.build());
+
+    if(engineResult.failed()) {
+        return engineResult.statusCode();     
+    }   
 
     // choosing between multiple render systems? -- this points to an API d3d12, opengl, etc.
-    auto renderSystem = sly::Engine::createRenderSystem(sly::gfx::RenderSystemBuilder().build());    
-
-    if(renderSystem.failed()) {
-        //sly::Engine::Logger().trace();
-        // handle exception
-    }
+    //auto renderSystem = sly::gfx::IRenderer>(sly::Engine::instance()->activators()-><sly::gfx::IRenderer>()->create(sly::gfx::RendererBuilder().build());
+  
+    auto renderSystem = engine.graphics().renderers()[0];
 
     // create a device context, this managers resources for the render system
     auto renderDevice = renderSystem->createDevice(sly::gfx::DeviceBuilder().build());
 
     if(renderDevice.failed()) {
-        // handle exception
+        
+        return renderDevice.statusCode();
     }
 
     sly::gfx::IRenderContext* context = nullptr;
@@ -304,13 +295,16 @@ int doRenderStuff() {
         .setOffset(12);
 
     Vertex* triangleVertices = nullptr;
-    sly::IInputStream* pVertexData;
-    sly::Engine::OS().FileSystem().open(&pVertexData, "vertex.dat");
+    auto pVertexData = engine.filesystem().open("vertex.dat");
 
-    size_t vtxsize = pVertexData->getSize();
+    if(pVertexData.failed()) {
+        throw;
+    }
+
+    size_t vtxsize = pVertexData->stream()->getSize();
     
     triangleVertices = (Vertex*)malloc(vtxsize);
-    pVertexData->read(triangleVertices, vtxsize);
+    pVertexData->stream()->read(triangleVertices, vtxsize);
     //pVertexData->close();
 
     vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));

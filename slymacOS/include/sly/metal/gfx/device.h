@@ -8,7 +8,7 @@ namespace sly {
 
         class METALDeviceImpl : public IDevice {
         public:
-            METALDeviceImpl(IRenderSystem& system);
+            METALDeviceImpl(IRenderer& system);
             virtual void init(DeviceDesc& desc);
             
             virtual void createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc);
@@ -25,7 +25,7 @@ namespace sly {
             mtlpp::Device& getMETALDevice()   { return _device; }
 
         private:
-            IRenderSystem& _system;
+            IRenderer& _system;
             mtlpp::Device  _device;
             //IDXGIFactory4*  _factory;
             //IDXGIAdapter1*  _adapter;

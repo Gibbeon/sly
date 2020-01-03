@@ -1,5 +1,5 @@
 #include "sly/global.h"
-#include "sly/win32/os/os.h"
+#include "sly/win32/os/operatingsystem.h"
 
 //using namespace sly;
 

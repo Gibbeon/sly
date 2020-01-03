@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "sly/os/os.h"
+#include "sly/os/window.h"
 #include "sly/win32.h"
 
 namespace sly {
@@ -13,7 +13,7 @@ namespace sly {
         
             virtual ~Win32Window() {} 
 
-            virtual void init(WindowDesc& desc);
+            virtual retval<void> init(WindowDesc& desc);
             virtual void onRender();
             virtual bool_t show() { return ShowWindow(m_hWND, SW_SHOWDEFAULT); }
 

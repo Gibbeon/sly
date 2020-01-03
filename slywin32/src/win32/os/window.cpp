@@ -2,7 +2,7 @@
 
 using namespace sly::os;
 
-void Win32Window::init(WindowDesc& desc)
+sly::retval<void> Win32Window::init(WindowDesc& desc)
 {
     m_width = desc.width;
     m_height = desc.height;
@@ -37,6 +37,8 @@ void Win32Window::init(WindowDesc& desc)
         this));
 
     ShowWindow(m_hWND, SW_SHOWDEFAULT);
+
+    return success();
 }
 
 bool_t Win32Window::processMessages()

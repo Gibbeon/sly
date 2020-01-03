@@ -15,9 +15,9 @@ void MacOSOperatingSystem::init() {
 }   
 
 void _RegisterMetalPlugin(sly::IPluginManager& manager) {
-    static sly::gfx::METALRenderSystemImpl instance;
+    static sly::gfx::METALRendererImpl instance;
 
-    manager.set<sly::gfx::IRenderSystem>(instance);
+    manager.set<sly::gfx::IRenderer>(instance);
 }
 
 size_t MacOSOperatingSystem::getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max) {

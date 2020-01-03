@@ -1,4 +1,4 @@
-#include <windows.h>
+/*#include <windows.h>
 
 #include "sly/win32/os/os.h"
 #include "sly/gfx/rendersystem.h"
@@ -30,7 +30,7 @@ void Win32FileOutputStream::setPosition(size_t position) {
 
 size_t Win32FileOutputStream::getSize() {
     return _file.tellg();
-}
+}*/
 
 
 //    auto myfile = 

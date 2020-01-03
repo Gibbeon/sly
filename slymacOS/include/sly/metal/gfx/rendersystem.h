@@ -3,7 +3,7 @@
 
 namespace sly {
     namespace gfx {
-        class METALRenderSystemImpl : public IRenderSystem {
+        class METALRendererImpl : public IRenderer {
             _GET_TYPE_INFO();
 
             virtual retval<std::unique_ptr<IDevice>> createDevice(DeviceDesc& desc);

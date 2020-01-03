@@ -7,13 +7,13 @@
 
 namespace sly {
     namespace gfx {
-        struct RenderSystemDesc {
-        public:
+        struct GraphicSystemDesc {
+
         };
 
-        class RenderSystemBuilder : public Builder<RenderSystemDesc> {
+        class GraphicSystemBuilder : public Builder<GraphicSystemDesc> {
         public:
-            RenderSystemBuilder() : Builder() {}
+            GraphicSystemBuilder() : Builder() {}
         };
     }
 }

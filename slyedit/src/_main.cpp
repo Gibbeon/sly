@@ -138,9 +138,9 @@ int main()
 
 
     // choosing between multiple render systems?
-    sly::gfx::RenderSystemBuilder rsBuilder;
-    sly::gfx::IRenderSystem* renderSystem = nullptr;
-    sly::Engine::createRenderSystem(&renderSystem);//, rsBuilder.build());
+    sly::gfx::RendererBuilder rsBuilder;
+    sly::gfx::IRenderer* renderSystem = nullptr;
+    sly::Engine::createRenderer(&renderSystem);//, rsBuilder.build());
 
     // create a device
     sly::gfx::DeviceBuilder rdBuilder;

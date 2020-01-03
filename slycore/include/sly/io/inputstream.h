@@ -4,7 +4,7 @@
 #include "sly/io/stream.h"
 
 namespace sly {
-    class IInputStream : public IStream {
+    class IInputStream : public virtual IStream {
     public:
         virtual ~IInputStream() {}
 

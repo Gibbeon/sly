@@ -12,7 +12,7 @@
 
 using namespace sly::gfx;
 
-METALDeviceImpl::METALDeviceImpl(IRenderSystem& system) : _system(system)
+METALDeviceImpl::METALDeviceImpl(IRenderer& system) : _system(system)
 {
     
 }

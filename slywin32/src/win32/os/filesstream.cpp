@@ -3,13 +3,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "sly/win32/os/os.h"
+#include "sly/win32/os/operatingsystem.h"
 
 #define BUF_SIZE 256
 
 using namespace sly::os;
 
-void Win32FileInputStream::open(const char_t* file) {
+sly::retval<void> Win32FileStream::open(const char_t* file) {
 
     HANDLE hFile = CreateFile(file, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 
@@ -29,7 +29,7 @@ void Win32FileInputStream::open(const char_t* file) {
     if (_handle == NULL)
     {
         auto value = GetLastError();
-        return;
+        return failed<void>((sly::StatusCode)value, (sly::ErrorMessage)GetLastErrorMessage().c_str());
     } 
     
     _file = MapViewOfFile(  _handle,   // handle to map object
@@ -42,22 +42,24 @@ void Win32FileInputStream::open(const char_t* file) {
     {
         auto value = GetLastError();
         CloseHandle(_handle);
-
-        /* return 1; */
+        
+        return failed<void>((sly::StatusCode)value, (sly::ErrorMessage)GetLastErrorMessage().c_str());
     }
+
+    return success();
 }
 
-size_t Win32FileInputStream::read(vptr_t buffer, size_t size) {
+size_t Win32FileStream::read(vptr_t buffer, size_t size) {
     CopyMemory(buffer, (vptr_t)((size_t)_file + _offset), size);
     _offset += size;
     return size;
 }
 
-size_t Win32FileInputStream::getSize() {
+size_t Win32FileStream::getSize() {
     return _size;
 }
 
-void Win32FileInputStream::close() {
+void Win32FileStream::close() {
     UnmapViewOfFile(_file);
 
     CloseHandle(_handle);

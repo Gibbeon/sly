@@ -11,7 +11,7 @@
 
 using namespace sly::gfx;
 
-D3D12DeviceImpl::D3D12DeviceImpl(IRenderSystem& system) : _system(&system)
+D3D12DeviceImpl::D3D12DeviceImpl(IRenderer& system) : _system(&system)
 {
 
 }

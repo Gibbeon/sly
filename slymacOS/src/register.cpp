@@ -10,7 +10,7 @@ os::IOperatingSystem* _GetOperatingSystem() {
 }
 
 extern "C" void _RegisterPlugins(sly::IPluginManager& manager) {
-    static sly::gfx::METALRenderSystemImpl instance;
+    static sly::gfx::METALRendererImpl instance;
 
-    manager.set<sly::gfx::IRenderSystem>(instance);
+    manager.set<sly::gfx::IRenderer>(instance);
 };

@@ -24,6 +24,6 @@ namespace sly {
 
     template <typename TType>
     retval<TType&> Builder<TType>::build() { 
-        return return_reference(desc_); 
+        return reference(desc_); 
     }
 }

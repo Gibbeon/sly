@@ -4,7 +4,7 @@
 
 using namespace sly::gfx;
 
-sly::retval<std::unique_ptr<IDevice>> D3D12RenderSystemImpl::createDevice(DeviceDesc& desc)
+sly::retval<std::unique_ptr<IDevice>> D3D12RendererImpl::createDevice(DeviceDesc& desc)
 {
     std::unique_ptr<IDevice> result = std::make_unique<D3D12DeviceImpl>(*this);
     result->init(desc);

@@ -109,7 +109,10 @@
         "gsl_assert": "cpp",
         "pointers": "cpp",
         "xthread": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "xxatomic": "cpp",
+        "multi_span": "cpp",
+        "string_span": "cpp"
     },
     "search.exclude": {
         "**/3rdparty": true

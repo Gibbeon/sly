@@ -8,7 +8,7 @@ namespace sly {
 
         class D3D12DeviceImpl : public IDevice {
         public:
-            D3D12DeviceImpl(IRenderSystem& system);
+            D3D12DeviceImpl(IRenderer& system);
             virtual void init(DeviceDesc& desc);
             
             virtual void createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc);
@@ -25,7 +25,7 @@ namespace sly {
             ID3D12Device& getID3D12Device()   { return *_device; }
 
         private:
-            IRenderSystem* _system;
+            IRenderer* _system;
             IDXGIFactory4*  _factory;
             IDXGIAdapter1*  _adapter;
             ID3D12Device*   _device;

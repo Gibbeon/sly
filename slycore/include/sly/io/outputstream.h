@@ -5,7 +5,7 @@
 
 namespace sly {
 
-    class IOutputStream : public IStream {
+    class IOutputStream : public virtual IStream {
     public:
         virtual ~IOutputStream() {}
 
