@@ -61,7 +61,7 @@ bool_t Win32Window::processMessages()
     return static_cast<char>(msg.wParam);
 }
 
-void Win32Window::onRender()
+void Win32Window::onRender() const
 {
 
 }

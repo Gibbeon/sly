@@ -136,5 +136,24 @@
             },
             "problemMatcher": "$msCompile"
         },
+        {
+            "label": "build all",
+            "type": "shell",
+            "windows": {
+                "command": "py.exe",
+                "args": [
+                    "./build-all-x64.py"
+                ],
+            },
+            "command": "python3",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
     ]
 }

@@ -14,7 +14,7 @@ namespace sly {
             virtual ~Win32Window() {} 
 
             virtual retval<void> init(WindowDesc& desc);
-            virtual void onRender();
+            virtual void onRender() const;
             virtual bool_t show() { return ShowWindow(m_hWND, SW_SHOWDEFAULT); }
 
             // Accessors.
