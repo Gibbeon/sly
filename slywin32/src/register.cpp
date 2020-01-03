@@ -3,7 +3,7 @@
 
 //using namespace sly;
 
-sly::os::IOperatingSystem* _GetOperatingSystem() {
+sly::os::IOperatingSystem*  sly::os::_GetOperatingSystem() {
     static sly::os::Win32OperatingSystem instance;
     return &instance;
 }

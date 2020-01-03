@@ -41,7 +41,6 @@ namespace sly {
     class Engine {
     public:        
         Engine():
-            _os(nullptr),
             _memory(nullptr),
             _plugins(nullptr), 
             _graphics(nullptr)
@@ -60,7 +59,7 @@ namespace sly {
 
         IPluginManager&         plugins() { return *_plugins; }
         IMemoryManager&         memory() { return *_memory; }
-        IFileSystem&            filesystem() { return _os->filesystem(); }
+        IFileSystem&            filesystem() { return _os.filesystem(); }
         IGraphicSystem&         graphics() { return *_graphics; }
 
         //IInputSystem&              graphics() { return *_os; }
@@ -77,10 +76,8 @@ namespace sly {
         //static retval<void> set(Engine* instance) { _instance = instance; return success(); }
     
     private: 
+        OperatingSystem _os;
 
-        //Engine(Engine* instance) { set(instance); }
-
-        gsl::owner<IOperatingSystem*>   _os;
         gsl::owner<IMemoryManager*>     _memory;
         gsl::owner<IPluginManager*>     _plugins;
         gsl::owner<IGraphicSystem*>     _graphics;
@@ -89,6 +86,5 @@ namespace sly {
     };
 }
 
-extern sly::os::IOperatingSystem* _GetOperatingSystem();
 
 

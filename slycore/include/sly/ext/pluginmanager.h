@@ -45,13 +45,12 @@ namespace sly {
 
     class PluginManager : public IPluginManager {
     public:
-        PluginManager(os::IOperatingSystem* os) : _os(os) {}
         virtual ~PluginManager() {}
         
         virtual retval<void> init(PluginManagerDesc& desc) { 
             PluginBuilder builder;
             builder
-                .setEntry("_RegisterPlugin")
+                .setEntry("_RegisterPlugins")
                 .setLibrary("c:/dev/sly/slyd3d12/bin/slyd3d12.dll");
 
             load(builder.build());
@@ -64,13 +63,16 @@ namespace sly {
         }
 
         virtual retval<IPlugin&>    load(PluginDesc& desc) {
-            auto library = _os->loadLibrary(desc.library);
+            os::OperatingSystem os;
+            os.init(os::OperatingSystemBuilder().build());
+
+            auto library = os.loadLibrary(desc.library);
 
             if(library.failed()) {
                 return failed<IPlugin&>();
             }
 
-            auto proc = _os->getProcAddress(desc.entry, library);
+            auto proc = os.getProcAddress(desc.entry, library.result());
             if(proc.failed()) {
                 return failed<IPlugin&>();
             }
@@ -116,11 +118,10 @@ namespace sly {
             return _plugins;
         }           
     //protected:
-        PluginManager() : _os(nullptr) {}
+        PluginManager() {}
 
     private:
-        std::vector<IPlugin*> _plugins;
-        os::IOperatingSystem* _os;       
+        std::vector<IPlugin*> _plugins;    
     };
 }
 

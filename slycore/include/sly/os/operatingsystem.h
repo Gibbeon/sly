@@ -6,6 +6,7 @@
 namespace sly {
     namespace os {
         class IFileSystem;
+
         class IOperatingSystem {
         public:
             virtual ~IOperatingSystem() {}            
@@ -18,6 +19,24 @@ namespace sly {
             
         protected:
             IOperatingSystem() {}
-        };      
+        };   
+
+        extern IOperatingSystem* _GetOperatingSystem();
+        
+        class OperatingSystem : IOperatingSystem{
+        public:
+        
+            OperatingSystem() {}
+            virtual ~OperatingSystem() {}            
+            virtual retval<void> init(OperatingSystemDesc&); 
+            
+            virtual retval<vptr_t> loadLibrary(std::string moniker)  { return _impl->loadLibrary(moniker); }
+            virtual retval<vptr_t> getProcAddress(std::string moniker, vptr_t handle = nullptr) { return _impl->getProcAddress(moniker, handle); }
+            
+            virtual retval<IFileSystem&> filesystem() { return _impl->filesystem(); }
+            
+        protected:
+            IOperatingSystem* _impl;
+        };   
     }
 }

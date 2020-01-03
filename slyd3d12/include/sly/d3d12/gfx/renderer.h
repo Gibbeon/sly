@@ -11,7 +11,7 @@ namespace sly {
 
             virtual std::string getName() { return "D3D12Renderer"; }
 
-            virtual retval<void> onLoad() { return success(); }
+            virtual retval<void> onLoad() { GraphicSystem::addRenderer(this); return success(); }
             virtual retval<void> onUnload() { return success(); }
         };  
     }

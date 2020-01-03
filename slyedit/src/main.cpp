@@ -238,7 +238,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 #else
 int main()
 #endif
-{  
+{   
     sly::Engine engine;
     sly::EngineBuilder engineBuilder;
 
@@ -255,10 +255,7 @@ int main()
         return engineResult.statusCode();     
     }   
 
-    // choosing between multiple render systems? -- this points to an API d3d12, opengl, etc.
-    //auto renderSystem = sly::gfx::IRenderer>(sly::Engine::instance()->activators()-><sly::gfx::IRenderer>()->create(sly::gfx::RendererBuilder().build());
-  
-    auto renderSystem = engine.graphics().renderers()[0];
+    auto renderSystem = const_cast<sly::gfx::IRenderer*>(engine.graphics().renderers()[0]);
 
     // create a device context, this managers resources for the render system
     auto renderDevice = renderSystem->createDevice(sly::gfx::DeviceBuilder().build());

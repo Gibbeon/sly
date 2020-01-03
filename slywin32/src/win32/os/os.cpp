@@ -18,7 +18,8 @@ sly::retval<vptr_t> Win32OperatingSystem::loadLibrary(std::string moniker) {
 }
 
 sly::retval<vptr_t> Win32OperatingSystem::getProcAddress(std::string moniker, vptr_t handle) {
-    auto pf = GetProcAddress((HMODULE)handle, moniker.c_str());
+    HMODULE h = LoadLibraryA("c:/dev/sly/slyd3d12/bin/slyd3d12.dll");
+    auto pf = GetProcAddress((HMODULE)h, "_RegisterPlugins");
     
     if(!pf) {
         return failed<vptr_t>(SLY_NOTFOUND, (ErrorMessage)"The GetProcAddress function returned a null value for the requested function.");
