@@ -425,8 +425,21 @@ int main()
         context->getDirectCommandQueue().executeCommandList(list);
         context->getDirectCommandQueue().flush();
         context->swapBuffers(); 
-        #else
-        context->processMessages();   
+        #else                                                               //01 - mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer();
+        // loop                                                             //02 - mtlpp::RenderPassDescriptor renderPassDesc = m_view.GetRenderPassDescriptor();
+        //list->begin();                                                    //03 -     mtlpp::RenderCommandEncoder renderCommandEncoder = commandBuffer.RenderCommandEncoder(renderPassDesc);
+        //list->setRenderState(*rsState);                                   //04 -     renderCommandEncoder.SetRenderPipelineState(g_renderPipelineState);
+        //list->setRenderTarget(context->getDrawBuffer());                  //08 - commandBuffer.Present(m_view.GetDrawable());
+        //list->setVertexBuffer(*vertexBuffer);                             //05 -     renderCommandEncoder.SetVertexBuffer(g_vertexBuffer, 0, 0);
+        //list->draw(3, 1, 0, 0);                                           //06 -     renderCommandEncoder.Draw(mtlpp::PrimitiveType::Triangle, 0, 3);
+        //list->end();                                                      //07 -     renderCommandEncoder.EndEncoding();
+        
+        //09 - commandBuffer.Commit();
+
+        context->processMessages();        
+        //context->getDirectCommandQueue().executeCommandList(list);        
+        //context->getDirectCommandQueue().flush();                         //09 - commandBuffer.Commit();
+        context->swapBuffers();                                             //10 - commandBuffer.WaitUntilCompleted();
         #endif
     }
     

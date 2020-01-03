@@ -76,6 +76,8 @@ void METALRenderContextImpl::setVisible(bool_t show)
 
 void METALRenderContextImpl::swapBuffers()
 {
+    _window->onRender();
+
     // Present the frame.
     /*if(FAILED(_swapChain->Present(1, 0)))
     {

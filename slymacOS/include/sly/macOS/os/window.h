@@ -26,7 +26,7 @@ namespace sly {
             //virtual HWND GetHwnd() const { return m_hWND; }
             //virtual void SetHwnd(HWND hWND) { m_hWND = hWND; }
 
-            virtual void onRender() {}
+            virtual void onRender() const;
 
             virtual bool_t processMessages();
 

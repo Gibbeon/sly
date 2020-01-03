@@ -157,8 +157,12 @@ bool_t MacOSWindow::processMessages()
 
 void MacOSWindow::onRender(const sly::os::MacOSWindow& window)
 {
-    // main rendering loop
+    //window.onRender();
+}
 
+void MacOSWindow::onRender() const
+{
+    // main rendering loop
     mtlpp::CommandBuffer commandBuffer = g_commandQueue.CommandBuffer();
     
     mtlpp::RenderPassDescriptor renderPassDesc = m_view.GetRenderPassDescriptor();

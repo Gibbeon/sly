@@ -11,7 +11,7 @@ namespace sly {
             virtual ~IWindow() {} 
 
             virtual retval<void> init(WindowDesc& desc) = 0;
-            virtual void onRender() = 0;
+            virtual void onRender() const = 0;
             virtual bool_t show() = 0;
 
             // Accessors.
