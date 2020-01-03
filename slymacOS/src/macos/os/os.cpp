@@ -1,6 +1,7 @@
 #include "sly/macOS/os/os.h"
-#include "sly/gfx/rendersystem.h"
-#include "sly/metal/gfx/rendersystem.h"
+#include "sly/gfx/graphicsystem.h"
+#include "sly/gfx/renderer.h"
+#include "sly/metal/gfx/renderer.h"
 
 using namespace sly::os;
 
@@ -10,10 +11,14 @@ MacOSOperatingSystem::MacOSOperatingSystem() {
 }
 
 
-void MacOSOperatingSystem::init() {
+sly::retval<void> MacOSOperatingSystem::init(OperatingSystemDesc&) {
+    static sly::gfx::METALRendererImpl instance;
+    sly::gfx::GraphicSystem::addRenderer(&instance);
 
+    return success();
 }   
 
+/*
 void _RegisterMetalPlugin(sly::IPluginManager& manager) {
     static sly::gfx::METALRendererImpl instance;
 
@@ -28,10 +33,11 @@ size_t MacOSOperatingSystem::getPluginRegistrationFunctions(pfRegisterPlugins* p
     size_t count = 0;
     ppfRegisterPlugins[count] = (pfRegisterPlugins)pf;
     count++; */
+    /*
 
     size_t count = 0;
     ppfRegisterPlugins[count] = (pfRegisterPlugins)_RegisterMetalPlugin;
     count++;
 
     return count;
-}
+}*/

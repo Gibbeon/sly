@@ -10,7 +10,7 @@
 
 using namespace sly::os;
 
-void MacOSFileInputStream::open(const char_t* file) {
+sly::retval<void> MacOSFileStream::open(const char_t* file) {
     int outError;
     struct stat statInfo;
  
@@ -22,6 +22,7 @@ void MacOSFileInputStream::open(const char_t* file) {
     if( _file < 0 )
     {
        outError = errno;
+        return failed<void>();
     }
     else
     {
@@ -29,6 +30,7 @@ void MacOSFileInputStream::open(const char_t* file) {
         if( fstat( _file, &statInfo ) != 0 )
         {
             outError = errno;
+            return failed<void>();
         }
         else
         {
@@ -42,6 +44,7 @@ void MacOSFileInputStream::open(const char_t* file) {
             if( _data == MAP_FAILED )
             {
                 outError = errno;
+                return failed<void>();
             }
             else
             {
@@ -54,19 +57,19 @@ void MacOSFileInputStream::open(const char_t* file) {
         
     }
  
-    //return outError;
+    return success();
 }
 
-size_t MacOSFileInputStream::read(vptr_t buffer, size_t size) {
+size_t MacOSFileStream::read(vptr_t buffer, size_t size) {
     memcpy(buffer, _data, size);
     return size;
 }
 
-size_t MacOSFileInputStream::getSize() {
+size_t MacOSFileStream::getSize() {
     return _size;
 }
 
-void MacOSFileInputStream::close() {
+void MacOSFileStream::close() {
     munmap( _data, _size );
     ::close( _file );
 }

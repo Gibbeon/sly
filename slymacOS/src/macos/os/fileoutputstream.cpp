@@ -1,5 +1,4 @@
-#include "sly/macOS/os/os.h"
-#include "sly/gfx/rendersystem.h"
+/*#include "sly/macOS/os/os.h"
 
 using namespace sly::os;
 
@@ -29,3 +28,4 @@ void MacOSFileOutputStream::setPosition(size_t position) {
 size_t MacOSFileOutputStream::getSize() {
     return _file.tellg();
 }
+*/

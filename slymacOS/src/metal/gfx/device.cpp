@@ -7,7 +7,7 @@
 #include "sly/metal/gfx/shader.h"
 #include "sly/metal/gfx/renderstate.h"
 #include "sly/metal/gfx/texture.h"
-#include "sly/macos/os/window.h"
+#include "sly/macOS/os/window.h"
 #include "mtlpp/mtlpp.hpp"
 
 using namespace sly::gfx;

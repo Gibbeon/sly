@@ -1,7 +1,7 @@
 #include "sly/metal/gfx/rendercontext.h"
 #include "sly/metal/gfx/device.h"
 #include "sly/metal/gfx/commandqueue.h"
-#include "sly/macos/os/window.h"
+#include "sly/macOS/os/window.h"
 
 using namespace sly::gfx;
 METALRenderContextImpl::METALRenderContextImpl(METALDeviceImpl& device, sly::os::MacOSWindow& window) :

@@ -1,16 +1,10 @@
 #include "sly/global.h"
 #include "sly/macOS/os/os.h"
-#include "sly/metal/gfx/rendersystem.h"
+#include "sly/metal/gfx/renderer.h"
 
 using namespace sly;
 
-os::IOperatingSystem* _GetOperatingSystem() {
+os::IOperatingSystem* sly::os::_GetOperatingSystem() {
     static sly::os::MacOSOperatingSystem instance;
     return &instance;
 }
-
-extern "C" void _RegisterPlugins(sly::IPluginManager& manager) {
-    static sly::gfx::METALRendererImpl instance;
-
-    manager.set<sly::gfx::IRenderer>(instance);
-};

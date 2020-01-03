@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include "sly/os/os.h"
+#include "sly/os/window.h"
+#include "sly/os/operatingsystem.h"
 #include "sly/macOS.h"
 
 namespace sly {
@@ -13,7 +14,7 @@ namespace sly {
                     MacOSWindow() : IWindow() {}
             virtual ~MacOSWindow() {} 
 
-            virtual void init(WindowDesc& desc);
+            virtual retval<void> init(WindowDesc& desc);
             static void onRender(const sly::os::MacOSWindow& window);
             virtual bool_t show() { return true; }
 

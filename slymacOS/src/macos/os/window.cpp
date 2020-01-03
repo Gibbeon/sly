@@ -1,4 +1,4 @@
-#include "sly/macos/os/window.h"
+#include "sly/macOS/os/window.h"
 
 #include "mtlpp/mtlpp.hpp"
 #include "mtlpp/examples/window.hpp"
@@ -54,7 +54,7 @@ mtlpp::RenderPassDescriptor g_RenderPassDescriptor;
 
 MtlView m_view;
 
-void MacOSWindow::init(WindowDesc& desc) 
+sly::retval<void> MacOSWindow::init(WindowDesc& desc) 
 {
     m_width = desc.width;
     m_height = desc.height;
@@ -138,6 +138,8 @@ void MacOSWindow::init(WindowDesc& desc)
     NSApplication * application = [NSApplication sharedApplication];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     [NSApp activateIgnoringOtherApps:YES];
+
+    return success();
 }
 
 bool_t MacOSWindow::processMessages()

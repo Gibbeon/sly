@@ -17,7 +17,7 @@ void METALCommandListImpl::init(CommandListDesc& desc) {
 }
 
 void METALCommandListImpl::begin() {
-    _encoder = _list.RenderCommandEncoder(renderPassDesc);
+    //_encoder = _list.RenderCommandEncoder(renderPassDesc);
     //_allocator->Reset();
     //_list->Reset(_allocator, _renderState == nullptr ? nullptr : &_renderState->getIMETALPipelineState()); // need to see if we should have pipeline state be here 
 }

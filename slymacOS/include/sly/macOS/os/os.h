@@ -5,16 +5,19 @@
 #include <fstream>
 
 #include "sly/macOS.h"
-#include "sly/os/os.h"
+#include "sly/io/iostream.h"
+#include "sly/os/operatingsystem.h"
+#include "sly/os/filesystem.h"
 
 namespace sly {
     namespace os {
-    class MacOSFileInputStream : public IInputStream {
+    class MacOSFileStream : public IInputOutputStream {
     public:
-                MacOSFileInputStream() {}
-        virtual ~MacOSFileInputStream() {}
+                MacOSFileStream() {}
+        virtual ~MacOSFileStream() {}
 
-        virtual void open(const char_t* file);
+        virtual retval<void> open(const char_t* file);
+        virtual void write(vptr_t buffer, size_t size) {}
         virtual size_t read(vptr_t buffer, size_t size);
         virtual size_t getSize();
         
@@ -31,38 +34,23 @@ namespace sly {
         size_t _offset;
     };
 
-    class MacOSFileOutputStream : public IOutputStream {
-    public:        
-        MacOSFileOutputStream() {}
-        virtual ~MacOSFileOutputStream() {}
-
-        virtual void open(const char_t* file);
-        virtual void write(vptr_t buffer, size_t size);
-        virtual void close();
-
-        virtual size_t getSize();
-
-        virtual void seek(s32 offset);
-        virtual size_t getPosition();
-        virtual void setPosition(size_t position);
-
-        virtual void flush() {}
-    protected:
-        std::fstream _file;
-    };
-
     class MacOSFileSystem : public IFileSystem {
-        virtual void open(IInputStream** ppStream, const char_t* file) {
-            (*ppStream) = new MacOSFileInputStream();
-            reinterpret_cast<MacOSFileInputStream*>(*ppStream)->open(file);
-            //(*ppStream)->open(file);
+        virtual retval<void> init(FileSystemDesc&) { return success(); }
+
+        virtual retval<std::unique_ptr<File>> open(const char_t* file) {
+            auto stream = new MacOSFileStream();
+            if(stream->open(file).failed()) {
+                throw;
+            }
+
+            return std::make_unique<File>(stream);
         }
 
-        virtual void create(IOutputStream** ppStream, const char_t* file) {
-            (*ppStream) = new MacOSFileOutputStream();
-            reinterpret_cast<MacOSFileOutputStream*>(*ppStream)->open(file);
-            
-        }
+        //virtual void create(IOutputStream** ppStream, const char_t* file) {
+        //    (*ppStream) = new MacOSFileOutputStream();
+        //    reinterpret_cast<MacOSFileOutputStream*>(*ppStream)->open(file);
+        //    
+        //}
     };
 
     class MacOSOperatingSystem : public IOperatingSystem {
@@ -70,10 +58,12 @@ namespace sly {
                 MacOSOperatingSystem();
         virtual ~MacOSOperatingSystem() {}
 
-        virtual void init();
-        virtual size_t getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max);
+        virtual retval<void> init(OperatingSystemDesc&);
+        
+        virtual retval<vptr_t> loadLibrary(std::string) { return failed<vptr_t>(); }
+        virtual retval<vptr_t> getProcAddress(std::string, vptr_t handle = nullptr) { return failed<vptr_t>(); }
 
-        virtual IFileSystem& FileSystem() { return _fs; }
+        virtual retval<IFileSystem&> filesystem() { return _fs; }
 
     protected:
 

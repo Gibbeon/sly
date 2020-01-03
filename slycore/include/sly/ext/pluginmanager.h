@@ -48,12 +48,15 @@ namespace sly {
         virtual ~PluginManager() {}
         
         virtual retval<void> init(PluginManagerDesc& desc) { 
+            #if _WIN32
             PluginBuilder builder;
             builder
                 .setEntry("_RegisterPlugins")
                 .setLibrary("c:/dev/sly/slyd3d12/bin/slyd3d12.dll");
 
             load(builder.build());
+            #endif
+            
             return success(); 
         }
 
