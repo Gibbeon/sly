@@ -8,6 +8,11 @@
 using namespace sly;
 
 retval<void> Engine::init(EngineDesc& desc) { 
+    auto osResult = _os.init(os::OperatingSystemBuilder().build());
+    if(osResult.failed()) {
+        return failed<void>();
+    }
+
     static MemoryManager memory;
     MemoryManagerBuilder memoryBuilder;
     auto memoryResult = (_memory = &memory)->init(memoryBuilder.build());

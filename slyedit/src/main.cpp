@@ -306,8 +306,9 @@ int main()
 
     vbBuilder.setData(triangleVertices, vtxsize / sizeof(Vertex), sizeof(Vertex));
 
+    #if !_WIN32
     // MacOS shader
-    /*const char shadersSrc[] = R"""(
+    const char shadersSrc[] = R"""(
         #include <metal_stdlib>
         using namespace metal;
         vertex float4 VSMain(
@@ -320,8 +321,8 @@ int main()
         {
             return half4(1.0, 0.0, 0.0, 1.0);
         }
-    )""";*/
-
+    )""";
+    #else
     const char shadersSrc[] = R"""(
         struct PSInput
         {
@@ -344,6 +345,7 @@ int main()
             return input.color;
         }
     )""";
+    #endif
 
 
     vsspBuilder.setData((vptr_t)shadersSrc, sizeof(shadersSrc))
@@ -407,6 +409,7 @@ int main()
     sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);
 
     while(true) {
+        #if _WIN32
         // loop
         list->begin();
         list->setRenderState(*rsState);
@@ -422,6 +425,9 @@ int main()
         context->getDirectCommandQueue().executeCommandList(list);
         context->getDirectCommandQueue().flush();
         context->swapBuffers(); 
+        #else
+        context->processMessages();   
+        #endif
     }
     
     return  0;

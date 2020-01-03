@@ -12,7 +12,7 @@ METALRenderStateImpl::METALRenderStateImpl(METALDeviceImpl& device) :
 
 void METALRenderStateImpl::init(RenderStateDesc& desc) {
     _pipelineDesc.SetVertexFunction(reinterpret_cast<METALShaderImpl*>(desc.vsShader)->getMETALFunction());
-    _pipelineDesc.SetFragmentFunction(reinterpret_cast<METALShaderImpl*>(desc.vsShader)->getMETALFunction());
+    _pipelineDesc.SetFragmentFunction(reinterpret_cast<METALShaderImpl*>(desc.psShader)->getMETALFunction());
     _pipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
     _pipelineState = getMETALDevice().NewRenderPipelineState(_pipelineDesc, nullptr);
 
