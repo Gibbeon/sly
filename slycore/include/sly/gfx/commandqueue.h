@@ -11,8 +11,10 @@ namespace sly {
         public:         
             virtual ~ICommandQueue() {}
 
-            virtual void init(CommandQueueDesc& desc) = 0;
-            virtual void executeCommandList(ICommandList* lists, size_t count = 1) = 0;
+            virtual retval<void> init(const CommandQueueDesc& desc) = 0;
+            virtual retval<void> release() = 0;
+            
+            virtual void executeCommandList(gsl::span<const ICommandList* const> lists) = 0;
 
             virtual void flush() = 0;
         protected:

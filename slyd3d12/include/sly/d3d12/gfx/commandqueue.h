@@ -10,9 +10,10 @@ namespace sly {
         class D3D12CommandQueueImpl : public ICommandQueue {
         public:
             D3D12CommandQueueImpl(D3D12DeviceImpl& device);
-            virtual void init(CommandQueueDesc& desc);
+            virtual retval<void> init(const CommandQueueDesc& desc = CommandQueueBuilder().build());
+            virtual retval<void> release();
             
-            virtual void executeCommandList(ICommandList* lists, size_t count = 1); // where is my render target
+            virtual void executeCommandList(gsl::span<const ICommandList* const> lists); // where is my render target
 
             virtual void flush();
             

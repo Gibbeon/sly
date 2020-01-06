@@ -10,9 +10,10 @@ namespace sly {
         public:
             virtual ~IFileSystem() {}
 
-            virtual retval<void> init(FileSystemDesc&) = 0;
+            virtual retval<void> init(const FileSystemDesc&) = 0;
+            virtual retval<void> release() = 0;
 
-            virtual retval<std::unique_ptr<File>> open(const char_t* file) = 0;
+            virtual retval<File> open(gsl::zstring<> file) = 0;
             //virtual retval<std::unique_ptr<IFileStream>> create(const char_t* file) = 0;
 
         protected:

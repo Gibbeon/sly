@@ -7,15 +7,15 @@
 #include "sly/mem/builders/heapbuilder.h"
 
 namespace sly {
-    struct MemoryManagerDesc {
+    struct MemorySystemDesc {
     public:
         std::vector<HeapDesc> _heaps;
     };
 
-    class MemoryManagerBuilder : public Builder<MemoryManagerDesc> {
+    class MemorySystemBuilder : public Builder<MemorySystemDesc> {
     public:
-        MemoryManagerBuilder() : Builder() {}
-        virtual ~MemoryManagerBuilder() {}
+        MemorySystemBuilder() : Builder() {}
+        virtual ~MemorySystemBuilder() {}
     };
     
 }

@@ -44,7 +44,7 @@ namespace sly {
         }
         
         template <typename T>
-        static const TypeInfo get() {
+        static const TypeInfo& get() {
             static TypeInfo typeInfo = TypeInfo(typeid(T).name(), 
                 sizeof(T), 
                 TypeInfo::buildConstructor<T>(),

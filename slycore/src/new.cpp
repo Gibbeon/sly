@@ -6,19 +6,19 @@ using namespace sly;
 
 void *operator new(decltype(sizeof(0)) size) noexcept(false)
 {
-    return Engine::MemoryManager().alloc(size);
+    return Engine::MemorySystem().alloc(size);
 }
 void operator delete(void *ptr) throw()
 {
-    Engine::MemoryManager().free(ptr);
+    Engine::MemorySystem().free(ptr);
 }
 void *operator new[](decltype(sizeof(0)) size) noexcept(false)
 {
-    return Engine::MemoryManager().alloc(size);
+    return Engine::MemorySystem().alloc(size);
 }
 void operator delete[](void *ptr) throw()
 {
-    Engine::MemoryManager().free(ptr);
+    Engine::MemorySystem().free(ptr);
 }
  */
 

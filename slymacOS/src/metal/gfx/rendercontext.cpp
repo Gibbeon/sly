@@ -74,7 +74,7 @@ void METALRenderContextImpl::setVisible(bool_t show)
     //_window->show();
 }
 
-void METALRenderContextImpl::swapBuffers()
+void METALRenderContextImpl::present()
 {
     _window->onRender();
 

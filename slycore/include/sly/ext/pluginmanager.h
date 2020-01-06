@@ -41,7 +41,7 @@ namespace sly {
         IPluginManager() {}
     };
     
-    typedef retval<IPlugin*> (*pfCreatePlugin)(const IPluginManager&);
+    typedef sly::retval< std::function<sly::IPlugin*(void)> > (*pfGetType)();
 
     class PluginManager : public IPluginManager {
     public:
@@ -51,7 +51,7 @@ namespace sly {
             #if _WIN32
             PluginBuilder builder;
             builder
-                .setEntry("_RegisterPlugins")
+                .setEntry("GetD3D12Renderer")
                 .setLibrary("c:/dev/sly/slyd3d12/bin/slyd3d12.dll");
 
             load(builder.build());
@@ -66,8 +66,8 @@ namespace sly {
         }
 
         virtual retval<IPlugin&>    load(PluginDesc& desc) {
-            os::OperatingSystem os;
-            os.init(os::OperatingSystemBuilder().build());
+            os::SystemInterface os;
+            os.init(os::SystemInterfaceBuilder().build());
 
             auto library = os.loadLibrary(desc.library);
 
@@ -80,16 +80,17 @@ namespace sly {
                 return failed<IPlugin&>();
             }
 
-            auto plugin = ((pfCreatePlugin)proc)(*this);
+            auto plugin = ((pfGetType)proc)();
 
             if(plugin.failed()) {
                 return failed<IPlugin&>();
             }
 
-            plugin->onLoad();
-            _plugins.push_back(plugin.result());
+            IPlugin* value = (IPlugin*)(plugin.result())();
+
+            _plugins.push_back(value);
             
-            return *(plugin.result());
+            return *value;
         }
 
         virtual retval<void>        unload(IPlugin& plugin) {
@@ -98,7 +99,6 @@ namespace sly {
                 return failed<void>(SLY_NOTFOUND, "The plugin was not found.");
             }
 
-            (*iter)->onUnload();
             _plugins.erase(iter);
 
             return success();

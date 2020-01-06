@@ -10,7 +10,8 @@ namespace sly {
         public:
             D3D12VertexBufferImpl(D3D12DeviceImpl& device);
 
-            virtual void init(VertexBufferDesc& desc);
+            virtual retval<void> init(const VertexBufferDesc& desc = VertexBufferBuilder().build());            
+            virtual retval<void> release();
 
             virtual void write(vptr_t data, size_t size, size_t stride);
 
@@ -32,6 +33,7 @@ namespace sly {
             size_t _bufferLocation;
             size_t _sizeInBytes;
             size_t _strideInBytes;
+            bool_t _initialized;
         };
     }
 }

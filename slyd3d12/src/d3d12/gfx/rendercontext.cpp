@@ -12,7 +12,7 @@ D3D12RenderContextImpl::D3D12RenderContextImpl(D3D12DeviceImpl& device, sly::os:
     _device(&device) {
 }
 
-void D3D12RenderContextImpl::init(RenderContextDesc& desc) {
+sly::retval<void> D3D12RenderContextImpl::init(const RenderContextDesc& desc) {
     D3D12riptorTableBuilder descTableBuilder;
 
     descTableBuilder.setCapacity(2);
@@ -61,6 +61,22 @@ void D3D12RenderContextImpl::init(RenderContextDesc& desc) {
         
         _renderTargets[n].init(ptr, rtvHandle.ptr);
     }    
+
+    return success();
+}
+
+sly::retval<void> D3D12RenderContextImpl::release() {
+    
+    _renderTargets[0].release();
+    _renderTargets[1].release();
+    
+    _swapChain->Release();
+    _fence.release();
+
+    _desctriptorTable.release();
+    _directCommandQueue.release();
+
+    return success();
 }
 
 void  D3D12RenderContextImpl::processMessages()
@@ -70,10 +86,10 @@ void  D3D12RenderContextImpl::processMessages()
 
 void D3D12RenderContextImpl::setVisible(bool_t show)
 {
-    _window->show();
+    _window->setVisible(show);
 }
 
-void D3D12RenderContextImpl::swapBuffers()
+void D3D12RenderContextImpl::present()
 {
     // Present the frame.
     if(FAILED(_swapChain->Present(1, 0)))

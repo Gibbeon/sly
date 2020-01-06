@@ -7,11 +7,11 @@
 using namespace sly::gfx;
 
 
-GL4RendererImpl::GL4RendererImpl() {
+GL4RenderInterface::GL4RenderInterface() {
 
 }
 
-retval<std::unique_ptr<IDevice>> GL4RendererImpl::createDevice(Device& desc) {
+retval<std::unique_ptr<IDevice>> GL4RenderInterface::createDevice(Device& desc) {
     (*pAdapter) = new GL4Device();
 }
         

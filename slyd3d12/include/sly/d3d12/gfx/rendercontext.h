@@ -17,14 +17,15 @@ namespace sly {
         class D3D12RenderContextImpl : public IRenderContext {
         public:
             D3D12RenderContextImpl(D3D12DeviceImpl& device, sly::os::Win32Window& window);
-            virtual void init(RenderContextDesc& desc);
+            virtual retval<void> init(const RenderContextDesc& desc = RenderContextBuilder().build());
+            virtual retval<void> release();
 
             // window control
             virtual void setVisible(bool_t show);
             virtual void processMessages();
 
             // buffers
-            virtual void swapBuffers();            
+            virtual void present();            
             IRenderTarget& getDrawBuffer() { return _renderTargets[_drawFrameIndex]; }       
 
             // draw

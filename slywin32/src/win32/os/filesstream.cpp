@@ -3,13 +3,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "sly/win32/os/operatingsystem.h"
+#include "sly/win32/os/filestream.h"
 
 #define BUF_SIZE 256
 
 using namespace sly::os;
 
-sly::retval<void> Win32FileStream::open(const char_t* file) {
+sly::retval<void> Win32FileStream::open(gsl::zstring<> file) {
 
     HANDLE hFile = CreateFile(file, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 

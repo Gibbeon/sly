@@ -15,7 +15,8 @@ namespace sly {
         class ICommandList : public IManagedResource {
         public:
             virtual ~ICommandList() {} 
-            virtual void init(CommandListDesc& desc) =0;
+            virtual retval<void> init(const CommandListDesc& desc = CommandListBuilder().build()) =0;
+            virtual retval<void> release() = 0;
 
             virtual void begin() = 0;
             virtual void end() = 0;

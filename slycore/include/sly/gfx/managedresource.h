@@ -1,13 +1,13 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/gfx/device.h"
 
 namespace sly {
     namespace gfx {
         class IManagedResource {
         public:         
             virtual ~IManagedResource() {}
+            virtual retval<void> release() = 0;
 
             //virtual IDevice& getDevice();
         protected:

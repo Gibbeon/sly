@@ -7,11 +7,15 @@ namespace sly {
     namespace gfx {  
         struct DeviceDesc {
         public:
+            u32 adapter;
         };
         
         class DeviceBuilder : public Builder<DeviceDesc> {
         public:
-            DeviceBuilder() : Builder() {}
+            DeviceBuilder() : Builder() {
+                _descriptor.adapter = -1;                            
+            }
+            
             virtual ~DeviceBuilder() {}
         };
 

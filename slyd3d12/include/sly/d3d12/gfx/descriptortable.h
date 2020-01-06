@@ -15,11 +15,20 @@ namespace sly {
 
         };
         
+        class D3D12riptorTableBuilder : public Builder<D3D12DescriptorTableDesc> {
+        public:
+            D3D12riptorTableBuilder() : Builder() {}
+
+            D3D12riptorTableBuilder& setCapacity(size_t capacity) { _descriptor.capacity = capacity; return *this; }
+
+        };
+                
         class D3D12DescriptorTableImpl {
         public:
             D3D12DescriptorTableImpl(D3D12DeviceImpl& device);
 
-            void init(D3D12DescriptorTableDesc& desc);
+            retval<void> init(const D3D12DescriptorTableDesc& desc = D3D12riptorTableBuilder().build());
+            retval<void> release();
 
             void alloc(size_t* indicies, size_t count);
             void free(size_t*, size_t count);
@@ -46,13 +55,6 @@ namespace sly {
             size_t _descHeapStride;  
         };        
 
-        class D3D12riptorTableBuilder : public Builder<D3D12DescriptorTableDesc> {
-        public:
-            D3D12riptorTableBuilder() : Builder() {}
-
-            D3D12riptorTableBuilder& setCapacity(size_t capacity) { desc_.capacity = capacity; return *this; }
-
-        };
     }
 }
 

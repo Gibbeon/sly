@@ -7,6 +7,7 @@ namespace sly {
         template<typename TColorType = float>
         struct colort_t
         {
+            colort_t() {}
             colort_t(TColorType r, TColorType g, TColorType b, TColorType a) :
                 r(r), g(g), b(b), a(a)
             {

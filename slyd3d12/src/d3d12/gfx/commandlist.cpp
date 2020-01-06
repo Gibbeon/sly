@@ -5,14 +5,29 @@
 
 using namespace sly::gfx;
 
-D3D12CommandListImpl::D3D12CommandListImpl(D3D12DeviceImpl& device) : _device(&device), _renderState(NULL) {
+D3D12CommandListImpl::D3D12CommandListImpl(D3D12DeviceImpl& device) : _device(device), _renderState(nullptr), _target(nullptr), _initialized( false ) {
 
 }
 
-void D3D12CommandListImpl::init(CommandListDesc& desc) {
+D3D12CommandListImpl::~D3D12CommandListImpl() {
+    Expects(!_initialized);
+}
+
+sly::retval<void> D3D12CommandListImpl::init(const CommandListDesc& desc) {
     getID3D12Device().CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<vptr_t*>(&_allocator));
     getID3D12Device().CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,_allocator, NULL, IID_ID3D12CommandList, reinterpret_cast<vptr_t*>(&_list));
     _list->Close();
+    _initialized = true;
+    return success();
+}
+
+sly::retval<void> D3D12CommandListImpl::release() {
+    if(_initialized) {
+        _list->Release();
+        _allocator->Release();
+        _initialized = false;
+    }
+    return success();
 }
 
 void D3D12CommandListImpl::begin() {

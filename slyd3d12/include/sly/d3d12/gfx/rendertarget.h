@@ -12,9 +12,15 @@ namespace sly {
         public:
             D3D12RenderTargetImpl() {}
 
-            virtual void init(ID3D12Resource* ptr, size_t buffer){
+            virtual retval<void> init(ID3D12Resource* ptr, size_t buffer){
                 _resource = ptr;
                 _bufferLocation = buffer;
+                return success();
+            }
+
+            virtual retval<void> release() {
+                _resource->Release();
+                return success();
             }
 
             virtual void write(vptr_t data, size_t size, size_t stride) {
@@ -31,7 +37,7 @@ namespace sly {
 
         private:
             D3D12DeviceImpl* _device;
-            ID3D12Resource* _resource;
+            gsl::owner<ID3D12Resource*> _resource;
             size_t _bufferLocation;
             size_t _sizeInBytes;
         };

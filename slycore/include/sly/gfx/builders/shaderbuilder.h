@@ -13,9 +13,9 @@ namespace sly {
         public:
             vptr_t data;
             size_t size;
-            std::string entry;
-            std::string target;
-            std::string name;
+            gsl::zstring<> entry;
+            gsl::zstring<> target;
+            gsl::zstring<> name;
         };
         
         class ShaderBuilder : public Builder<ShaderDesc> {
@@ -23,10 +23,10 @@ namespace sly {
             ShaderBuilder() : Builder() {}
             virtual ~ShaderBuilder() {}
 
-            ShaderBuilder& setData(vptr_t data, size_t size) { desc_.data = data; desc_.size = size; return * this; }
-            ShaderBuilder& setEntryPoint(std::string entry) { desc_.entry = entry; return * this; }
-            ShaderBuilder& setTarget(std::string target) { desc_.target = target; return * this; }
-            ShaderBuilder& setName(std::string name) { desc_.name = name; return * this; }
+            ShaderBuilder& setData(vptr_t data, size_t size) { _descriptor.data = data; _descriptor.size = size; return * this; }
+            ShaderBuilder& setEntryPoint(gsl::zstring<> entry) { _descriptor.entry = entry; return * this; }
+            ShaderBuilder& setTarget(gsl::zstring<> target) { _descriptor.target = target; return * this; }
+            ShaderBuilder& setName(gsl::zstring<> name) { _descriptor.name = name; return * this; }
         };
     }
 }

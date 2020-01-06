@@ -1,13 +1,15 @@
 #include "sly/global.h"
-#include "sly/win32/os/operatingsystem.h"
+#include "sly/kernel.h"
+#include "sly/win32/os/systeminterface.h"
 
 //using namespace sly;
 
-sly::os::IOperatingSystem*  sly::os::_GetOperatingSystem() {
-    static sly::os::Win32OperatingSystem instance;
+sly::os::ISystemInterface*  sly::os::GetSystemInterface(sly::Kernel& kernel) {
+    static sly::os::Win32SystemInterface instance(kernel);
     static bool_t initialized = false;
+    
     if(!initialized) {
-        instance.init(OperatingSystemBuilder().build());
+        instance.init();
         initialized = true;
     }
 

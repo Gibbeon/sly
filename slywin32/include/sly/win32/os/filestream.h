@@ -17,7 +17,7 @@ namespace os {
                 Win32FileStream() : IInputOutputStream() {}
         virtual ~Win32FileStream() {}
 
-        virtual retval<void> open(const char_t* file);
+        virtual retval<void> open(gsl::zstring<> file);
         virtual size_t read(vptr_t buffer, size_t size);
         virtual void write(vptr_t buffer, size_t size) {}
         virtual size_t getSize();

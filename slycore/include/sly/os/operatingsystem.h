@@ -1,42 +1,53 @@
 #pragma once
 
 #include "sly/global.h"
+#include "sly/os/systeminterface.h"
 #include "sly/os/builders/operatingsystembuilder.h"
 
 namespace sly {
     namespace os {
         class IFileSystem;
+        class ISystemInterface;
 
         class IOperatingSystem {
         public:
-            virtual ~IOperatingSystem() {}            
-            virtual retval<void> init(OperatingSystemDesc&) = 0;
+            typedef vptr_t SystemHandle;
+
+            virtual ~IOperatingSystem() {} 
+
+            virtual retval<void> init() = 0;
+            virtual retval<void> release() = 0;
+
+            virtual retval<SystemHandle> loadLibrary(gsl::czstring_span<>) = 0;
+            virtual retval<SystemHandle> getProcAddress(gsl::czstring_span<>, SystemHandle handle = nullptr) = 0;
             
-            virtual retval<vptr_t> loadLibrary(std::string) = 0;
-            virtual retval<vptr_t> getProcAddress(std::string, vptr_t handle = nullptr) = 0;
-            
-            virtual retval<IFileSystem&> filesystem() = 0;
+            virtual IFileSystem&        filesystem() const = 0;
+            virtual IWindowSystem&      windows() const = 0;
             
         protected:
             IOperatingSystem() {}
+
         };   
 
-        extern IOperatingSystem* _GetOperatingSystem();
-        
-        class OperatingSystem : IOperatingSystem{
-        public:
-        
-            OperatingSystem() {}
-            virtual ~OperatingSystem() {}            
-            virtual retval<void> init(OperatingSystemDesc&); 
+        class OperatingSystem : public IOperatingSystem {
+        public: 
+            OperatingSystem(sly::Kernel& kernel);          
+            virtual ~OperatingSystem();  
+
+            virtual retval<void> init();
+            virtual retval<void> release();
+
+            virtual retval<SystemHandle> loadLibrary(gsl::czstring_span<>);
+            virtual retval<SystemHandle> getProcAddress(gsl::czstring_span<>, SystemHandle handle = nullptr);
             
-            virtual retval<vptr_t> loadLibrary(std::string moniker)  { return _impl->loadLibrary(moniker); }
-            virtual retval<vptr_t> getProcAddress(std::string moniker, vptr_t handle = nullptr) { return _impl->getProcAddress(moniker, handle); }
-            
-            virtual retval<IFileSystem&> filesystem() { return _impl->filesystem(); }
+            virtual IFileSystem&         filesystem() const;
+            virtual IWindowSystem&       windows() const;
             
         protected:
-            IOperatingSystem* _impl;
+            sly::Kernel& _kernel;
+            ISystemInterface* _system;
         };   
+
+        extern ISystemInterface* GetSystemInterface();  
     }
 }

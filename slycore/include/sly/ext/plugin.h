@@ -9,9 +9,6 @@ namespace sly {
 
         virtual std::string getName() = 0;
 
-        virtual retval<void> onLoad() = 0;
-        virtual retval<void> onUnload() = 0;
-
     protected:
         IPlugin() {}
           

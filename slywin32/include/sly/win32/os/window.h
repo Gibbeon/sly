@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string>
-#include "sly/os/window.h"
 #include "sly/win32.h"
+#include "sly/win32/os/windowsystem.h"
 
 namespace sly {
     namespace os {
@@ -10,20 +9,21 @@ namespace sly {
         class Win32Window : public IWindow
         {
         public:
-        
+            Win32Window(Win32WindowSystem& parent);
             virtual ~Win32Window() {} 
 
-            virtual retval<void> init(WindowDesc& desc);
-            virtual void onRender() const;
-            virtual bool_t show() { return ShowWindow(m_hWND, SW_SHOWDEFAULT); }
+            virtual retval<void> init(const WindowDesc& desc = WindowBuilder().build());
+            virtual retval<void> release();
+            
+            virtual void setVisible(bool_t visible) { ShowWindow(_hWND, visible ? SW_SHOW : SW_HIDE); }
 
-            // Accessors.
-            virtual uint_t getWidth() const         { return m_width; }
-            virtual uint_t getHeight() const        { return m_height; }
-            virtual std::string getTitle() const       { return m_title; }
+                   // Accessors.
+            virtual uint_t getWidth() const         { return _width; }
+            virtual uint_t getHeight() const        { return _height; }
+            virtual gsl::czstring<> getTitle() const       { return _title; }
 
-            virtual HWND getHwnd() const { return m_hWND; }
-            virtual void setHwnd(HWND hWND) { m_hWND = hWND; }
+            virtual HWND getHwnd() const { return _hWND; }
+            virtual void setHwnd(HWND hWND) { _hWND = hWND; }
 
             virtual bool_t processMessages();
 
@@ -31,10 +31,12 @@ namespace sly {
             static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
         private:
-            std::string m_title;
-            uint_t m_width;
-            uint_t m_height;
-            HWND m_hWND;
+            Win32WindowSystem& _parent;
+            gsl::czstring<> _title;
+            uint_t _width;
+            uint_t _height;
+            HWND _hWND;
+            bool_t _initialized;
         };
     }
 }

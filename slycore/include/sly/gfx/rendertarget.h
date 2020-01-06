@@ -8,6 +8,9 @@ namespace sly {
         class IRenderTarget : public IResource {
         public:
             virtual ~IRenderTarget() {}
+            virtual retval<void> release() = 0;
+
+            //retval<void> init();
         
         protected:
             IRenderTarget() {}

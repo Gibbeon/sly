@@ -32,7 +32,7 @@ GL4Window::GL4Window()
     InitializeOpenGL(_window->GetHwnd(), _window->GetHeight(), _window->GetWidth(), 1.0, 0.0, true);
 }
 
-void GL4Window::swapBuffers()
+void GL4Window::present()
 {
     BeginScene(.4f, .4f, 1.0f, 1.0f);
     EndScene();
