@@ -3,7 +3,7 @@
 #include "sly/global.h"
 #include "sly/resources/builders/resourcesystem.h"
 #include "sly/resources/resource.h"
-#include "sly/resources/json/jsonresourceloader.h"
+#include "sly/resources/loaders/jsonresourceloader.h"
 #include "sly/resources/directoryresourcerepositoryloader.h"
 
 namespace sly { 
@@ -16,7 +16,7 @@ namespace sly {
 
         virtual retval<void> mount(gsl::czstring<> moniker) = 0;
         virtual retval<void> unmount(gsl::czstring<> moniker) = 0;
-        virtual retval<Resource> find(gsl::czstring<> moniker) = 0;
+        virtual retval<std::vector<Resource>> find(gsl::czstring<> moniker) = 0;
 
     protected:
         IResourceSystem() {}
@@ -52,7 +52,7 @@ namespace sly {
             return success();
         }
 
-        virtual retval<Resource> find(gsl::czstring<> moniker) {
+        virtual retval<std::vector<Resource>> find(gsl::czstring<> moniker) {
             for(auto repo : _repositories) {
                 for(auto value : repo->resources()) {
                     if(value.moniker == moniker) {
@@ -65,7 +65,7 @@ namespace sly {
                 }
             }
 
-            return failed<Resource>();
+            return failed<std::vector<Resource>>();
         }
     
     protected:

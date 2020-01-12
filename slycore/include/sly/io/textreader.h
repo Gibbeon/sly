@@ -38,7 +38,6 @@ namespace sly {
             return _offset == _size;
         }
 
-        template<typename T> 
         std::string read(std::function<bool_t(char_t)> until = [](char_t n) -> bool_t{ return std::isspace(n); } ) {            
             std::string sb;
 
@@ -62,7 +61,7 @@ namespace sly {
 
             _position = _stream.getPosition();
 
-            _buffer[_offset] = '\0';
+            //_buffer[_offset] = '\0';
                         
             return sb;
         };
@@ -72,7 +71,7 @@ namespace sly {
         };
 
         std::string readAll() {
-            return read<gsl::czstring<>>([](char_t n) -> bool_t{ return false; });
+            return read([](char_t n) -> bool_t{ return false; });
         }; 
 
         bool_t fill() {

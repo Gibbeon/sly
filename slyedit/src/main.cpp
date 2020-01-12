@@ -97,8 +97,8 @@ int main()
 
     auto res = engine->resources().find("shaders");
     
-    auto val1 = res->get<sly::ShaderDesc2>("VSMain");
-    auto val2 = res->get<sly::ShaderDesc2>("PSMain");
+    auto val1 = res[0].create<sly::ShaderDesc2>();
+    auto val2 = res[1].create<sly::ShaderDesc2>();
     //res->release();
 
     //sly::Scene* scene = &sly::Scene(*engine, context);

@@ -34,6 +34,19 @@ template <class T>
 struct is_shared_ptr<std::shared_ptr<T>> : std::true_type
 {};
 
+template <typename T>
+struct is_indexable  : std::false_type
+{ };
+
+template <typename T, typename A>
+struct is_indexable<std::vector<T, A>> : std::true_type
+{ };
+
+template <typename T, std::size_t N>
+struct is_indexable<std::array<T, N>> : std::true_type
+{ };
+
+
 namespace sly {
     typedef s32 StatusCode;
     typedef const char* ErrorMessage;
@@ -100,6 +113,10 @@ namespace sly {
 
         template <typename Y = T, typename std::enable_if_t<!std::is_pointer<Y>::value && !is_unique_ptr<Y>::value && !is_shared_ptr<Y>::value>* = nullptr>
         type_pointer operator->() { return &_value; }
+
+        //template <typename N, typename Y = T, typename std::enable_if_t<std::is_pointer<Y>::value || is_unique_ptr<Y>::value || is_shared_ptr<Y>::value || is_indexable<Y>::value>* = nullptr>
+        template<typename N>
+        auto operator[](const N index) { return _value[index]; }
 
         StatusCode statusCode() const { return _statusCode; }
 

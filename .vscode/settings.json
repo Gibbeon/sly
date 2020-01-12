@@ -116,7 +116,8 @@
         "gsl_algorithm": "cpp",
         "gsl_byte": "cpp",
         "gsl_util": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "resumable": "cpp"
     },
     "search.exclude": {
         "**/3rdparty": true
