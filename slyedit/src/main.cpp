@@ -93,6 +93,17 @@ int main()
 
     window->setVisible(true);
 
+    engine->resources().mount("slyedit/data");
+
+    auto res = engine->resources().find("shaders");
+    
+    auto val1 = res->get<sly::ShaderDesc2>("VSMain");
+    auto val2 = res->get<sly::ShaderDesc2>("PSMain");
+    //res->release();
+
+    //sly::Scene* scene = &sly::Scene(*engine, context);
+    //scene->load("scene");
+
     auto list = device->createCommandList();
 
     auto vsshader = device->createShader(
@@ -124,8 +135,6 @@ int main()
             .build()
     ); 
 
-    // render state
-    //mtlpp::RenderPipelineDescriptor renderPipelineDesc;
     auto rsState = device->createRenderState( 
         sly::gfx::RenderStateBuilder()
             .setVSShader(vsshader) //renderPipelineDesc.SetVertexFunction(vertFunc);

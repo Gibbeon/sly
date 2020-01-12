@@ -177,6 +177,7 @@ namespace sly {
     }
 
     retval<void> success();
+    retval<void> failed();
 
     template <typename T>
     retval<T> failed(StatusCode statusCode, ErrorMessage message) {

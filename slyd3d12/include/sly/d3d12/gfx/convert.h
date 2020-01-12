@@ -40,7 +40,7 @@ namespace sly {
 
         struct D3D12_INPUT_ELEMENT_DESC_CAST : public D3D12_INPUT_ELEMENT_DESC {
             D3D12_INPUT_ELEMENT_DESC_CAST(const InputElementDesc& src) {
-                this->SemanticName = src.semanticName;
+                this->SemanticName = src.semanticName.c_str();
                 this->SemanticIndex = 0;
                 this->InstanceDataStepRate = 0;
                 this->InputSlot = 0;

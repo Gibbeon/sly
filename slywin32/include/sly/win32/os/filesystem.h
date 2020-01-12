@@ -15,7 +15,7 @@ namespace sly {
             virtual retval<void> init(const FileSystemDesc& desc = FileSystemBuilder().build());
             virtual retval<void> release();
 
-            virtual retval<File> open(gsl::zstring<> file);
+            virtual retval<File> open(gsl::czstring<> file);
         private:
             sly::Kernel& _kernel;
         };    

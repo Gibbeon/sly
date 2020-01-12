@@ -11,7 +11,7 @@ namespace sly {
              
         struct InputElementDesc {
         public:
-            gsl::zstring<> semanticName;
+            std::string semanticName;
             eDataFormat format;
             eDataInputClassification scope;
             size_t offset;

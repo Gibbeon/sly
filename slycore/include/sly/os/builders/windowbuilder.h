@@ -11,7 +11,7 @@ namespace sly {
         {
             uint_t width;
             uint_t height;
-            gsl::czstring<> title;
+            std::string title;
         };
 
         class WindowBuilder : public sly::Builder<WindowDesc>

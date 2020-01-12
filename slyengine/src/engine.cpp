@@ -13,6 +13,7 @@ Engine::~Engine() {
 }
 
 retval<void> Engine::init(const EngineDesc& desc) { 
+    resources().init();
     return success();
 }
 
@@ -22,4 +23,9 @@ retval<void> Engine::release() {
 
 Kernel& Engine::kernel() const {
     return _kernel;
+}
+
+ResourceSystem& Engine::resources() const {
+    static ResourceSystem instance;
+    return instance;
 }

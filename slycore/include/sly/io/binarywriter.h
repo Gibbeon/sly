@@ -6,97 +6,6 @@
 
 namespace sly {
    
-    template<typename T = const std::string>
-    class StringType
-    {   
-    public:
-        StringType(size_t size, char_t defaultValue = '\0') :
-            string(size, defaultValue) 
-        {
-        }
-
-        StringType(std::string& init_value) :
-            string(init_value) 
-        {
-        }
-
-        const char_t* c_str() {
-            return string.c_str();
-        }
-
-        size_t length() {
-            return string.length();
-        }
-
-        operator const char_t*() { return c_str(); }        
-        operator std::string() { return string; }
-
-    private:
-        std::string string;
-    };
-
-    using String = StringType<>;
-
-    template<>
-    class StringType<const char_t*>
-    {
-    public:
-        StringType() :
-            string(NULL) 
-        {
-        }
-
-        StringType(const char_t* init_value) :
-            string(init_value) 
-        {
-        }
-
-        const char_t* c_str() const {
-            return string;
-        }
-
-        size_t length() const {
-            return strlen(string);
-        }
-
-        operator const char_t*() { return c_str(); }        
-        operator std::string() { return string; }
-
-    private:
-        const char_t* string;
-    };
-
-    template<>
-    class StringType<std::string&>
-    {
-        StringType(std::string& init_value) :
-            string(init_value) 
-        {
-        }
-
-        const char_t* c_str() {
-            return string.c_str();
-        }
-
-        size_t length() {
-            return string.length();
-        }
-
-        operator const char_t*() { return c_str(); }        
-        operator std::string() { return string; }
-
-    private:
-        std::string& string;
-    };
-
-    template<>
-    class StringType<std::string>
-    {
-    public:
-
-    };
-
-
     class BinaryWriter {
     public:
         BinaryWriter(IOutputStream& stream) : _stream(stream) {}
@@ -114,11 +23,6 @@ namespace sly {
         template<typename T, typename std::enable_if<!std::is_pointer<T>::value, int>::type = 0>
         auto write(T data, size_t size = sizeof(T)) {
             write(&data, size);
-        }
-
-        void write(String string) {
-            write(string.length());
-            write(string.c_str(), string.length());
         }
 
     protected:
@@ -139,9 +43,7 @@ namespace sly {
             write(std::to_string(data));
         }
 
-        void write(String data) {
-            _stream.write((vptr_t)data.c_str(), data.length());
-        }
+        
 
     protected:
         IOutputStream& _stream;
@@ -162,15 +64,6 @@ namespace sly {
             return data;
         };
 
-        template<> 
-        String read<String>() {
-            size_t size = read<size_t>();
-
-            String str(size);
-            read((vptr_t)str.c_str(), size);
-            return str;
-        };
-
     protected:
         IInputStream& _stream;
     };    
@@ -183,7 +76,7 @@ namespace sly {
     public:
         using type = T;
 
-        template<typename U, typename std::enable_if<std::is_integral<U>::value, int>::type = 0>
+        /*template<typename U, typename std::enable_if<std::is_integral<U>::value, int>::type = 0>
         static U parse(String str) {
             char_t* end;
             return (T)std::strtoull(str.c_str(), &end, 10);
@@ -203,7 +96,7 @@ namespace sly {
         //template<typename T, typename std::enable_if<std::is_enum<T>::value, int>::type = 0>
         static String parse(String str) {
             return str;
-        }
+        }*/
     };  
 
     //template <typename U, bool_t> Convert(String) -> Convert<String, true>;
@@ -212,9 +105,9 @@ namespace sly {
     template<size_t NBufferSize = 4096>
     class TextReader {
     public:
-        TextReader(IInputStream& stream) : _stream(stream), _offset(0), _size(0), _position(-1) { 
+        TextReader(IInputStream& stream) : _stream(stream), _offset(0), _size(0), _position(0) { 
             fill(); 
-            }
+        }
 
         char_t* current()
         {
@@ -243,7 +136,7 @@ namespace sly {
         }
 
         template<typename T> 
-        String read(std::function<bool_t(char_t)> until = [](char_t n) -> bool_t{ return std::isspace(n); } ) {            
+        std::string read(std::function<bool_t(char_t)> until = [](char_t n) -> bool_t{ return std::isspace(n); } ) {            
             std::string sb;
 
             if(_position != _stream.getPosition()) {
@@ -265,16 +158,18 @@ namespace sly {
             _stream.seek(_size - offset);
 
             _position = _stream.getPosition();
+
+            _buffer[_offset] = '\0';
                         
-            return Convert<T>::parse(sb);
+            return sb;
         };
 
-        String readLine() {
+        std::string readLine() {
             return read([](char_t n) -> bool_t{ return n != '\n'; });
         };
 
-        String readAll() {
-            return read<String>([](char_t n) -> bool_t{ return false; });
+        std::string readAll() {
+            return read<gsl::czstring<>>([](char_t n) -> bool_t{ return false; });
         }; 
 
         bool_t fill() {

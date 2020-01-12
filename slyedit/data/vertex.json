@@ -1,28 +1,29 @@
-{
-    "descriptor": [
-        {
-            "name": "POSITION",
-            "format": "eDataFormat_R32G32B32_FLOAT",
-            "inputScope": "eDataInputClassification_PerVertex" 
-        },
-        {
-            "name": "COLOR",
-            "format": "eDataFormat_R32G32B32A32_FLOAT",
-            "inputScope": "eDataInputClassification_PerVertex"
-        }
-    ],
-    "data": [
-        {
-            "position": [0, 0.333, 0],
-            "color": [1, 0, 0, 1]
-        },
-        {
-            "position": [0, 0.333, 0],
-            "color": [1, 0, 0, 1]
-        },
-        {
-            "position": [0, 0.333, 0],
-            "color": [1, 0, 0, 1]
-        }
-    ]
-}
+[
+    {
+        "name": "data",
+        "descriptor": [
+            {
+                "name": "POSITION",
+                "format": "eDataFormat_R32G32B32_FLOAT"
+            },
+            {
+                "name": "COLOR",
+                "format": "eDataFormat_R32G32B32A32_FLOAT"
+            }
+        ],
+        "data": [
+            {
+                "position": [0, 0.333, 0],
+                "color": [1, 0, 0, 1]
+            },
+            {
+                "position": [0, 0.333, 0],
+                "color": [1, 0, 0, 1]
+            },
+            {
+                "position": [0, 0.333, 0],
+                "color": [1, 0, 0, 1]
+            }
+        ]
+    }
+]

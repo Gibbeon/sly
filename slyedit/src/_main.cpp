@@ -87,57 +87,7 @@ namespace sly {
 
     /*
         {
-            name: "name",
-            renderstate: {   
-                clearColor:
-                {
-                    r: .4,
-                    g: .4,
-                    b: .4,
-                    a: 1
-                },          
-                viewport: 
-                {
-                    name: "name",
-                    left: 0,
-                    top: 0,
-                    width: 1024,
-                    height: 768
-                },
-                scissorRect:                     
-                {
-                    name: "name",
-                    left: 0,
-                    top: 0,
-                    width: 1024,
-                    height: 768
-                }
-            },
-            entities: [
-                {
-                    name: "name",
-                    type: "SimpleMesh",
-                    data:
-                    {
-                        verticies: {
-                            ref: "vertex.dat"
-                        },
-                        shaders: [
-                            {
-                                type: "vertex",
-                                name: "VSMain",
-                                ref: "shaders.hlsl"
-                            },
-                            {
-                                type: "pixel",
-                                name: "PSMain",
-                                ref: "shaders.hlsl"
-                            },
-                        ]
-                    }
-                }
-            ]
-        }
+
     */
 
     //sly::gfx::Viewport viewport(0, 0, 1024, 768);

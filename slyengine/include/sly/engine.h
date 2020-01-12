@@ -3,9 +3,9 @@
 #include "sly/global.h"
 #include "sly/kernel.h"
 #include "sly/builders/enginebuilder.h"
+#include "sly/resources/resourcesystem.h"
 
 namespace sly { 
-
     class Engine {
     public:        
         Engine(Kernel& kernel = sly::Kernel::get());
@@ -16,17 +16,17 @@ namespace sly {
         Engine& operator = ( Engine const& ) = delete;
         Engine& operator = ( Engine && )     = delete;
 
-
         virtual retval<void> init(const EngineDesc& desc = EngineBuilder().build());
         virtual retval<void> release();
 
         virtual Kernel& kernel() const;
+        virtual ResourceSystem& resources() const;
 
     protected:
     
     private:
         Kernel&     _kernel;
-
+        
     };
 }
 

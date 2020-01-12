@@ -1,28 +1,51 @@
 {
-    "descriptor": [
+    "name": "name",
+    "renderstate": {   
+        "clearColor":
         {
-            "name": "POSITION",
-            "format": "eDataFormat_R32G32B32_FLOAT",
-            "inputScope": "eDataInputClassification_PerVertex" 
+            "r": 0.4,
+            "g": 0.4,
+            "b": 0.4,
+            "a": 1.0
+        },          
+        "viewport": 
+        {
+            "name": "name",
+            "left": 0,
+            "top": 0,
+            "width": 1024,
+            "height": 768
         },
+        "scissorRect":                     
         {
-            "name": "COLOR",
-            "format": "eDataFormat_R32G32B32A32_FLOAT",
-            "inputScope": "eDataInputClassification_PerVertex"
+            "name": "name",
+            "left": 0,
+            "top": 0,
+            "width": 1024,
+            "height": 768
         }
-    ],
-    "data": [
+    },
+    "entities": [
         {
-            "position": [0, 0.333, 0],
-            "color": [1, 0, 0, 1]
-        },
-        {
-            "position": [0, 0.333, 0],
-            "color": [1, 0, 0, 1]
-        },
-        {
-            "position": [0, 0.333, 0],
-            "color": [1, 0, 0, 1]
+            "name": "name",
+            "type": "SimpleMesh",
+            "data":
+            {
+                "verticies": {
+                    "ref": "vertex:vertex"
+                },
+                "shaders": [
+                    {
+                        "type": "vertex",
+                        "ref": "shaders:VSMain"
+                    },
+                    {
+                        "type": "pixel",
+                        "ref": "shaders:PSMain"
+                    }
+                ]
+            }
         }
     ]
+
 }

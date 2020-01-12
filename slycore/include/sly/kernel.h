@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sly/global.h"
+#include "sly/os/filesystem.h"
 
 namespace sly {
     class IMemorySystem;

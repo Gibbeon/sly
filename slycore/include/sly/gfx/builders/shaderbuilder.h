@@ -13,9 +13,9 @@ namespace sly {
         public:
             vptr_t data;
             size_t size;
-            gsl::zstring<> entry;
-            gsl::zstring<> target;
-            gsl::zstring<> name;
+            std::string entry;
+            std::string target;
+            std::string name;
         };
         
         class ShaderBuilder : public Builder<ShaderDesc> {

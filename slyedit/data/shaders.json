@@ -1,13 +1,13 @@
 [
     {
         "name": "VSMain",
-        "file": "c:\\shaders.hlsl",
+        "data": "struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; }; PSInput VSMain(float4 position : POSITION, float4 color : COLOR) {  PSInput result; result.position = position; result.color = color; return result; }",
         "entryPoint": "VSMain",
         "target": "vs_5_0"
     },
     {
         "name": "PSMain",
-        "file": "c:\\shaders.hlsl",
+        "data": "struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; };  float4 PSMain(PSInput input) : SV_TARGET { return input.color; }",
         "entryPoint": "PSMain",
         "target": "ps_5_0"
     }

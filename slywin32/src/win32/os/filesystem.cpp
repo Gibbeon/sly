@@ -19,7 +19,7 @@ sly::retval<void> Win32FileSystem::release() {
     return success();
 }
 
-sly::retval<File> Win32FileSystem::open(gsl::zstring<> file) {
+sly::retval<File> Win32FileSystem::open(gsl::czstring<> file) {
     auto stream = new Win32FileStream();
     if(stream->open(file).failed()) {
         return failed<File>();
