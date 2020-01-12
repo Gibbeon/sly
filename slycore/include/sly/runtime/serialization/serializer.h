@@ -1,15 +1,29 @@
 #pragma once
 
-#include <string>
-
 #include "sly/global.h"
-#include "sly/io/outputstream.h"
-#include "sly/runtime/serialization/serializable.h"
-#include "sly/runtime/hastypeinfo.h"
-#include "sly/static_hash.h"
 
 namespace sly {    
-    template<typename TType>
+    class ISerializer {   
+    public:  
+
+        virtual ~ISerializer() {}  
+
+        virtual retval<void> close() = 0;
+        
+        virtual retval<void> write(ISerializable& result) = 0;
+
+        virtual retval<void> write(gsl::czstring<> name, uint_t& value)  = 0;
+        virtual retval<void> write(gsl::czstring<> name, std::string& value)  = 0;
+        virtual retval<void> write(gsl::czstring<> name, gsl::czstring<> value)  = 0;
+        virtual retval<void> write(gsl::czstring<> name, vptr_t& value, size_t size)  = 0;
+        virtual retval<void> write(gsl::czstring<> name, ISerializable& result) = 0;
+        
+    protected:
+        ISerializer() {}
+        
+    };
+
+    /*template<typename TType>
     class IConvertTo {
     public:
         virtual void convertTo(TType* value) = 0;
@@ -19,7 +33,7 @@ namespace sly {
     class IConvertFrom {
     public:
         virtual void convertFrom(TType& value) = 0;
-    };
+    };*/
 
     /*class String {
         public:

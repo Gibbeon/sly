@@ -19,7 +19,7 @@ namespace sly {
             // Accessors.
             virtual uint_t                  getWidth()  const  = 0;
             virtual uint_t                  getHeight() const  = 0;
-            virtual gsl::czstring<>         getTitle()  const  = 0;
+            virtual const std::string&      getTitle()  const  = 0;
 
             virtual bool_t                  processMessages() = 0;
         

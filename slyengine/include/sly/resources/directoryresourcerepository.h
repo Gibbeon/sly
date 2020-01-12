@@ -2,13 +2,21 @@
 
 #include <filesystem>
 #include "sly/global.h"
-#include "sly/kernel.h"
+#include "sly/engine.h"
 #include "sly/resources/resourcerepository.h"
 #include "sly/resources/resourcehandle.h"
 
 namespace sly {     
     class DirectoryResourceRepository : public IResourceRepository {
     public:
+        DirectoryResourceRepository(const Engine& engine) : _engine(engine) {
+
+        }
+
+        virtual std::string moniker() const {
+            return _basePath;
+        }
+        
         virtual retval<void> release() {
             
             return success();
@@ -46,8 +54,10 @@ namespace sly {
             return success();
         }
 
-        virtual retval<IInputStream&> getStream(ResourceHandle& handle) {
-            return Kernel::get().filesystem().open((_basePath +"/" + handle.moniker + handle.extension).c_str())->stream();
+        virtual retval<std::shared_ptr<IInputStream>> getStream(ResourceHandle& handle) {
+            auto path = (_basePath +"/" + handle.moniker + handle.extension);
+            auto file = _engine.kernel().filesystem().open(path.c_str());
+            return file->stream().result();
         }
 
         virtual std::vector<ResourceHandle> resources() const {
@@ -55,6 +65,7 @@ namespace sly {
         }
 
     protected:
+        const Engine& _engine;
         std::vector<ResourceHandle> _resources;
         std::string _basePath;
     };

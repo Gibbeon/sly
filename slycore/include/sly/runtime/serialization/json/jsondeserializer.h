@@ -4,7 +4,7 @@
 #include "sly/global.h"
 #include "sly/io/iostream.h"
 #include "sly/io/textreader.h"
-#include "sly/runtime/serialization/serializable.h"
+#include "sly/runtime/serializable.h"
 #include "sly/runtime/serialization/deserializer.h"
 
 // for convenience
@@ -14,9 +14,7 @@ namespace sly {
     class JsonDeserializer : public IDeserializer {
     public:
         JsonDeserializer(IInputStream& stream) {
-            auto data = TextReader(stream).readAll();
-             _data = json::parse(data);
-             //_data = json::parse("{\"name\":\"VSMain\",\"data\":\"struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; }; PSInput VSMain(float4 position : POSITION, float4 color : COLOR) {  PSInput result; result.position = position; result.color = color; return result; }\",\"entryPoint\":\"VSMain\",\"target\":\"vs_5_0\"}");
+             _data = json::parse(TextReader(stream).readAll());
         }
 
         JsonDeserializer(json data) : _data(data) {

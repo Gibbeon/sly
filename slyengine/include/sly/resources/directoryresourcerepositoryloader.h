@@ -1,12 +1,17 @@
 #pragma once
 
 #include "sly/global.h"
+#include "sly/engine.h"
 #include "sly/resources/resourcerepositoryloader.h"
 #include "sly/resources/directoryresourcerepository.h"
 
 namespace sly { 
     class DirectoryResourceRepositoryLoader : public IResourceRepositoryLoader {
     public:
+        DirectoryResourceRepositoryLoader(const Engine& engine) : _engine(engine) {
+
+        }
+
         virtual retval<void> release() {
             return success(); 
         }
@@ -19,15 +24,21 @@ namespace sly {
         }
 
         virtual retval<std::shared_ptr<IResourceRepository>> open(gsl::czstring<> moniker) {
-            auto load = std::make_shared<DirectoryResourceRepository>();
-            load->open(moniker);
+            auto load = std::make_shared<DirectoryResourceRepository>(_engine);
+
+            if(load->open(moniker).failed()) {
+                return failed<std::shared_ptr<IResourceRepository>>();
+            }
+
             return load;
         }
 
-        virtual retval<void>                close(IResourceRepository& repository) {
-            
-            return success();
+        virtual retval<void>                close(IResourceRepository& repository) {   
+            return repository.close();
         }
+
+    protected:
+        const Engine& _engine;
     };
 }
 

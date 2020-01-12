@@ -26,6 +26,6 @@ Kernel& Engine::kernel() const {
 }
 
 ResourceSystem& Engine::resources() const {
-    static ResourceSystem instance;
+    static ResourceSystem instance(*this);
     return instance;
 }

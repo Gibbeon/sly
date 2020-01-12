@@ -20,7 +20,7 @@ sly::retval<void> Win32FileSystem::release() {
 }
 
 sly::retval<File> Win32FileSystem::open(gsl::czstring<> file) {
-    auto stream = new Win32FileStream();
+    auto stream = std::make_shared<Win32FileStream>();
     if(stream->open(file).failed()) {
         return failed<File>();
     }

@@ -10,6 +10,7 @@
 namespace sly { 
     class JsonResourceLoader : public IResourceLoader {
     public:
+        JsonResourceLoader(const Engine& engine) : _engine(engine) {}
         virtual retval<void> release() {
             return success();
         }
@@ -19,9 +20,9 @@ namespace sly {
         }
 
         virtual retval<std::vector<Resource>> load(IResourceRepository& repo, ResourceHandle& handle) {
-            //auto stream = ;
-            //sly::IInputStream& result = stream.result();
-            auto derserializer = JsonDeserializer(repo.getStream(handle));
+            auto stream = repo.getStream(handle);
+            auto& value = *(stream.result());
+            auto derserializer = JsonDeserializer(value);
             
             auto result = std::vector<Resource>();
             result.reserve(derserializer.size());
@@ -38,6 +39,7 @@ namespace sly {
         }
 
     private:
+        const Engine& _engine;
     
     };
 }

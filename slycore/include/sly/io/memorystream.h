@@ -6,24 +6,25 @@
 namespace sly {
     class MemoryStream : public IInputOutputStream {
     public:
-        MemoryStream(std::shared_ptr<void> buffer, size_t length);
-        virtual ~MemoryStream() {}
         
-        virtual size_t read(vptr_t buffer, size_t size) = 0;
-        virtual void write(vptr_t data, size_t size) = 0;
-
-        virtual size_t getSize() = 0;
+        MemoryStream();
+        MemoryStream(size_t length);
+        virtual ~MemoryStream();
         
-        virtual void seek(size_t offset) = 0;
-        virtual size_t getPosition() = 0;
-        virtual void setPosition(size_t position) = 0;
+        virtual retval<size_t>  read(vptr_t buffer, size_t size);
+        virtual retval<void>    write(vptr_t data, size_t size);
 
-        virtual void flush() = 0;
-        virtual void close() = 0;
+        virtual size_t size() const;
+        virtual size_t position() const;
+        
+        virtual retval<void> seek(s64 offset);
+        virtual retval<void> setPosition(size_t position);
+
+        virtual retval<void> flush();
+        virtual retval<void> close();
 
     protected:
-        std::shared_ptr<void> _buffer;
+        std::vector<byte_t> _buffer;
         size_t _position;
-        size_t _length;
     }; 
 }

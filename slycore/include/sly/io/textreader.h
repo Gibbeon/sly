@@ -18,7 +18,7 @@ namespace sly {
         }
 
         bool_t eof() {
-            return _stream.getPosition() >= _stream.getSize();
+            return (_position + _offset) >= _stream.size();
         }
 
         bool_t increment()
@@ -41,13 +41,13 @@ namespace sly {
         std::string read(std::function<bool_t(char_t)> until = [](char_t n) -> bool_t{ return std::isspace(n); } ) {            
             std::string sb;
 
-            if(_position != _stream.getPosition()) {
+            if(_position != _stream.position()) {
                 fill();
             }
 
             size_t offset = _offset;
 
-            while(!(until(*current()))&& !eof()) {
+            while(!(until(*current())) && !eof()) {
                 if(exhausted()) {
                      sb.append(&_buffer[offset], _size - offset);                     
                      _stream.seek(_size - offset); // on flush move the stream 
@@ -59,7 +59,7 @@ namespace sly {
             sb.append(&_buffer[offset], _size - offset); // on flush move the stream
             _stream.seek(_size - offset);
 
-            _position = _stream.getPosition();
+            _position = _stream.position();
 
             //_buffer[_offset] = '\0';
                         
@@ -75,8 +75,8 @@ namespace sly {
         }; 
 
         bool_t fill() {
-            if(! (_stream.getPosition() >= _stream.getSize())) {
-                _size = _stream.read(_buffer, MIN(NBufferSize,  _stream.getSize() - _stream.getPosition()));     
+            if(! (_stream.position() >= _stream.size())) {
+                _size = _stream.read(_buffer, MIN(NBufferSize,  _stream.size() - _stream.position()));     
                 _stream.seek(-((s32)_size)); // so we don't want to increment the stream until we actually read the data from the reader       
                 _offset = 0;
                 return true;

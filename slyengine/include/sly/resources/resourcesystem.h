@@ -1,12 +1,16 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/resources/builders/resourcesystem.h"
+#include "sly/engine.h"
 #include "sly/resources/resource.h"
-#include "sly/resources/loaders/jsonresourceloader.h"
-#include "sly/resources/directoryresourcerepositoryloader.h"
+#include "sly/resources/builders/resourcesystem.h"
 
 namespace sly { 
+    class Engine;
+    class IResourceRepositoryLoader;
+    class IResourceLoader;
+    class IResourceRepository;
+
     class IResourceSystem {
     public:
         virtual ~IResourceSystem() {}
@@ -22,53 +26,23 @@ namespace sly {
         IResourceSystem() {}
     };
 
+   
     class ResourceSystem : public IResourceSystem {
     public:
-        virtual retval<void> init(const ResourceSystemDesc& desc = ResourceSystemBuilder().build()) {
-            static DirectoryResourceRepositoryLoader loader;
-            _repositoryLoaders.push_back(&loader);
+        ResourceSystem(const Engine& engine);
+        virtual ~ResourceSystem();
 
-            static JsonResourceLoader resLoader;
-            _loaders.push_back(&resLoader);
-            return success();
-        }
+        virtual retval<void> init(const ResourceSystemDesc& desc = ResourceSystemBuilder().build());
+        virtual retval<void> release();
 
-        virtual retval<void> release() {
-            return success();
-        }
+        virtual retval<void> mount(gsl::czstring<> moniker);
+        virtual retval<void> unmount(gsl::czstring<> moniker);
 
-        virtual retval<void> mount(gsl::czstring<> moniker) {
-            for(auto loader : _repositoryLoaders) {
-                if(loader->supports(moniker)) {
-                    _repositories.push_back(loader->open(moniker).result());
-                    return success();
-                }
-            }
-            return failed<void>();
-        }
-
-        virtual retval<void> unmount(gsl::czstring<> moniker) {
-
-            return success();
-        }
-
-        virtual retval<std::vector<Resource>> find(gsl::czstring<> moniker) {
-            for(auto repo : _repositories) {
-                for(auto value : repo->resources()) {
-                    if(value.moniker == moniker) {
-                        for(auto loader: _loaders) {
-                            if(loader->supports(value)) {
-                                return loader->load(*repo, value);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return failed<std::vector<Resource>>();
-        }
+        virtual retval<std::vector<Resource>> find(gsl::czstring<> moniker);
     
     protected:
+        const Engine& _engine;
+
         std::vector<IResourceRepositoryLoader*>                     _repositoryLoaders;
         std::vector<IResourceLoader*>                               _loaders;
         std::vector<std::shared_ptr<IResourceRepository>>           _repositories;

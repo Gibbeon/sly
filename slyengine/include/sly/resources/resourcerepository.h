@@ -14,8 +14,10 @@ namespace sly {
         
         virtual retval<void> open(gsl::czstring<> moniker) = 0;
         virtual retval<void> close() = 0;
+        
+        virtual std::string moniker() const = 0;
 
-        virtual retval<IInputStream&> getStream(ResourceHandle&) = 0;
+        virtual retval<std::shared_ptr<IInputStream>> getStream(ResourceHandle&) = 0;
 
         virtual std::vector<ResourceHandle> resources() const = 0;
     protected:

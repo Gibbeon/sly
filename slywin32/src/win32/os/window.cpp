@@ -59,7 +59,7 @@ sly::retval<void> Win32Window::init(const WindowDesc& desc)
     this->setHwnd(CreateWindowEx(
         WS_EX_TRANSPARENT,
         windowClass.lpszClassName,
-        getTitle(),
+        getTitle().c_str(),
         WS_OVERLAPPED,
         CW_USEDEFAULT,
         CW_USEDEFAULT,

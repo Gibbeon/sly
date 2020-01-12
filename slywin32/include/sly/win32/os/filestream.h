@@ -12,23 +12,35 @@
 
 namespace sly { 
 namespace os {
-    class Win32FileStream : public IInputOutputStream {
+    class IFileStream : public virtual IInputOutputStream {
     public:
-                Win32FileStream() : IInputOutputStream() {}
+        virtual ~IFileStream() {}
+
+        virtual retval<void> open(gsl::czstring<> file) = 0;
+
+    protected:
+        IFileStream() {}
+
+    };
+
+    class Win32FileStream : public IFileStream {
+    public:
+                Win32FileStream() : IFileStream() {}
         virtual ~Win32FileStream() {}
 
-        virtual retval<void> open(gsl::zstring<> file);
-        virtual size_t read(vptr_t buffer, size_t size);
-        virtual void write(vptr_t buffer, size_t size) {}
-        virtual size_t getSize();
+        virtual retval<void> open(gsl::czstring<> file);
 
-        virtual void seek(s32 offset) { _offset += offset; }
+        virtual retval<size_t> read(vptr_t buffer, size_t size);
+        virtual retval<void> write(vptr_t buffer, size_t size) { return failed(); }
+        virtual size_t size() const;
 
-        virtual size_t getPosition()  { return _offset; }
-        virtual void setPosition(size_t position)  { _offset = position; };
+        virtual retval<void> seek(s64 offset) { _offset += offset;  return success();  }
 
-        virtual void flush() {}
-        virtual void close();
+        virtual size_t position() const  { return _offset; }
+        virtual retval<void> setPosition(size_t position)  { _offset = position;  return success(); };
+
+        virtual retval<void> flush() { return success(); }
+        virtual retval<void> close();
     private:
         HANDLE _handle;
         vptr_t _file;

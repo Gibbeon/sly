@@ -20,7 +20,7 @@ namespace sly {
                    // Accessors.
             virtual uint_t getWidth() const         { return _width; }
             virtual uint_t getHeight() const        { return _height; }
-            virtual gsl::czstring<> getTitle() const       { return _title; }
+            virtual const std::string& getTitle() const       { return _title; }
 
             virtual HWND getHwnd() const { return _hWND; }
             virtual void setHwnd(HWND hWND) { _hWND = hWND; }
@@ -32,7 +32,7 @@ namespace sly {
 
         private:
             Win32WindowSystem& _parent;
-            gsl::czstring<> _title;
+            std::string _title;
             uint_t _width;
             uint_t _height;
             HWND _hWND;

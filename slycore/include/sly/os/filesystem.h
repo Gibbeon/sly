@@ -6,6 +6,7 @@
 
 namespace sly {
     namespace os {
+        class IFileStream;
         class IFileSystem {
         public:
             virtual ~IFileSystem() {}
@@ -13,7 +14,8 @@ namespace sly {
             virtual retval<void> init(const FileSystemDesc&) = 0;
             virtual retval<void> release() = 0;
 
-            virtual retval<File> open(gsl::czstring<> file) = 0;
+            virtual retval<File> open(gsl::czstring<> file) = 0;            
+
             //virtual retval<std::unique_ptr<IFileStream>> create(const char_t* file) = 0;
 
         protected:

@@ -12,24 +12,21 @@ namespace sly {
 
             }
 
-            File(IInputOutputStream* stream): _stream(stream) {
+            File(std::shared_ptr<IInputOutputStream> stream): _stream(stream) {
 
             }
 
             ~File() {
-                
+
             }
             
-            //File( File const& )              = delete;
-            //File( File && )                  = delete;
-            //File& operator = ( File const& ) = delete;
-            //File& operator = ( File && )     = delete;
+            retval<std::shared_ptr<IInputOutputStream>> stream() const { 
+                return _stream; 
+            } 
 
-            retval<IInputOutputStream&> stream() const { return *_stream; }    
             retval<void> close() { 
                 if(_stream) {
                     _stream->close(); 
-                    delete _stream;
                     _stream = nullptr;
                 }
 
@@ -37,7 +34,7 @@ namespace sly {
             }
 
         private:
-            gsl::owner<IInputOutputStream*> _stream;
+            std::shared_ptr<IInputOutputStream> _stream;
         };     
     }
 }

@@ -61,14 +61,14 @@ namespace sly {
         template <typename T>
         static const TypeInfo create(vptr_t args = 0) { return reinterpret_cast<T*>(get<T>().create(args)); }
        
-        inline const char* getName() const { return _name; }
-        inline size_t getSize() const { return _size; }
-        inline type_id getId() const { return _id; }
+        inline const char* name() const { return _name; }
+        inline size_t size() const { return _size; }
+        inline type_id typeId() const { return _id; }
         inline bool_t isPolymophic() const { return _isPolymophic; }
         inline bool_t isSerializable() const { return _isSerializable; }
-        inline const TypeInfo& getUnderlyingType() const { return *_underlyingType; }
+        inline const TypeInfo& underlyingType() const { return *_underlyingType; }
         inline bool_t isArray() const { return _isArray; }
-        inline std::function<vptr_t(vptr_t)> const getDefaultConstructor() { return _ctor; }
+        inline std::function<vptr_t(vptr_t)> const defaultConstructor() { return _ctor; }
         inline vptr_t const create(vptr_t args = 0) { return _ctor(args); }
         
         operator type_id() const { return this->_id; }
@@ -87,10 +87,12 @@ namespace sly {
 
         template <typename T>
         static const std::function<vptr_t(vptr_t)> buildConstructor() {
-            static const std::function<vptr_t(vptr_t)> ctor = std::is_abstract<T>::value ? //nullptr : nullptr;
-                (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return (vptr_t)nullptr; } : 
-                (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return reinterpret_cast<vptr_t>(new (buffer) typename std::conditional<std::is_abstract<T>::value, u8, T>::type()); };
-            return ctor;
+            //static const std::function<vptr_t(vptr_t)> ctor = std::is_abstract<T>::value ? //nullptr : nullptr;
+            //    (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return (vptr_t)nullptr; } : 
+            //    (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return reinterpret_cast<vptr_t>(new (buffer) typename std::conditional<std::is_abstract<T>::value, u8, T>::type()); };
+            //return ctor;
+
+            return (std::function<vptr_t(vptr_t)>)[](vptr_t buffer) { return (vptr_t)nullptr; };            
         } 
         
         template <typename T>
@@ -115,5 +117,18 @@ namespace sly {
             _isEnum(false),
             _underlyingType(nullptr) {
         }
+    };
+
+    class IHasTypeInfo {
+    public:
+        virtual ~IHasTypeInfo() {}
+
+        virtual const sly::TypeInfo& getType() const { 
+            static const sly::TypeInfo instance = sly::TypeInfo::get<std::remove_reference<decltype(*this)>::type>(); 
+            return instance; 
+        }
+
+    protected:
+        IHasTypeInfo() {}
     };
 }

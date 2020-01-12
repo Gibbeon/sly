@@ -9,7 +9,7 @@ namespace sly {
     public:
         virtual ~IOutputStream() {}
 
-        virtual void write(const vptr_t data, size_t size) = 0;
+        virtual retval<void>    write(vptr_t data, size_t size) = 0;
 
     protected:
         IOutputStream() {}
