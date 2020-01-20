@@ -13,7 +13,7 @@ namespace sly {
             virtual retval<void> init(const CommandQueueDesc& desc = CommandQueueBuilder().build());
             virtual retval<void> release();
             
-            virtual void executeCommandList(gsl::span<const ICommandList* const> lists); // where is my render target
+            virtual void executeCommandLists(gsl::span<const ICommandList* const> lists); // where is my render target
 
             virtual void flush();
             

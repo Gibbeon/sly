@@ -19,7 +19,7 @@ namespace sly {
 
             //virtual gsl::span<IRenderAdapter> adapters() const = 0;
 
-            virtual sly::retval<std::unique_ptr<IDevice>>  createDevice(const DeviceDesc& desc = DeviceBuilder().build()) = 0;
+            virtual retval<std::unique_ptr<IDevice>>  createDevice(const DeviceDesc& desc = DeviceBuilder().build()) = 0;
 
         protected:
             IRenderInterface() {}

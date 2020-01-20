@@ -38,14 +38,19 @@ namespace sly {
             _isSerializable(isSerializable),
             _isArray(isArray),
             _isEnum(isEnum),
-            _underlyingType(&underlyingType)
-        {
-            
+            _underlyingType(&underlyingType) {
+            auto name = _name;
+            while(*(_name++) != ' ') { 
+                if(*_name == '\0') { 
+                    _name = name; break; 
+                } 
+            }
         }
         
         template <typename T>
         static const TypeInfo& get() {
-            static TypeInfo typeInfo = TypeInfo(typeid(T).name(), 
+            static TypeInfo typeInfo = 
+                TypeInfo(typeid(T).name(), 
                 sizeof(T), 
                 TypeInfo::buildConstructor<T>(),
                 std::is_convertible<T*, sly::ISerializable*>::value,
@@ -123,12 +128,12 @@ namespace sly {
     public:
         virtual ~IHasTypeInfo() {}
 
-        virtual const sly::TypeInfo& getType() const { 
-            static const sly::TypeInfo instance = sly::TypeInfo::get<std::remove_reference<decltype(*this)>::type>(); 
-            return instance; 
-        }
+        virtual const sly::TypeInfo& getType() const = 0;
 
     protected:
         IHasTypeInfo() {}
     };
+
+    #define SLY_TYPEINFO const sly::TypeInfo& getType() const { static const sly::TypeInfo instance = sly::TypeInfo::get<std::remove_reference<decltype(*this)>::type>(); return instance; }
+
 }

@@ -16,9 +16,9 @@ namespace sly {
             virtual void write(vptr_t data, size_t size, size_t stride);
 
             ID3D12Resource& getID3D12Resource() { return *_resource; }
-            virtual size_t getBufferLocation() { return _bufferLocation; }
-            virtual size_t getSizeInBytes() { return _sizeInBytes; }
-            virtual size_t getStrideInBytes() { return _strideInBytes; }
+            virtual size_t address() { return _bufferLocation; }
+            virtual size_t size() { return _sizeInBytes; }
+            virtual size_t stride() { return _strideInBytes; }
 
             
             virtual IDevice& getDevice();

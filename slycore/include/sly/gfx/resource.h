@@ -7,7 +7,7 @@
 namespace sly {
     namespace gfx {       
 
-        class IResource : public IManagedResource  {
+        class IResource : public virtual IManagedResource  {
         public:
             virtual ~IResource() {}
             virtual retval<void> release() = 0;

@@ -30,11 +30,11 @@ namespace sly {
         };
 
         struct D3D12_RECT_CAST : public D3D12_RECT {
-            D3D12_RECT_CAST(rect_t src) {
-                this->left = (LONG)src.left;
-                this->top = (LONG)src.top;
-                this->right = (LONG)src.right;
-                this->bottom = (LONG)src.bottom;
+            D3D12_RECT_CAST(rect_t<real_t> src) {
+                this->left = (LONG)src.left();
+                this->top = (LONG)src.top();
+                this->right = (LONG)src.right();
+                this->bottom = (LONG)src.bottom();
             }
         };
 

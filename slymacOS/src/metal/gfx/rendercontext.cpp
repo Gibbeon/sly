@@ -64,7 +64,7 @@ void METALRenderContextImpl::init(RenderContextDesc& desc) {
     }    */
 }
 
-void  METALRenderContextImpl::processMessages()
+void  METALRenderContextImpl::update()
 {
     _window->processMessages();
 }

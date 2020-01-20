@@ -65,18 +65,19 @@ void D3D12CommandListImpl::setViewport(Viewport& viewport) {
     _list->RSSetViewports(1, &D3D12_VIEWPORT_CAST(viewport));
 }
 
-void D3D12CommandListImpl::setScissorRect(sly::rect_t rect) {
+void D3D12CommandListImpl::setScissorRect(sly::rect_t<real_t> rect) {
     _list->RSSetScissorRects(1, &D3D12_RECT_CAST(rect));
 }
 
-void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) {    
+void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) { 
+    //get this from the vertex buffers?   
     _list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     D3D12_VERTEX_BUFFER_VIEW view;
 
-    view.BufferLocation = buffer.getBufferLocation();    
-    view.SizeInBytes = (UINT)buffer.getSizeInBytes();    
-    view.StrideInBytes = (UINT)buffer.getStrideInBytes();
+    view.BufferLocation = buffer.address();    
+    view.SizeInBytes = (UINT)buffer.size();    
+    view.StrideInBytes = (UINT)buffer.stride();
 
     _list->IASetVertexBuffers(0, 1, &view);
 }

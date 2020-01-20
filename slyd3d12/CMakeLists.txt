@@ -27,6 +27,8 @@ include_directories(./include)
 include_directories(../packages/GSL/include)
 include_directories(./../slycore/include)
 include_directories(./../slywin32/include)
+include_directories(../packages/glm)
+ 
  
 link_directories(./../slycore/lib)
 link_directories(./../slywin32/lib)

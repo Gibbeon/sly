@@ -6,19 +6,18 @@
 
 namespace sly {
     namespace gfx {
-        class IVertexBuffer : public IResource {
+        class IVertexBuffer : public virtual IResource {
         public:
             virtual ~IVertexBuffer() {}
             virtual retval<void> init(const VertexBufferDesc& desc) = 0;
 
-            virtual size_t getBufferLocation() = 0;
-            virtual size_t getSizeInBytes() = 0;
-            virtual size_t getStrideInBytes() = 0;
+            virtual size_t address() = 0;
+            virtual size_t size() = 0;
+            virtual size_t stride() = 0;
         
         protected:
             IVertexBuffer() {}
         };
-
     }
 }
 

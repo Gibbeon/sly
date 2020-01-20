@@ -1,6 +1,7 @@
 
 #include "sly.h"
 #include "sly/engine.h"
+//#include "sly/scene.h"
 #include "sly/d3d12.h"
 
 //#include "sly/d3d12/gfx/commandlist.h"
@@ -59,38 +60,40 @@ struct Vertex
     sly::gfx::color_t color;
 };
 
-    struct ShaderDesc2 : public virtual sly::ISerializable {
-    public:
-        std::string data;
-        std::string entry;
-        std::string target;
-        std::string name;
- 
-        sly::retval<void> serialize(sly::ISerializer& archive) {
-            //archive.begin(*this, name);
-            
-            archive.write("name", name);
-            archive.write("type", getType().name());
-            archive.write("data", data);
-            archive.write("entryPoint", entry);
-            archive.write("target", target);
+struct ShaderDesc2 : public virtual sly::ISerializable {
+public:
+    SLY_TYPEINFO;
 
-            //archive.end();
+    std::string data;
+    std::string entry;
+    std::string target;
+    std::string name;
+    std::string type;
 
-            return sly::success();
-        }
+    sly::retval<void> serialize(sly::ISerializer& archive) {
+        //archive.begin(*this, name);
+        
+        archive.write("name", name);
+        archive.write("type", getType().name());
+        archive.write("data", data);
+        archive.write("entryPoint", entry);
+        archive.write("target", target);
 
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            //auto record = archive.read();
-            archive.read("data", data);
-            archive.read("entryPoint", entry);
-            archive.read("target", target);
-            archive.read("name", name);
-            //archive >> std::make_tuple("name", name);
+        //archive.end();
 
-            return sly::success();
-        }
-    };
+        return sly::success();
+    }
+
+    sly::retval<void> deserialize(sly::IDeserializer& archive) {
+        archive.read("type", type);
+        archive.read("data", data);
+        archive.read("entryPoint", entry);
+        archive.read("target", target);
+        archive.read("name", name);
+
+        return sly::success();
+    }
+};
 
 void configureRenderInterfaces(const sly::Engine& engine) {
     #ifdef _WIN32
@@ -131,26 +134,7 @@ int main()
 
     engine->resources().mount("slyedit/data");
 
-    auto res = engine->resources().find("shaders");
-    
-    auto val1 = res[0].create<ShaderDesc2>();
-    auto val2 = res[1].create<ShaderDesc2>();
-
-    auto ms = sly::MemoryStream(1024);
-    auto ser = sly::JsonSerializer(ms);
-    ser.write(*(val1.result()));
-    ser.close();
-
-
-    ms.setPosition(0);
-    
-    auto deser = sly::JsonDeserializer(ms);
-    ShaderDesc2 out;
-    deser.read(out);
-
-    //res->release();
-
-    //sly::Scene* scene = &sly::Scene(*engine, context);
+    //sly::Scene* scene = &sly::Scene(*engine);
     //scene->load("scene");
 
     auto list = device->createCommandList();
@@ -207,27 +191,28 @@ int main()
     );
 
     sly::gfx::Viewport viewport(0, 0, 1024, 768);
-    sly::rect_t scissorRect(0, 0, 1024, 768);
+    sly::rect_t<> scissorRect(0, 0, 1024, 768);
     sly::gfx::color_t clearColor(.4f, .4f, .4f, 0.5f);
 
     std::vector<sly::gfx::ICommandList*> lists;
     lists.push_back(list);
 
     while(true) {
-        list->begin();
-        list->setRenderState(rsState);
-        list->setRenderTarget(context->getDrawBuffer());
-        list->clear(clearColor);
-        list->setViewport(viewport);    
-        list->setScissorRect(scissorRect);
-        list->setVertexBuffer(vertexBuffer);
-        list->draw(3, 1, 0, 0);
-        list->end(); 
+        //scene->update();
+        //list->begin();
+        //list->setRenderState(rsState);
+        //list->setRenderTarget(context->getDrawBuffer());
+        //list->clear(clearColor);
+        //list->setViewport(viewport);    
+        //list->setScissorRect(scissorRect);
+        //list->setVertexBuffer(vertexBuffer);
+        //list->draw(3, 1, 0, 0);
+        //list->end(); 
 
-        context->processMessages();     
+        context->update();     
 
-        context->getDirectCommandQueue().executeCommandList(lists);
-        context->getDirectCommandQueue().flush();
+        context->commandQueue().executeCommandLists(lists);
+        context->commandQueue().flush();
 
         context->present();
     }

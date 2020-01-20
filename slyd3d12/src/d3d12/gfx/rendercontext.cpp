@@ -79,7 +79,7 @@ sly::retval<void> D3D12RenderContextImpl::release() {
     return success();
 }
 
-void  D3D12RenderContextImpl::processMessages()
+void  D3D12RenderContextImpl::update()
 {
     _window->processMessages();
 }

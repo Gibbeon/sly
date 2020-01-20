@@ -25,10 +25,10 @@ namespace sly {
 
             // buffers
             virtual void swapBuffers();            
-            IRenderTarget& getDrawBuffer() { return _renderTargets[_drawFrameIndex]; }       
+            IRenderTarget& currentRenderTarget() const { return _renderTargets[_drawFrameIndex]; }       
 
             // draw
-            virtual ICommandQueue& getDirectCommandQueue() { return _directCommandQueue; }
+            virtual ICommandQueue& commandQueue() { return _directCommandQueue; }
 
             virtual IDevice& getDevice() { return *_device; } 
             //ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }

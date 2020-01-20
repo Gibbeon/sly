@@ -6,20 +6,105 @@
 #include "sly/gfx/enums.h"
 
 namespace sly {
-    namespace gfx {
-                      
+    namespace gfx {       
+
+        struct BlendTargetDesc {
+            bool_t          BlendEnable;
+            bool_t          LogicOpEnable;
+            eBlendType      SrcBlend;
+            eBlendType      DestBlend;
+            eBlendOperation BlendOp;
+            eBlendType      SrcBlendAlpha;
+            eBlendType      DestBlendAlpha;
+            eBlendOperation BlendOpAlpha;
+            eBlendLogicOperation LogicOp;
+            u8              RenderTargetWriteMask;
+        };
+
+        struct BlendStateDesc {
+        public:        
+            bool_t AlphaToCoverageEnable;
+            bool_t IndependentBlendEnable;
+            BlendTargetDesc targets[8];
+        };
+
+        struct StreamOutputDeclarationDesc {
+        public:
+            uint_t Stream;
+            std::string SemanticName;
+            uint_t SemanticIndex;
+            byte_t StartComponent;
+            byte_t ComponentCount;
+            byte_t OutputSlot;
+        };
+
+        struct RenderStateStreamOutput {
+            std::vector<StreamOutputDeclarationDesc> streamOutputDeclaration;
+            std::vector<uint_t> bufferStrides;
+        };
+
+        struct DepthStencilOperationDesc
+        {
+            eStencilOperation StencilFailOp;
+            eStencilOperation StencilDepthFailOp;
+            eStencilOperation StencilPassOp;
+            eCompareFunction StencilFunc;
+        };
+
+        struct RasterizerStateDesc {
+            ePolygonFillMode    FillMode;
+            ePolygonCullMode    CullMode;
+            bool_t              FrontCounterClockwise;
+            int_t               DepthBias;
+            real_t              DepthBiasClamp;
+            real_t              SlopeScaledDepthBias;
+            bool_t              DepthClipEnable;
+            bool_t              MultisampleEnable;
+            bool_t              AntialiasedLineEnable;
+            uint_t              ForcedSampleCount;
+            bool_t              ConservativeRaster;
+        };
+
+        struct DepthStencilDesc
+        {
+            bool_t DepthEnable;
+            eDepthWriteMask DepthWriteMask;
+            eCompareFunction DepthFunc;
+            bool_t StencilEnable;
+            uint8_t StencilReadMask;
+            uint8_t StencilWriteMask;
+            DepthStencilOperationDesc FrontFace;
+            DepthStencilOperationDesc BackFace;
+        };
+
+        
+
         struct RenderStateDesc {
         public:
             IShader* vsShader;
             IShader* psShader;
-            size_t sampleMax;
-            ePrimativeType primitiveType;
-            size_t numberRenderTargets;
-            size_t sampleDesc;
-            eDataFormat rtvFormats[8];
-            //List<InputElementDesc> inputElements;
-            size_t inputElementCount;
-            InputElementDesc inputElements[8];
+            IShader* dsShader;
+            IShader* hsShader;
+            IShader* gsShader;
+
+            BlendStateDesc              blend;
+            RenderStateStreamOutput     streamOutput;
+            RasterizerStateDesc         rasterizerState;
+            DepthStencilDesc            depthStencilState;
+            eIndexBufferStripCutValue   indexBufferStripCutValue;
+
+            size_t                      sampleMax;
+            ePrimativeType              primitiveType;
+            size_t                      sampleDesc;
+            size_t                      numberRenderTargets;
+            eDataFormat                 rtvFormats[8];
+            eDataFormat                 dsvFormat;
+
+            std::vector<InputElementDesc> inputElements;
+
+            //UINT                               NodeMask; // used for multi adapter
+            //D3D12_CACHED_PIPELINE_STATE        CachedPSO; //blob for caching on adapter
+            //D3D12_PIPELINE_STATE_FLAGS         Flags; // used only for WARP 
         };
 
         
@@ -31,8 +116,7 @@ namespace sly {
                 _descriptor.sampleMax = UINT_MAX;
                 _descriptor.primitiveType = ePrimativeType_Default;
                 _descriptor.numberRenderTargets = 1;
-                _descriptor.sampleDesc = 1;
-                _descriptor.inputElementCount = 0;                
+                _descriptor.sampleDesc = 1;            
                 memset(_descriptor.rtvFormats, eDataFormat_Default, 8);
             }
 
@@ -47,7 +131,7 @@ namespace sly {
             RenderStateBuilder& setRTVFormats(size_t index, eDataFormat format) { _descriptor.rtvFormats[index] = format; return * this;}
             RenderStateBuilder& setSampleDesc(size_t desc) {_descriptor.sampleDesc = desc; return * this;}
 
-            RenderStateBuilder& addInputElementDesriptor(const InputElementDesc& desc) { _descriptor.inputElements[_descriptor.inputElementCount] = desc; _descriptor.inputElementCount++;  return * this; }
+            RenderStateBuilder& addInputElementDesriptor(const InputElementDesc& desc) { _descriptor.inputElements.push_back(desc); return * this; }
 
         };
     }

@@ -22,23 +22,23 @@ namespace sly {
 
             // window control
             virtual void setVisible(bool_t show);
-            virtual void processMessages();
+            virtual void update();
 
             // buffers
             virtual void present();            
-            IRenderTarget& getDrawBuffer() { return _renderTargets[_drawFrameIndex]; }       
-
+            virtual IRenderTarget& currentRenderTarget() { return _renderTargets[_drawFrameIndex]; } 
+             
             // draw
-            virtual ICommandQueue& getDirectCommandQueue() { return _directCommandQueue; }
+            virtual ICommandQueue& commandQueue() { return _directCommandQueue; }
 
-            virtual IDevice& getDevice() { return *_device; } 
-            ID3D12Device& getID3D12Device()   { return _device->getID3D12Device(); }
+            virtual IDevice& getDevice()        { return *_device; } 
+            ID3D12Device& getID3D12Device()     { return _device->getID3D12Device(); }
 
  
         private:
-            IDXGISwapChain3* _swapChain;
-            D3D12DeviceImpl* _device;     
-            D3D12RenderTargetImpl _renderTargets[2];
+            IDXGISwapChain3*    _swapChain;
+            D3D12DeviceImpl*    _device;     
+            D3D12RenderTargetImpl   _renderTargets[2];
             size_t _drawFrameIndex;
             
             sly::os::Win32Window* _window;

@@ -19,12 +19,12 @@ sly::retval<void> D3D12RenderStateImpl::init(const RenderStateDesc& desc) {
     D3D12SerializeRootSignature(&rootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
     getID3D12Device().CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature));
    
-    for(size_t i = 0; i < desc.inputElementCount; i++) {
+    for(size_t i = 0; i < desc.inputElements.size(); i++) {
         _inputElement[i] = D3D12_INPUT_ELEMENT_DESC_CAST(desc.inputElements[i]);
     }
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC pso = {};
-    pso.InputLayout = { _inputElement, (UINT)desc.inputElementCount };
+    pso.InputLayout = { _inputElement, (UINT)desc.inputElements.size() };
     pso.pRootSignature = _rootSignature;
 
     D3D12ShaderImpl* vsd3dShader = reinterpret_cast<D3D12ShaderImpl*>(desc.vsShader);

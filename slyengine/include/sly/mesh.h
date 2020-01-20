@@ -9,6 +9,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+/*
 namespace sly {
     namespace gfx {
 
@@ -125,4 +126,4 @@ namespace sly {
             std::vector<std::function<void(Scene&, real_t)>> _updateChain;
         };
     }
-}
+}*/

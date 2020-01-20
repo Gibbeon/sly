@@ -32,7 +32,7 @@ sly::retval<void> D3D12CommandQueueImpl::release() {
     return success();
 }
     
-void D3D12CommandQueueImpl::executeCommandList(gsl::span<const ICommandList* const> lists) {
+void D3D12CommandQueueImpl::executeCommandLists(gsl::span<const ICommandList* const> lists) {
     std::vector<ID3D12CommandList*> newV( lists.size() );
     auto lambda = [](const sly::gfx::ICommandList *const data) { return std::addressof(static_cast<D3D12CommandListImpl*>(const_cast<ICommandList*>(data))->getID3D12CommandList()); };
 

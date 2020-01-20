@@ -15,3 +15,4 @@
 #include "sly/gfx/enums.h"
 #include "sly/gfx/viewport.h"
 #include "sly/gfx/color.h"
+#include "sly/gfx/material.h"
