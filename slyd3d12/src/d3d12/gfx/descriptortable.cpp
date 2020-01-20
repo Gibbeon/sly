@@ -11,7 +11,7 @@ D3D12DescriptorTableImpl::D3D12DescriptorTableImpl(D3D12DeviceImpl& device) :
 {
 }
 
-void D3D12DescriptorTableImpl::init(D3D12DescriptorTableDesc& desc) {
+sly::retval<void> D3D12DescriptorTableImpl::init(const D3D12DescriptorTableDesc& desc) {
     _capacity = desc.capacity;
     _used.assign(_capacity, false);
 
@@ -22,6 +22,12 @@ void D3D12DescriptorTableImpl::init(D3D12DescriptorTableDesc& desc) {
     rtvHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     getID3D12Device().CreateDescriptorHeap(&rtvHeap, IID_ID3D12DescriptorHeap, reinterpret_cast<vptr_t*>(&_descHeap)); // creates a new heap just for this swap chain
     _descHeapStride = getID3D12Device().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); // gets the stride of each descriptor
+    return success();
+}
+
+sly::retval<void> D3D12DescriptorTableImpl::release() {
+    _descHeap->Release();
+    return success();
 }
 
 void D3D12DescriptorTableImpl::alloc(size_t* indicies, size_t count) {

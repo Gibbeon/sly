@@ -1,14 +1,14 @@
 #include "sly/global.h"
 #include "sly/macOS/os/os.h"
-#include "sly/metal/gfx/renderer.h"
 
 using namespace sly;
 
-os::IOperatingSystem* sly::os::_GetOperatingSystem() {
-    static sly::os::MacOSOperatingSystem instance;
+os::ISystemInterface* sly::os::GetSystemInterface() {
+    static sly::os::MacOSSystemInterface instance;
     static bool_t initialized = false;
+    
     if(!initialized) {
-        instance.init(sly::os::OperatingSystemBuilder().build());
+        instance.init(sly::os::SystemInterfaceBuilder().build());
         initialized = true;
     }
 

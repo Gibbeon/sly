@@ -3,6 +3,6 @@
 #include "sly/gl4.h"
 #include "sly/gl4/rendersystem.h"
 
-extern "C" __declspec( dllexport ) void _CreateRendererImpl(sly::gfx::IRenderer** ppRenderer, sly::gfx::Renderer& desc) {
-    (*ppRenderer) = new sly::gfx::GL4RendererImpl();
+extern "C" __declspec( dllexport ) void _CreateRenderInterface(sly::gfx::IRenderInterface** ppRenderer, sly::gfx::Renderer& desc) {
+    (*ppRenderer) = new sly::gfx::GL4RenderInterface();
 };

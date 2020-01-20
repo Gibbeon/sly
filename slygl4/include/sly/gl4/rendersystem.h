@@ -6,9 +6,9 @@
 
 namespace sly {
     namespace gfx {
-        class GL4RendererImpl : public IRenderer {
+        class GL4RenderInterface : public IRenderInterface {
         public:
-            GL4RendererImpl();
+            GL4RenderInterface();
 
             virtual retval<std::unique_ptr<IDevice>> createDevice(Device& desc);
         private:

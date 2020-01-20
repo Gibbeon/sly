@@ -18,7 +18,9 @@ namespace sly {
         class D3D12FenceImpl {
         public:
             D3D12FenceImpl(D3D12DeviceImpl& device);
-            virtual void init(FenceDesc& desc);
+            
+            virtual retval<void> init(const FenceDesc& desc = FenceBuilder().build());
+            virtual retval<void> release();
             
             template <class TSignalClass>  
             void waitFor(TSignalClass& object, size_t timeout = INFINITE);
@@ -33,6 +35,7 @@ namespace sly {
             HANDLE _fenceEvent;
             ID3D12Fence* _fence;
             uint_t _fenceValue;
+            bool_t _initialized;
         };
 
         template <class TSignalClass>            

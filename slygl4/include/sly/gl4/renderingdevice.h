@@ -12,7 +12,7 @@ namespace sly {
 
 			virtual void init(Window& desc) {}
 
-            virtual void processMessages() { _window->ProcessMessages(); }
+            virtual void update() { _window->ProcessMessages(); }
             virtual void swapBuffers();
 
             virtual void setVisible(bool_t show) { _window->Show(); }

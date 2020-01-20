@@ -8,7 +8,8 @@ namespace sly {
     public:
         virtual ~IInputStream() {}
 
-        virtual size_t read(vptr_t buffer, size_t size) = 0;
+                
+        virtual retval<size_t>  read(vptr_t buffer, size_t size) = 0;
 
     protected:
         IInputStream() : IStream() {}

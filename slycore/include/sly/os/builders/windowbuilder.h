@@ -11,7 +11,7 @@ namespace sly {
         {
             uint_t width;
             uint_t height;
-            std::string pszTitle;
+            std::string title;
         };
 
         class WindowBuilder : public sly::Builder<WindowDesc>
@@ -20,9 +20,9 @@ namespace sly {
             WindowBuilder() : Builder() {}
             virtual ~WindowBuilder() {}
 
-            WindowBuilder& setTitle(std::string name) { desc_.pszTitle = name; return * this ;}
-            WindowBuilder& setWidth(uint_t width) {desc_.width = width; return * this;}
-            WindowBuilder& setHeight(uint_t height) {desc_.height = height; return * this;}
+            WindowBuilder& setTitle(gsl::czstring<> name) { _descriptor.title = name; return * this ;}
+            WindowBuilder& setWidth(uint_t width) {_descriptor.width = width; return * this;}
+            WindowBuilder& setHeight(uint_t height) {_descriptor.height = height; return * this;}
         };
     }
 }

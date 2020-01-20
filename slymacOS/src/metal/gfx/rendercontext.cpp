@@ -64,7 +64,7 @@ void METALRenderContextImpl::init(RenderContextDesc& desc) {
     }    */
 }
 
-void  METALRenderContextImpl::processMessages()
+void  METALRenderContextImpl::update()
 {
     _window->processMessages();
 }
@@ -74,7 +74,7 @@ void METALRenderContextImpl::setVisible(bool_t show)
     //_window->show();
 }
 
-void METALRenderContextImpl::swapBuffers()
+void METALRenderContextImpl::present()
 {
     _window->onRender();
 

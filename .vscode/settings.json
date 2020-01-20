@@ -113,7 +113,12 @@
         "xxatomic": "cpp",
         "multi_span": "cpp",
         "string_span": "cpp",
-        "__functional_base_03": "cpp"
+        "__functional_base_03": "cpp",
+        "gsl_algorithm": "cpp",
+        "gsl_byte": "cpp",
+        "gsl_util": "cpp",
+        "filesystem": "cpp",
+        "resumable": "cpp"
     },
     "search.exclude": {
         "**/3rdparty": true

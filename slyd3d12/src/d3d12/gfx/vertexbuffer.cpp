@@ -6,7 +6,8 @@
 using namespace sly::gfx;
 
 D3D12VertexBufferImpl::D3D12VertexBufferImpl(D3D12DeviceImpl& device) :
-    _device(&device) 
+    _device(&device),
+    _initialized(false)
 {
 
 }
@@ -18,7 +19,8 @@ IDevice& D3D12VertexBufferImpl::getDevice()
     return *_device; 
 } 
 
-void D3D12VertexBufferImpl::init(VertexBufferDesc& desc) {
+sly::retval<void> D3D12VertexBufferImpl::init(const VertexBufferDesc& desc) {
+    Expects(!_initialized);
 
     getID3D12Device().CreateCommittedResource(
          &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -30,6 +32,17 @@ void D3D12VertexBufferImpl::init(VertexBufferDesc& desc) {
          reinterpret_cast<vptr_t*>(&_resource));
     
     write(desc.data, desc.sizeInBytes, desc.stride);
+    
+    _initialized = true;
+    return success();
+}
+
+sly::retval<void> D3D12VertexBufferImpl::release() {
+    if(_initialized) {
+        _resource->Release();
+        _initialized = false;
+    }
+    return success();
 }
 
 void D3D12VertexBufferImpl::write(vptr_t data, size_t size, size_t stride) {

@@ -9,6 +9,7 @@
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 
 #define THROW(message)  throw Exception(__LINE__, __FILE__, message)
+#define IF_EXISTS(option, value) ((option.has_value()) ? (value) : (void(0)))
 
 
 template< unsigned int value_ > struct static_log2

@@ -7,25 +7,25 @@
 #include "sly/d3d12/gfx/shader.h"
 #include "sly/d3d12/gfx/renderstate.h"
 #include "sly/d3d12/gfx/texture.h"
+#include "sly/os/window.h"
 #include "sly/win32/os/window.h"
 
 using namespace sly::gfx;
 
-D3D12DeviceImpl::D3D12DeviceImpl(IRenderer& system) : _system(&system)
+D3D12DeviceImpl::D3D12DeviceImpl(IRenderInterface& system) : _system(&system), _initialized(false)
 {
 
 }
 
-void D3D12DeviceImpl::init(DeviceDesc& desc) 
+sly::retval<void> D3D12DeviceImpl::init(const DeviceDesc& desc) 
 {
     UINT dxgiFactoryFlags = 0;
 
     #ifdef _DEBUG
     {
-        ID3D12Debug* debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<vptr_t*>(&debugController))))
+        if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<vptr_t*>(&_debugController))))
         {
-            debugController->EnableDebugLayer();
+            _debugController->EnableDebugLayer();
 
             // Enable additional debug layers.
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
@@ -45,47 +45,68 @@ void D3D12DeviceImpl::init(DeviceDesc& desc)
             break;
         }
     }
+
+    _initialized = true;
+    return success();
 }
 
-void D3D12DeviceImpl::createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc) {
-    sly::os::WindowBuilder builder;
-    builder.setHeight(768).setWidth(1024).setTitle("Hi!");
 
-
-    auto window = new sly::os::Win32Window();
-    window->init(builder.build());
-
-    
-    (*ppWindow) = new D3D12RenderContextImpl(*this, *window);
-    (*ppWindow)->init(desc);
+sly::retval<void> D3D12DeviceImpl::release() {
+    if(_initialized) {
+        _factory->Release();
+        _device->Release();
+        _debugController->Release();
+        _initialized = false;
+    }
+    return success();
 }
 
-void D3D12DeviceImpl::createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc) {
+sly::retval<std::unique_ptr<IRenderContext>> D3D12DeviceImpl::createRenderContext(sly::os::IWindow& window, const RenderContextDesc& desc) {
+
+    auto context = std::make_unique<D3D12RenderContextImpl>(*this, static_cast<sly::os::Win32Window&>(window));
+    context->init(desc);
+
+    return std::move(context);
+}
+
+sly::retval<std::unique_ptr<ICommandList>> D3D12DeviceImpl::createCommandList(const CommandListDesc& desc) {
+    auto list = std::make_unique<D3D12CommandListImpl>(*this);
+    list->init(desc);
+
+    return std::move(list);
+}
+
+
+void D3D12DeviceImpl::createCommandQueue(ICommandQueue** queue, const CommandQueueDesc& desc) {
     (*queue) = new D3D12CommandQueueImpl(*this);
     (*queue)->init(desc);
 }
 
-void D3D12DeviceImpl::createCommandList(ICommandList** ppWindow, CommandListDesc& desc) {
-    (*ppWindow) = new D3D12CommandListImpl(*this);
-    (*ppWindow)->init(desc);
+
+
+sly::retval<std::unique_ptr<IRenderState>> D3D12DeviceImpl::createRenderState(const RenderStateDesc& desc) {
+    auto state = std::make_unique<D3D12RenderStateImpl>(*this);
+    state->init(desc);
+
+    return std::move(state);
 }
 
-void D3D12DeviceImpl::createRenderState(IRenderState** ppWindow, RenderStateDesc& desc) {
-    (*ppWindow) = new D3D12RenderStateImpl(*this);
-    (*ppWindow)->init(desc);
+sly::retval<std::unique_ptr<IShader>> D3D12DeviceImpl::createShader(const ShaderDesc& desc) {
+    auto shader = std::make_unique<D3D12ShaderImpl>(*this);
+    shader->init(desc);
+
+    return std::move(shader);
 }
 
-void D3D12DeviceImpl::createShader(IShader** ppWindow, ShaderDesc& desc) {
-    (*ppWindow) = new D3D12ShaderImpl(*this);
-    (*ppWindow)->init(desc);
-}
+void D3D12DeviceImpl::createTexture(ITexture** ppWindow, const TextureDesc& desc) {}
 
-void D3D12DeviceImpl::createTexture(ITexture** ppWindow, TextureDesc& desc) {}
-void D3D12DeviceImpl::createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc) {
-    (*ppWindow) = new D3D12VertexBufferImpl(*this);
-    (*ppWindow)->init(desc);
+sly::retval<std::unique_ptr<IVertexBuffer>> D3D12DeviceImpl::createVertexBuffer(const VertexBufferDesc& desc) {
+    auto buffer = std::make_unique<D3D12VertexBufferImpl>(*this);
+    buffer->init(desc);
+
+    return std::move(buffer);
 }
-void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc) {}
+void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, const IndexBufferDesc& desc) {}
 
 
 // #include "sly/d3d12/gfx/device.h"

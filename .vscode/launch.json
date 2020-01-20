@@ -13,7 +13,6 @@
             //"stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             //"environment": [],
-            //"externalConsole": false,
             "osx": {
                 "type": "lldb",
                 "program": "${workspaceFolder}/slyedit/bin/slyedit",

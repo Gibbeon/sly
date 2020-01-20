@@ -25,6 +25,8 @@ endif()
 
 include_directories(./include)
 include_directories(../packages/GSL/include)
+include_directories(../packages/json/single_include)
+include_directories(../packages/glm)
 include_directories(../slycore/include)
 
 link_directories(../slycore/lib)

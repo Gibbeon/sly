@@ -6,9 +6,51 @@
 #include "sly/macros.h"
 #include "sly/types.h"
 
+template <class T>
+struct is_unique_ptr : std::false_type
+{};
+
+template <class T, class D>
+struct is_unique_ptr<std::unique_ptr<T, D>> : std::true_type
+{};
+
+template <class T>
+struct unique_ptr_type
+{};
+
+template <class T, class D>
+struct unique_ptr_type<std::unique_ptr<T, D>>
+{    
+    using type = std::unique_ptr<T, D>;
+    using underlying_type = T;
+    using delete_type = D;
+};
+
+template <class T>
+struct is_shared_ptr : std::false_type
+{};
+
+template <class T>
+struct is_shared_ptr<std::shared_ptr<T>> : std::true_type
+{};
+
+template <typename T>
+struct is_indexable  : std::false_type
+{ };
+
+template <typename T, typename A>
+struct is_indexable<std::vector<T, A>> : std::true_type
+{ };
+
+template <typename T, std::size_t N>
+struct is_indexable<std::array<T, N>> : std::true_type
+{ };
+
+
 namespace sly {
     typedef s32 StatusCode;
     typedef const char* ErrorMessage;
+
 
     static const StatusCode SUCCESS = (StatusCode)0;
     static const StatusCode UNKNOWN = (StatusCode)-1;
@@ -19,6 +61,13 @@ namespace sly {
     template <typename T>
     struct retval<T, std::false_type> { 
     public:
+    
+        using type = T;
+        using type_pointer = typename std::remove_reference<T>::type*;
+        using type_reference = typename std::remove_reference<T>::type&;
+    
+        //using unique_ptr = typename is_unique_ptr<T>::value;
+
         retval(T value) : 
             _value(std::move(value)), 
             _statusCode(SUCCESS) {}
@@ -29,13 +78,45 @@ namespace sly {
         retval& operator =(const retval&) = delete;
         ~retval() = default;
 
-        T& result() { return _value; }        
-        operator T&() { return result(); }
+        template <class V, typename Y = T, typename std::enable_if_t<is_unique_ptr<Y>::value || is_shared_ptr<Y>::value>* = nullptr>
+        V to() const {
+            return reinterpret_cast<V>(_value.get());
+        }
 
-        template <typename V>
-        operator V() { return reinterpret_cast<V>(_value); }
+        template <class V, typename Y = T, typename std::enable_if_t<!is_unique_ptr<Y>::value && !is_shared_ptr<Y>::value>* = nullptr>
+        V to() const {            
+            return reinterpret_cast<V>(_value);
+        }
 
-        T& operator->() { return result(); }
+        template<typename V>
+        operator V() const {
+            return to<V>();
+        }
+
+        type_reference result() { return _value; }  
+        
+        template <typename Y = T, typename std::enable_if_t<is_unique_ptr<Y>::value || is_shared_ptr<Y>::value>* = nullptr>  
+        operator type_reference() const { 
+            return *_value.get(); 
+        }  
+
+        template <typename Y = T, typename std::enable_if_t<is_unique_ptr<Y>::value || is_shared_ptr<Y>::value>* = nullptr>  
+        operator typename unique_ptr_type<Y>::underlying_type&() { 
+            return *_value.get(); 
+        }  
+
+        template <typename Y = T, typename std::enable_if_t<!is_unique_ptr<Y>::value && !is_shared_ptr<Y>::value>* = nullptr>      
+        operator type_reference() { return result(); }   
+
+        template <typename Y = T, typename std::enable_if_t<std::is_pointer<Y>::value || is_unique_ptr<Y>::value || is_shared_ptr<Y>::value>* = nullptr>
+        type_reference operator->() { return _value; }
+
+        template <typename Y = T, typename std::enable_if_t<!std::is_pointer<Y>::value && !is_unique_ptr<Y>::value && !is_shared_ptr<Y>::value>* = nullptr>
+        type_pointer operator->() { return &_value; }
+
+        //template <typename N, typename Y = T, typename std::enable_if_t<std::is_pointer<Y>::value || is_unique_ptr<Y>::value || is_shared_ptr<Y>::value || is_indexable<Y>::value>* = nullptr>
+        template<typename N>
+        auto operator[](const N index) { return _value[index]; }
 
         StatusCode statusCode() const { return _statusCode; }
 
@@ -50,7 +131,9 @@ namespace sly {
     template <typename T>
     struct retval<T, std::true_type> { 
     public:
-        using TPointer = typename std::remove_reference<T>::type*;
+        
+        using type = T;
+        using type_pointer = typename std::remove_reference<T>::type*;
 
         retval(T value) : 
             _value(std::addressof(value)), 
@@ -64,8 +147,8 @@ namespace sly {
 
         T result() { return *_value; }        
         operator T() { return result(); }
-        TPointer operator->() { return _value; }
-
+        type_pointer operator->() { return _value; }
+           
         StatusCode statusCode() const { return _statusCode; }
 
         bool_t succeeded() { return statusCode() == SUCCESS; }
@@ -73,7 +156,7 @@ namespace sly {
 
     private:
         StatusCode _statusCode;
-        TPointer _value;
+        type_pointer _value;
     };
 
 
@@ -111,6 +194,7 @@ namespace sly {
     }
 
     retval<void> success();
+    retval<void> failed();
 
     template <typename T>
     retval<T> failed(StatusCode statusCode, ErrorMessage message) {

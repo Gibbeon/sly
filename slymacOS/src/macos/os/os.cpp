@@ -6,26 +6,26 @@
 using namespace sly::os;
 
 
-MacOSOperatingSystem::MacOSOperatingSystem() {
+MacOSSystemInterface::MacOSSystemInterface() {
 
 }
 
 
-sly::retval<void> MacOSOperatingSystem::init(OperatingSystemDesc&) {
-    static sly::gfx::METALRendererImpl instance;
-    sly::gfx::GraphicSystem::addRenderer(&instance);
+sly::retval<void> MacOSSystemInterface::init(SystemInterfaceDesc&) {
+    static sly::gfx::METALRenderInterface instance;
+    sly::gfx::RenderSystem::addRenderer(&instance);
 
     return success();
 }   
 
 /*
 void _RegisterMetalPlugin(sly::IPluginManager& manager) {
-    static sly::gfx::METALRendererImpl instance;
+    static sly::gfx::METALRenderInterface instance;
 
-    manager.set<sly::gfx::IRenderer>(instance);
+    manager.set<sly::gfx::IRenderInterface>(instance);
 }
 
-size_t MacOSOperatingSystem::getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max) {
+size_t MacOSSystemInterface::getPluginRegistrationFunctions(pfRegisterPlugins* ppfRegisterPlugins, size_t max) {
     /* HMODULE h = LoadLibraryA("c:/dev/sly/slyMETAL/bin/slyMETAL.dll");
     
     auto pf = GetProcAddress(h, "_RegisterPlugins");

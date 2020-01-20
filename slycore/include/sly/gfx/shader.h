@@ -8,11 +8,12 @@
 
 namespace sly {
     namespace gfx {
-
+        class IManagedResource;
         class IShader : public IManagedResource {
         public:
             virtual ~IShader() {}
-            virtual void init(ShaderDesc& desc) = 0;
+            
+            virtual retval<void> init(const ShaderDesc& desc = ShaderBuilder().build()) = 0;
 
         protected:
             IShader() {}

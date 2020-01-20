@@ -3,7 +3,7 @@
 
 using namespace sly::gfx;
 
-sly::retval<std::unique_ptr<IDevice>> METALRendererImpl::createDevice(DeviceDesc& desc)
+sly::retval<std::unique_ptr<IDevice>> METALRenderInterface::createDevice(DeviceDesc& desc)
 {
     std::unique_ptr<IDevice> result = std::make_unique<METALDeviceImpl>(*this);
     result->init(desc);

@@ -5,14 +5,29 @@
 
 using namespace sly::gfx;
 
-D3D12CommandListImpl::D3D12CommandListImpl(D3D12DeviceImpl& device) : _device(&device), _renderState(NULL) {
+D3D12CommandListImpl::D3D12CommandListImpl(D3D12DeviceImpl& device) : _device(device), _renderState(nullptr), _target(nullptr), _initialized( false ) {
 
 }
 
-void D3D12CommandListImpl::init(CommandListDesc& desc) {
+D3D12CommandListImpl::~D3D12CommandListImpl() {
+    Expects(!_initialized);
+}
+
+sly::retval<void> D3D12CommandListImpl::init(const CommandListDesc& desc) {
     getID3D12Device().CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_ID3D12CommandAllocator, reinterpret_cast<vptr_t*>(&_allocator));
     getID3D12Device().CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,_allocator, NULL, IID_ID3D12CommandList, reinterpret_cast<vptr_t*>(&_list));
     _list->Close();
+    _initialized = true;
+    return success();
+}
+
+sly::retval<void> D3D12CommandListImpl::release() {
+    if(_initialized) {
+        _list->Release();
+        _allocator->Release();
+        _initialized = false;
+    }
+    return success();
 }
 
 void D3D12CommandListImpl::begin() {
@@ -50,18 +65,19 @@ void D3D12CommandListImpl::setViewport(Viewport& viewport) {
     _list->RSSetViewports(1, &D3D12_VIEWPORT_CAST(viewport));
 }
 
-void D3D12CommandListImpl::setScissorRect(sly::rect_t rect) {
+void D3D12CommandListImpl::setScissorRect(sly::rect_t<real_t> rect) {
     _list->RSSetScissorRects(1, &D3D12_RECT_CAST(rect));
 }
 
-void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) {    
+void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) { 
+    //get this from the vertex buffers?   
     _list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     D3D12_VERTEX_BUFFER_VIEW view;
 
-    view.BufferLocation = buffer.getBufferLocation();    
-    view.SizeInBytes = (UINT)buffer.getSizeInBytes();    
-    view.StrideInBytes = (UINT)buffer.getStrideInBytes();
+    view.BufferLocation = buffer.address();    
+    view.SizeInBytes = (UINT)buffer.size();    
+    view.StrideInBytes = (UINT)buffer.stride();
 
     _list->IASetVertexBuffers(0, 1, &view);
 }

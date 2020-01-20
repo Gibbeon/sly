@@ -7,16 +7,16 @@ namespace sly {
         
     namespace os {
 
-        struct OperatingSystemDesc 
+        struct SystemInterfaceDesc 
         {
             
         };
 
-        class OperatingSystemBuilder : public sly::Builder<OperatingSystemDesc>
+        class SystemInterfaceBuilder : public sly::Builder<SystemInterfaceDesc>
         {
         public:
-            OperatingSystemBuilder() : Builder() {}
-            virtual ~OperatingSystemBuilder() {}
+            SystemInterfaceBuilder() : Builder() {}
+            virtual ~SystemInterfaceBuilder() {}
         };
     }
 }

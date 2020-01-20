@@ -5,12 +5,11 @@
 namespace sly {
     class IPlugin : public IHasTypeInfo {
     public:
+        SLY_TYPEINFO;
+
         virtual ~IPlugin() {}
 
         virtual std::string getName() = 0;
-
-        virtual retval<void> onLoad() = 0;
-        virtual retval<void> onUnload() = 0;
 
     protected:
         IPlugin() {}

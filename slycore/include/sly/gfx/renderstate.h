@@ -9,7 +9,8 @@ namespace sly {
         class IRenderState {
         public:
             virtual ~IRenderState() {}
-            virtual void init(RenderStateDesc& desc) = 0;
+            virtual retval<void> init(const RenderStateDesc& desc) = 0;
+            virtual retval<void> release() = 0;
         protected:
             IRenderState() {}
         };        

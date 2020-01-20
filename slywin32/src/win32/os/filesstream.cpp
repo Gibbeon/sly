@@ -3,13 +3,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "sly/win32/os/operatingsystem.h"
+#include "sly/win32/os/filestream.h"
 
-#define BUF_SIZE 256
+#define BUF_SIZE (1 << 12);
 
 using namespace sly::os;
 
-sly::retval<void> Win32FileStream::open(const char_t* file) {
+sly::retval<void> Win32FileStream::open(gsl::czstring<> file) {
 
     HANDLE hFile = CreateFile(file, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 
@@ -17,13 +17,14 @@ sly::retval<void> Win32FileStream::open(const char_t* file) {
     GetFileSizeEx(hFile, &lpFileSize);
 
     _size = lpFileSize.QuadPart;
+    _offset = 0;
 
     _handle = CreateFileMapping(
                     hFile,                  // use paging file
                     NULL,                    // default security
                     PAGE_READONLY,          // read/write access
                     0,                       // maximum object size (high-order DWORD)
-                    _size,                // maximum object size (low-order DWORD)
+                    (DWORD)_size,                // maximum object size (low-order DWORD)
                     NULL);                 // name of mapping object
 
     if (_handle == NULL)
@@ -49,20 +50,22 @@ sly::retval<void> Win32FileStream::open(const char_t* file) {
     return success();
 }
 
-size_t Win32FileStream::read(vptr_t buffer, size_t size) {
+sly::retval<size_t> Win32FileStream::read(vptr_t buffer, size_t size) {
     CopyMemory(buffer, (vptr_t)((size_t)_file + _offset), size);
     _offset += size;
     return size;
 }
 
-size_t Win32FileStream::getSize() {
+size_t Win32FileStream::size() const {
     return _size;
 }
 
-void Win32FileStream::close() {
+sly::retval<void> Win32FileStream::close() {
     UnmapViewOfFile(_file);
 
     CloseHandle(_handle);
+
+    return success();
 }
 
 //    auto myfile = std::fstream("file.binary", std::ios::out | std::ios::binary);

@@ -9,15 +9,16 @@ namespace sly {
         class IRenderContext {
         public:
             virtual ~IRenderContext() {}
-            virtual void init(RenderContextDesc& desc) = 0;
+            virtual retval<void> init(const RenderContextDesc& desc) = 0;
+            virtual retval<void> release() = 0;
 
-            virtual void processMessages() = 0;
-            virtual void swapBuffers() = 0;
+            virtual void update() = 0;
+            virtual void present() = 0;
 
             virtual void setVisible(bool_t show) = 0;
 
-            virtual IRenderTarget& getDrawBuffer() = 0;
-            virtual ICommandQueue& getDirectCommandQueue() = 0;
+            virtual IRenderTarget& currentRenderTarget() = 0;
+            virtual ICommandQueue& commandQueue() = 0;
 
         protected:
             IRenderContext() {}

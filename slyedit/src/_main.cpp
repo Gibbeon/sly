@@ -1,3 +1,134 @@
+//#include <io.h>
+//#include <fcntl.h>
+//#include <iostream>
+//#include <cstdio>
+namespace sly {
+
+/*
+    typedef enum {
+        eMountType_Unused = 0,
+        eMountType_Directory
+    } eMountType;
+
+    class ResourceManager {
+    public:
+        const static size_t MAX_MOUNT = 16;
+
+        ResourceManager() {
+            memset(_records, 0, sizeof(Record));
+        }
+
+        s32     mount(eMountType type, String moniker) {
+            s32 index = getFirstFree();
+            if(index >= 0) {
+                _records[index].type = type;
+                _records[index].handle = (vptr_t)moniker.c_str();
+            }
+
+            return index;
+        }
+
+        void    unmount(u32 slot) {
+            _records[slot].type = eMountType_Unused;
+        }
+
+        void    getStream(s32 slot, sly::IInputStream** stream, String moniker) {
+            switch(_records[slot].type) {
+                case eMountType_Directory:
+                    sly::Engine::OS().FileSystem().open(stream, moniker.c_str());
+                    break;
+            }            
+        }
+
+        sly::ResourceReader getResource(s32 slot, String moniker) {
+            switch(_records[slot].type) {
+                case eMountType_Directory:
+                    IInputStream* stream;
+                    getStream(slot, &stream, moniker + ".json");
+                    return sly::ResourceReader(new JSONDeserializer(stream));
+                    break;
+            }            
+        }
+
+    private:
+
+        s32 getFirstFree() {
+            for(size_t i = 0; i < MAX_MOUNT; i++) {
+                if(_records[i].type == eMountType_Unused)
+                    return i;
+            }
+            return -1;
+        }
+
+        typedef struct {
+            eMountType type;
+            vptr_t handle;
+        } Record;
+
+        Record _records[MAX_MOUNT];
+    };
+
+    class ResourceReader { // IReader
+    public:
+        ResourceReader(IDeserializer* deserializer): 
+            _deserializer(deserializer)
+        {
+
+        };
+
+        template<typename T>
+        T read() {
+            return _deserializer->read<T>();            
+        }
+
+    private:
+        IDeserializer* _deserializer;
+    };
+
+    /*
+        {
+
+    */
+
+    //sly::gfx::Viewport viewport(0, 0, 1024, 768);
+    //sly::rect_t scissorRect(0, 0, 1024, 768);
+    //sly::gfx::color_t clearColor(.4f, .4f, .4f, 1.0f);
+
+    class Scene {
+
+    };
+}
+
+    //int slot = sly::Engine::Resources()->mount(sly::eMountType_Directory, "./data");
+    
+    //sly::ResourceReader reader;
+    //sly::Engine::Resources()->getResource(slot, &reader, "object");
+
+    //sly::Scene scene = rdr->read<sly::Scene>();
+
+    //scene->render(renderContext);
+
+    //sly::Engine::Resources()->unmount(slot);
+
+
+// how to do a debug console with windows
+    /*
+    if (AllocConsole()) {
+        int fout = 0;
+        _sopen_s(&fout, "CONOUT$", _O_WRONLY, _SH_DENYNO, _S_IWRITE);
+        char *hello = "Hello world!\n";
+        _write(fout, hello, strlen (hello));
+
+        LPSTR goodbye = "Goodbye, cruel world!\n";
+        DWORD length = strlen(goodbye);
+        DWORD written;
+        WriteConsole((HANDLE)_get_osfhandle(fout), goodbye, length, &written, NULL);
+
+        _close(fout);
+        //ReadConsole(GetStdHandle(STD_INPUT_HANDLE), &c, 1, &n, 0);
+    }*/
+
+
 /*#include <windows.h>
 #include "sly.h"
 
@@ -139,7 +270,7 @@ int main()
 
     // choosing between multiple render systems?
     sly::gfx::RendererBuilder rsBuilder;
-    sly::gfx::IRenderer* renderSystem = nullptr;
+    sly::gfx::IRenderInterface* renderSystem = nullptr;
     sly::Engine::createRenderer(&renderSystem);//, rsBuilder.build());
 
     // create a device

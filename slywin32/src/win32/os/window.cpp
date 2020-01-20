@@ -2,11 +2,29 @@
 
 using namespace sly::os;
 
-sly::retval<void> Win32Window::init(WindowDesc& desc)
+Win32Window::Win32Window(Win32WindowSystem& parent) : 
+    _parent(parent),
+    _initialized(false) {
+
+}
+
+sly::retval<void> Win32Window::release() {
+    if(_initialized) {
+        setVisible(false);
+        DestroyWindow(_hWND);
+        _hWND = nullptr;
+        _parent.release(*this);
+        _initialized = false;
+    }
+    
+    return success();
+}
+
+sly::retval<void> Win32Window::init(const WindowDesc& desc)
 {
-    m_width = desc.width;
-    m_height = desc.height;
-    m_title = desc.pszTitle;
+    _width = desc.width;
+    _height = desc.height;
+    _title = desc.title;
 
     HINSTANCE hInstance= GetModuleHandle(NULL);
     // Initialize the window class.
@@ -19,14 +37,30 @@ sly::retval<void> Win32Window::init(WindowDesc& desc)
     windowClass.lpszClassName =  "Win32Window";
     RegisterClassEx(&windowClass);
 
-    ::RECT windowRect = { 0, 0, static_cast<LONG>(m_width), static_cast<LONG>(m_height) };
-    AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
+    ::RECT windowRect = { 0, 0, static_cast<LONG>(_width), static_cast<LONG>(_height) };
+    AdjustWindowRect(&windowRect, WS_OVERLAPPED, FALSE);
     
+    /*
+    _In_ DWORD dwExStyle,
+    _In_opt_ LPCWSTR lpClassName,
+    _In_opt_ LPCWSTR lpWindowName,
+    _In_ DWORD dwStyle,
+    _In_ int X,
+    _In_ int Y,
+    _In_ int nWidth,
+    _In_ int nHeight,
+    _In_opt_ HWND hWndParent,
+    _In_opt_ HMENU hMenu,
+    _In_opt_ HINSTANCE hInstance,
+    _In_opt_ LPVOID lpParam);
+    */
+
     // Create the window and store a handle to it.
-    this->setHwnd(CreateWindow(
+    this->setHwnd(CreateWindowEx(
+        WS_EX_TRANSPARENT,
         windowClass.lpszClassName,
         getTitle().c_str(),
-        WS_OVERLAPPEDWINDOW,
+        WS_OVERLAPPED,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
         windowRect.right - windowRect.left,
@@ -36,7 +70,9 @@ sly::retval<void> Win32Window::init(WindowDesc& desc)
         hInstance,
         this));
 
-    ShowWindow(m_hWND, SW_SHOWDEFAULT);
+    //ShowWindow(_hWND, SW_SHOWDEFAULT);
+
+    _initialized = true;
 
     return success();
 }
@@ -61,10 +97,6 @@ bool_t Win32Window::processMessages()
     return static_cast<char>(msg.wParam);
 }
 
-void Win32Window::onRender()
-{
-
-}
 // Main message handler for the sample.
 LRESULT CALLBACK Win32Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

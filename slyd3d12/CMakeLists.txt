@@ -27,6 +27,8 @@ include_directories(./include)
 include_directories(../packages/GSL/include)
 include_directories(./../slycore/include)
 include_directories(./../slywin32/include)
+include_directories(../packages/glm)
+ 
  
 link_directories(./../slycore/lib)
 link_directories(./../slywin32/lib)
@@ -34,7 +36,7 @@ link_directories(./../slywin32/lib)
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
 find_library(SLYCORE_LIB slycore PATHS ./../slycore/lib)
 find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)

@@ -5,30 +5,35 @@
 
 namespace sly {
     namespace gfx {
-
         class D3D12DeviceImpl : public IDevice {
         public:
-            D3D12DeviceImpl(IRenderer& system);
-            virtual void init(DeviceDesc& desc);
+            D3D12DeviceImpl(IRenderInterface& system);
+            virtual retval<void> init(const DeviceDesc& desc = DeviceBuilder().build());
+            virtual retval<void> release();
             
-            virtual void createRenderContext(IRenderContext** ppWindow, RenderContextDesc& desc);
-            virtual void createCommandQueue(ICommandQueue** queue, CommandQueueDesc& desc);
-            virtual void createCommandList(ICommandList** ppWindow, CommandListDesc& desc);
-            virtual void createRenderState(IRenderState** ppWindow, RenderStateDesc& desc);
-            virtual void createShader(IShader** ppWindow, ShaderDesc& desc);
-            virtual void createTexture(ITexture** ppWindow, TextureDesc& desc);
-            virtual void createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc);
-            virtual void createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc);
+            virtual retval<std::unique_ptr<IRenderContext>> createRenderContext(os::IWindow& window, const RenderContextDesc& desc = RenderContextBuilder().build());
+            virtual retval<std::unique_ptr<ICommandList>> createCommandList(const CommandListDesc& desc = CommandListBuilder().build());
+            virtual retval<std::unique_ptr<IShader>> createShader(const ShaderDesc& desc = ShaderBuilder().build());
+            virtual retval<std::unique_ptr<IVertexBuffer>> createVertexBuffer(const VertexBufferDesc& desc = VertexBufferBuilder().build());
+            virtual retval<std::unique_ptr<IRenderState>> createRenderState(const RenderStateDesc& desc = RenderStateBuilder().build());
+
+            //virtual void createRenderContext(IRenderContext** ppWindow, const RenderContextDesc& desc);
+            virtual void createCommandQueue(ICommandQueue** queue, const CommandQueueDesc& desc);
+            //virtual void createRenderState(IRenderState** ppWindow, const RenderStateDesc& desc);
+            virtual void createTexture(ITexture** ppWindow, const TextureDesc& desc);
+            virtual void createIndexBuffer(IIndexBufer** ppWindow, const IndexBufferDesc& desc);
  
             IDXGIAdapter1& getIDXGIAdapter1()   { return *_adapter; }
             IDXGIFactory4& getIDXGIFactory4()   { return *_factory; }
             ID3D12Device& getID3D12Device()   { return *_device; }
 
         private:
-            IRenderer* _system;
-            IDXGIFactory4*  _factory;
-            IDXGIAdapter1*  _adapter;
-            ID3D12Device*   _device;
+            IRenderInterface*   _system;
+            gsl::owner<IDXGIFactory4*>      _factory;
+            gsl::owner<IDXGIAdapter1*>      _adapter;
+            gsl::owner<ID3D12Device*>       _device;
+            gsl::owner<ID3D12Debug*>        _debugController;
+            bool_t              _initialized;
         };
     }
 }

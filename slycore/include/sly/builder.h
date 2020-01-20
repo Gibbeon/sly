@@ -8,22 +8,22 @@ namespace sly {
     class Builder {
     public:
         virtual ~Builder() {}
-        virtual retval<TType&> build();
+        virtual const TType& build();
 
         virtual void init(const TType& initial) {
-            desc_ = initial;
+            _descriptor = initial;
         }
 
     protected:        
-        Builder()  {}
-        Builder(TType initial) : desc_(initial) {}
-        Builder(TType& initial) : desc_(initial) {}
+        Builder() {}
+        Builder(TType initial) : _descriptor(initial) {}
+        Builder(TType& initial) : _descriptor(initial) {}
         
-        TType desc_;
+        TType _descriptor;
     };
 
     template <typename TType>
-    retval<TType&> Builder<TType>::build() { 
-        return reference(desc_); 
+    const TType& Builder<TType>::build() { 
+        return reference(_descriptor); 
     }
 }

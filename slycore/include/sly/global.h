@@ -2,6 +2,12 @@
 #include <gsl/gsl>
 #include <stdio.h>
 #include <memory.h>
+#include <optional>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 
 #include "sly/macros.h"
 #include "sly/types.h"

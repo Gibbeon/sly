@@ -17,7 +17,7 @@ namespace sly {
             ResourceBuilder() : Builder() {}        
             virtual ~ResourceBuilder() {}
             
-            ResourceBuilder& setSizeInBytes(size_t size) { desc_.sizeInBytes = size; return * this; }
+            ResourceBuilder& setSizeInBytes(size_t size) { _descriptor.sizeInBytes = size; return * this; }
         };
     }
 }

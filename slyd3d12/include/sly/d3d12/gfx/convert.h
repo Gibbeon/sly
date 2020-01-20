@@ -30,17 +30,17 @@ namespace sly {
         };
 
         struct D3D12_RECT_CAST : public D3D12_RECT {
-            D3D12_RECT_CAST(rect_t src) {
-                this->left = (LONG)src.left;
-                this->top = (LONG)src.top;
-                this->right = (LONG)src.right;
-                this->bottom = (LONG)src.bottom;
+            D3D12_RECT_CAST(rect_t<real_t> src) {
+                this->left = (LONG)src.left();
+                this->top = (LONG)src.top();
+                this->right = (LONG)src.right();
+                this->bottom = (LONG)src.bottom();
             }
         };
 
         struct D3D12_INPUT_ELEMENT_DESC_CAST : public D3D12_INPUT_ELEMENT_DESC {
-            D3D12_INPUT_ELEMENT_DESC_CAST(InputElementDesc& src) {
-                this->SemanticName = src.semanticName;
+            D3D12_INPUT_ELEMENT_DESC_CAST(const InputElementDesc& src) {
+                this->SemanticName = src.semanticName.c_str();
                 this->SemanticIndex = 0;
                 this->InstanceDataStepRate = 0;
                 this->InputSlot = 0;

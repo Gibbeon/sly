@@ -53,12 +53,12 @@ namespace sly {
         //}
     };
 
-    class MacOSOperatingSystem : public IOperatingSystem {
+    class MacOSSystemInterface : public ISystemInterface {
     public:
-                MacOSOperatingSystem();
-        virtual ~MacOSOperatingSystem() {}
+                MacOSSystemInterface();
+        virtual ~MacOSSystemInterface() {}
 
-        virtual retval<void> init(OperatingSystemDesc&);
+        virtual retval<void> init(SystemInterfaceDesc&);
         
         virtual retval<vptr_t> loadLibrary(std::string) { return failed<vptr_t>(); }
         virtual retval<vptr_t> getProcAddress(std::string, vptr_t handle = nullptr) { return failed<vptr_t>(); }
