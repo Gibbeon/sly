@@ -3,7 +3,6 @@
 #include "sly/engine.h"
 //#include "sly/scene.h"
 #include "sly/d3d12.h"
-
 //#include "sly/d3d12/gfx/commandlist.h"
 #include "sly/io/memorystream.h"
 #include "sly/runtime/serialization/json/jsonserializer.h"

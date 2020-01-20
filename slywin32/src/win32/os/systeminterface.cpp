@@ -14,6 +14,8 @@ Win32SystemInterface::~Win32SystemInterface() {
 }
 
 sly::retval<void> Win32SystemInterface::init() {
+    _console.init();
+
     static os::Win32FileSystem filesystem(_kernel);
     if(filesystem.init().failed()) {
         throw;
@@ -32,6 +34,9 @@ sly::retval<void> Win32SystemInterface::init() {
 }
 
 sly::retval<void> Win32SystemInterface::release() {
+    _windows->release();
+    _filesystem->release();
+    _console.release();
     return success();
 }
 
@@ -63,6 +68,10 @@ IFileSystem& Win32SystemInterface::filesystem() const {
 IWindowSystem& Win32SystemInterface::windows() const {
     Expects(_windows);
     return *_windows;
+}
+
+sly::Win32Console& Win32SystemInterface::console() {
+    return _console;
 }
 
 

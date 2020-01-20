@@ -10,6 +10,7 @@
 #include "sly/os/operatingsystem.h"
 #include "sly/win32/os/filesystem.h"
 #include "sly/win32/os/windowsystem.h"
+#include "sly/win32/os/console.h"
 
 namespace sly { 
     class Kernel;
@@ -27,13 +28,15 @@ namespace sly {
 
             virtual IFileSystem& filesystem() const;
             virtual IWindowSystem& windows() const;
+            virtual Win32Console& console();
 
         protected:
 
         private:
-            Kernel& _kernel;
-            Win32FileSystem* _filesystem;
-            Win32WindowSystem* _windows;
+            Kernel&             _kernel;
+            Win32FileSystem*    _filesystem;
+            Win32WindowSystem*  _windows;
+            Win32Console        _console;
         };
     }
 }

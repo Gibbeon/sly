@@ -83,8 +83,8 @@ retval<void> Engine::setupControllers() {
     }
 
     _gameCtrl.init([&](){      
-        std::cout << "_gameCtrl" << std::flush;
-        printf("test2");
+        std::cout << "_gameCtrl" << std::endl;
+        printf("test2\n");
         /*_signals    [eEngineState_StartFrame].emit(SIGNAL_START);
         _controllers[eEngineState_StartFrame].wait();
 
