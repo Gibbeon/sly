@@ -24,6 +24,7 @@ endif()
 include_directories(./include)
 include_directories(../packages/GSL/include)
 include_directories(../packages/glm)
+include_directories(../packages/date/include)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "sly/global.h"
 #include "sly/errors.h"
 #include "sly/runtime/typeinfo.h"
 
@@ -120,7 +119,7 @@ namespace sly {
 
             static retval<const TypeInfo&> getType();
 
-            static retval<const char_t* const> toString(T value);                
+            static retval<const char_t*> toString(T value);                
             static retval<const T> parse(const char_t* name);                                                              
 
             template<size_t N, size_t NSize>
@@ -165,7 +164,7 @@ namespace sly {
     }
     
     template<typename T>
-    retval<const char_t* const> Enum<T>::toString(T value)              
+    retval<const char_t*> Enum<T>::toString(T value)              
     {                                                                  
         for (size_t index = 0; index < count(); ++index) {             
             if (values()[index] == value)                             
@@ -174,7 +173,7 @@ namespace sly {
 
         static const StatusCode SLY_NOTFOUND = 0x02;                        
                                                                     
-        return failed<const char_t* const>( (StatusCode)SLY_NOTFOUND, "The value could not be parsed into an Enum name" );                                                   
+        return failed<const char_t*>( (StatusCode)SLY_NOTFOUND, "The value could not be parsed into an Enum name" );                                                   
     }                                                                  
                 
     template<typename T>                                                          

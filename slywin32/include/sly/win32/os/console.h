@@ -70,6 +70,32 @@ namespace sly {
                 std::wcerr.clear();
                 std::cerr.clear();
 
+                CONSOLE_FONT_INFOEX info = {0};
+                info.cbSize       = sizeof(info);
+                info.dwFontSize.Y = 14; // leave X as zero
+                info.FontWeight   = FW_NORMAL;
+                wcscpy_s(info.FaceName, L"Courier New");
+                SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &info);
+
+                RECT rectClient, rectWindow;
+                GetClientRect(GetConsoleWindow(), &rectClient);
+                GetWindowRect(GetConsoleWindow(), &rectWindow);
+
+                int posx, posy;
+                posx = GetSystemMetrics(SM_CXSCREEN) - 1024,
+                posy = GetSystemMetrics(SM_CYSCREEN) - 256,
+                
+                MoveWindow(GetConsoleWindow(), posx, posy, 1024, 256, TRUE);
+                
+                AllowSetForegroundWindow(ASFW_ANY);
+                SetWindowPos(GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+
+                DWORD dwMode = 0;
+                
+                GetConsoleMode(GetConsoleWindow(), &dwMode);
+                SetConsoleMode(GetConsoleWindow(), dwMode & ~(ENABLE_WRAP_AT_EOL_OUTPUT | DISABLE_NEWLINE_AUTO_RETURN | ENABLE_VIRTUAL_TERMINAL_PROCESSING));   
+
                 return sly::success();
             }
             return sly::failed();

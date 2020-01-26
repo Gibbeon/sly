@@ -110,6 +110,8 @@ int main()
 {   
     sly::Engine* engine = &sly::Engine();
 
+    S_LOG_VERBOSE("Hi");
+
     // load configuration, plugins, etc
     Ensures(engine->init().succeeded());
 

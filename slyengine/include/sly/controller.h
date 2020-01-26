@@ -18,6 +18,8 @@ namespace sly {
     class Controller {
     public:
         Controller();
+        Controller(gsl::czstring<> name);
+
         retval<void> init(          std::function<void()>&& runFn, 
                                     bool_t loop = TRUE);
 
@@ -43,10 +45,13 @@ namespace sly {
         bool_t                          _isLoop;
         eControllerState                _state;
         std::thread                     _thread;
-        Semaphore                       _semaphore;
         std::function<void()>           _command;
         SignalReceiver                  _receiver;
         Signal                          _signal;
+        gsl::czstring<>                 _name;
+
+        Semaphore                       _running;
+        Semaphore                       _idle;
     };
 }
 

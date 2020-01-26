@@ -1,4 +1,7 @@
 
+
+#include "sly/defines.h"
+
 #include <gsl/gsl>
 #include <stdio.h>
 #include <memory.h>
@@ -14,3 +17,5 @@
 #include "sly/retval.h"
 #include "sly/errors.h"
 #include "sly/enum.h"
+
+#include "sly/debug/logger.h"

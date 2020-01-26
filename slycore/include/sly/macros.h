@@ -32,3 +32,16 @@ template <unsigned c, int k = 8>
 struct f : f<((c & 1) ? 0xedb88320 : 0) ^ (c >> 1), k - 1> {};
 template <unsigned c> struct f<c, 0>{enum {value = c};};
 
+#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+
+
+
+#define LOG_VERBOSE(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Verbose, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+#define LOG_DEBUG(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Debug, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+#define LOG_WARN(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Warning, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+#define LOG_ERROR(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Error, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+
+#define S_LOG_VERBOSE(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Verbose, __FILENAME__ ,  STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+#define S_LOG_DEBUG(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Debug, __FILENAME__ ,  STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+#define S_LOG_WARN(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Warning, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+#define S_LOG_ERROR(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Error, __FILENAME__ ,  STRINGIFY(__LINE__), fmt, __VA_ARGS__)
