@@ -1,4 +1,10 @@
 #include "sly/global.h"
+#include "sly/util/thread.h"
+
+thread_local std::string sly::Thread::_name = "";
+s32 sly::Thread::_count = 0;
+
+
 /* #include "sly/engine.h"
 #include "sly/mem/memorymanager.h"
 

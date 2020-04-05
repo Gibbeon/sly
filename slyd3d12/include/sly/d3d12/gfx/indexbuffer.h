@@ -9,7 +9,7 @@ namespace sly {
         class D3D12IndexBufferImpl : public IIndexBuffer {
         public:
             D3D12IndexBufferImpl(D3D12DeviceImpl& device);
-            virtual void init(IndexBufferDesc& desc);
+            virtual void init(BufferDesc& desc);
 
             virtual IDevice& getDevice() { return *_device; } 
                 

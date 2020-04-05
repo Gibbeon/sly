@@ -19,7 +19,7 @@ IDevice& D3D12VertexBufferImpl::getDevice()
     return *_device; 
 } 
 
-sly::retval<void> D3D12VertexBufferImpl::init(const VertexBufferDesc& desc) {
+sly::retval<void> D3D12VertexBufferImpl::init(const BufferDesc& desc) {
     Expects(!_initialized);
 
     getID3D12Device().CreateCommittedResource(
@@ -31,7 +31,7 @@ sly::retval<void> D3D12VertexBufferImpl::init(const VertexBufferDesc& desc) {
          IID_ID3D12Resource, 
          reinterpret_cast<vptr_t*>(&_resource));
     
-    write(desc.data, desc.sizeInBytes, desc.stride);
+    write(desc.data.get() , desc.sizeInBytes, desc.stride);
     
     _initialized = true;
     return success();

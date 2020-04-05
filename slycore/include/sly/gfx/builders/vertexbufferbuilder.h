@@ -8,27 +8,59 @@
 
 namespace sly {
     namespace gfx {
-        struct VertexBufferDesc : public ResourceDesc {
+        ENUM_DECL(eBufferType,
+            eBufferType_Vertex,
+            eBufferType_Index
+        );
+
+        struct BufferDesc : public ResourceDesc {
         public:
-            size_t count;
+            eBufferType type;
+
+            
+
+        };
+
+        class BufferBuilder : public Builder<BufferDesc> {
+        public:
+            BufferBuilder() : Builder() {}        
+            virtual ~BufferBuilder() {}
+
+             BufferBuilder& setType(eBufferType type) { 
+                _descriptor.type = type;
+                return *this; 
+            }
+
+            BufferBuilder& setData(vptr_t data, size_t sizeInBytes, size_t stride) { 
+                _descriptor.data.reset((uint_t*)data); 
+                _descriptor.stride = stride;  
+                _descriptor.sizeInBytes = sizeInBytes; 
+                return *this; 
+            }
+        };
+        
+        /*struct VertexBufferDesc : public BufferDesc {
+        public:
+
         };
 
 
-        class VertexBufferBuilder : public Builder<VertexBufferDesc> {
+        //class VertexBufferBuilder : public Builder<VertexBufferDesc> {
         public:
             VertexBufferBuilder() : Builder() {
                 _descriptor.count = 0;
+                _descriptor.type = eBufferType_Vertex;
             }            
             virtual ~VertexBufferBuilder() {}
 
             VertexBufferBuilder& setData(vptr_t data, size_t count, size_t stride) { 
-                _descriptor.data = data; 
+                _descriptor.data.reset((uint_t*)data); 
                 _descriptor.count = count; 
-                _descriptor.stride = stride;  
-                _descriptor.sizeInBytes = count * stride; 
+                _descriptor.stride = (size_t)stride;  
+                _descriptor.sizeInBytes = (size_t)count * stride; 
                 return * this; 
             }
-        };
+        };*/
     }
 }
 

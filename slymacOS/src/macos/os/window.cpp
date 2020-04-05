@@ -24,14 +24,14 @@ class MtlView : public ns::Object
         }
     };
 
-@interface WindowViewController : NSViewController<MTKViewDelegate> {
+@interface WindowViewTask : NSViewTask<MTKViewDelegate> {
     @public void (*m_render)(const sly::os::MacOSWindow&);
     @public const sly::os::MacOSWindow* m_window;
 }
 
 @end
 
-@implementation WindowViewController
+@implementation WindowViewTask
 -(void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
 
@@ -70,9 +70,9 @@ sly::retval<void> MacOSWindow::init(WindowDesc& desc)
         backing:NSBackingStoreBuffered
         defer:NO];
     window.title = [[NSProcessInfo processInfo] processName];
-    WindowViewController* viewController = [WindowViewController new];
-    viewController->m_render = onRender;
-    viewController->m_window = this;
+    WindowViewTask* viewTask = [WindowViewTask new];
+    viewTask->m_render = onRender;
+    viewTask->m_window = this;
 
     // IDevice
     g_device = mtlpp::Device::CreateSystemDefaultDevice();
@@ -80,7 +80,7 @@ sly::retval<void> MacOSWindow::init(WindowDesc& desc)
     // Hooking Device into RenderContext
     MTKView* view = [[MTKView alloc] initWithFrame:frame];
     view.device = (__bridge id<MTLDevice>)g_device.GetPtr();
-    view.delegate = viewController;
+    view.delegate = viewTask;
     view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
     [window.contentView addSubview:view];

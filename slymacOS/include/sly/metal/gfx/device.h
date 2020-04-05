@@ -17,8 +17,8 @@ namespace sly {
             virtual void createRenderState(IRenderState** ppWindow, RenderStateDesc& desc);
             virtual void createShader(IShader** ppWindow, ShaderDesc& desc);
             virtual void createTexture(ITexture** ppWindow, TextureDesc& desc);
-            virtual void createVertexBuffer(IVertexBuffer** ppWindow, VertexBufferDesc& desc);
-            virtual void createIndexBuffer(IIndexBufer** ppWindow, IndexBufferDesc& desc);
+            virtual void createVertexBuffer(IVertexBuffer** ppWindow, BufferDesc& desc);
+            virtual void createIndexBuffer(IIndexBufer** ppWindow, BufferDesc& desc);
  
             //IDXGIAdapter1& getIDXGIAdapter1()   { return *_adapter; }
             //IDXGIFactory4& getIDXGIFactory4()   { return *_factory; }

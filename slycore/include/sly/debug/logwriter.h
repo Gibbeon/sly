@@ -18,21 +18,23 @@ namespace sly {
         void init(IOutputStream* stream) {
             _stream = std::unique_ptr<sly::IOutputStream>(stream);
         }
-        void write(std::string message) {            
-            static std::mutex mutex;
-            std::unique_lock lock(mutex);
-            
-            _messages.push_back(message);
-            if(!_async) {
-                flush();
-            }
+        void write(std::string message) {  
+           // printf("locking %i\n", std::this_thread::get_id());
+            std::lock_guard  lock(_mutex);            
+            //printf("proceeding with %i\n", std::this_thread::get_id());
+            _stream->write((vptr_t)message.c_str(), message.length());
+            //_messages.push_back(message);
+        
+            //if(!_async) {
+            //    flush();
+            //}
+           // printf("unlocking %i\n", std::this_thread::get_id());
         }
         
         void flush() {            
-            static std::mutex mutex;
             if(_messages.size() > 0) {
-                std::unique_lock lock(mutex);
-                for(auto msg : _messages) {
+                //std::lock_guard lock(_mutex);
+                for(auto& msg : _messages) {
                     if(msg.length() > 2048) {
                         printf("WTF");
                     }
@@ -54,6 +56,7 @@ namespace sly {
             }
         }
 
+        std::mutex _mutex;
         std::thread _thread;        
         std::unique_ptr<IOutputStream>  _stream;
         std::vector<std::string>        _messages; 

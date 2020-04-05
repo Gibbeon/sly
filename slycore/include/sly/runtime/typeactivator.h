@@ -8,7 +8,7 @@
 
 namespace sly {
 
-    class TypeActivator {
+    /*class TypeActivator {
     public:
         template<typename TInterface, typename TClass>
         void assign() {
@@ -69,4 +69,5 @@ namespace sly {
         //std::map< type_id, std::function<vptr_t(vptr_t)> > _map;
         std::unordered_map< type_id, TypeInfo > _map;
     };
+    */
 }

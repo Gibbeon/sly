@@ -1,31 +1,34 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include "sly/global.h"
 
 namespace sly {
-    class IHeap;
-    class IActivator {
-    public:
-        virtual ~IActivator() {}           
-        virtual vptr_t create(IHeap& heap) = 0;
-    
-    protected:
-        IActivator() {}
-    };
 
-    class Activator : public IActivator {
+    class Activator {
     public:
-        Activator(std::function<vptr_t(IHeap&)> ctor);
+        Activator() {}
+        ~Activator() {}
+
+        std::shared_ptr<ISerializable> create(gsl::czstring<> name) {
+            auto fn = _map[name];
+            auto value = fn();
+            ISerializable* convert = reinterpret_cast<ISerializable*>(value);
+
+            std::shared_ptr<ISerializable> result;
+            result.reset((ISerializable*)value);
+            return result;
+        }
 
         template<typename TType>
-        Activator(std::function<TType*(IHeap&)> ctor);
+        retval<void> assign(gsl::czstring<> name, std::function<TType*()> fn) {
+            _map.insert( std::make_pair( name, std::bind( fn ) ));
+            //auto kvp = _map.insert_or_assign(name, fn);
+            return success();
+        }
 
-        template<typename TType>
-        TType* create(IHeap& heap);
-
-        vptr_t create(IHeap& heap);
     protected:
-        std::function<vptr_t(IHeap&)> _ctor;
+        std::map<std::string, std::function<ISerializable*()>> _map;
     };
 }

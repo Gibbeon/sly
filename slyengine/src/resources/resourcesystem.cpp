@@ -53,7 +53,7 @@ retval<void> ResourceSystem::unmount(gsl::czstring<> moniker) {
 
 retval<std::vector<Resource>> ResourceSystem::find(gsl::czstring<> moniker) {
     for(auto repo : _repositories) {
-        for(auto value : repo->resources()) {
+        for(auto& value : repo->resources()) {
             if(value.moniker == moniker) {
                 for(auto loader: _loaders) {
                     if(loader->supports(value)) {

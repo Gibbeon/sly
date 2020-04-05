@@ -22,17 +22,17 @@ namespace sly {
         virtual retval<std::vector<Resource>> load(IResourceRepository& repo, ResourceHandle& handle) {
             auto stream = repo.getStream(handle);
             auto& value = *(stream.result());
-            auto derserializer = JsonDeserializer(value);
+            auto derserializer = JsonDeserializer(value, _engine.activator());
             
             auto result = std::vector<Resource>();
             result.reserve(derserializer.size());
 
             if(derserializer.size() > 1) {
-                for(auto elem : derserializer.data()) {                    
-                   result.push_back(Resource(std::make_shared<JsonDeserializer>(elem)));
+                for(auto& elem : derserializer.data()) {                    
+                   result.push_back(Resource(std::make_shared<JsonDeserializer>(elem, _engine.activator())));
                 }
             } else {
-                result.push_back(Resource(std::make_shared<JsonDeserializer>(derserializer.data())));
+                result.push_back(Resource(std::make_shared<JsonDeserializer>(derserializer.data(), _engine.activator())));
             }
 
             return result;           

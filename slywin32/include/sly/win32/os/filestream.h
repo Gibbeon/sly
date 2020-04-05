@@ -26,7 +26,7 @@ namespace os {
     class Win32FileStream : public IFileStream {
     public:
                 Win32FileStream() : IFileStream() {}
-        virtual ~Win32FileStream() {}
+        virtual ~Win32FileStream() { close(); }
 
         virtual retval<void> open(gsl::czstring<> file);
 

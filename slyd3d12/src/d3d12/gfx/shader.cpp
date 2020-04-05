@@ -13,7 +13,7 @@ D3D12ShaderImpl::~D3D12ShaderImpl() {
 sly::retval<void> D3D12ShaderImpl::init(const ShaderDesc& desc) {
     ID3DBlob* errors;
 
-    HRESULT hr = D3DCompile(desc.data, desc.size, nullptr, nullptr, nullptr, desc.entry.c_str(), desc.target.c_str(), 0, 0, &_data, &errors);
+    HRESULT hr = D3DCompile(desc.data.data(), desc.size, nullptr, nullptr, nullptr, desc.entry.c_str(), desc.target.c_str(), 0, 0, &_data, &errors);
 
     if (errors)
     {

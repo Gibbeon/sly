@@ -79,13 +79,15 @@ namespace sly {
 
         
 
-        struct RenderStateDesc {
+        struct RenderStateDesc : public virtual ISerializable {
         public:
+            SLY_TYPEINFO;
+            
             IShader* vsShader;
             IShader* psShader;
             IShader* dsShader;
             IShader* hsShader;
-            IShader* gsShader;
+            IShader* gsShader; 
 
             BlendStateDesc              blend;
             RenderStateStreamOutput     streamOutput;
@@ -100,11 +102,43 @@ namespace sly {
             eDataFormat                 rtvFormats[8];
             eDataFormat                 dsvFormat;
 
-            std::vector<InputElementDesc> inputElements;
+            std::vector<InputElementDesc>   inputElements; 
+            std::vector<ShaderDesc>         shaders;            
 
             //UINT                               NodeMask; // used for multi adapter
             //D3D12_CACHED_PIPELINE_STATE        CachedPSO; //blob for caching on adapter
             //D3D12_PIPELINE_STATE_FLAGS         Flags; // used only for WARP 
+
+                    
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                std::string type_string;
+                archive.read("primitiveType", type_string);
+                ePrimativeType bob;
+
+                primitiveType = sly::Enum<ePrimativeType>::parse(type_string.c_str());
+                auto shaderArray = archive.array("shaders");
+
+                for(size_t i = 0; i < shaderArray->size(); i++) {
+                    gfx::ShaderDesc shader;
+                    shaderArray->read(i, shader);
+                    shaders.push_back(shader);
+                }
+
+                auto elementsArray = archive.array("inputElements");
+
+                for(size_t i = 0; i < elementsArray->size(); i++) {
+                    gfx::InputElementDesc element;
+                    elementsArray->read(i, element);
+                    inputElements.push_back(element);
+                }
+                
+                return sly::success();
+            }
         };
 
         

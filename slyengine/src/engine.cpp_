@@ -1,0 +1,436 @@
+
+
+ ENUM_DECL(eMouseButton, 
+        eMouseButton_Left, 
+        eMouseButton_Center, 
+        eMouseButton_Right, 
+        eMouseButton_Other
+    );
+
+    ENUM_DECL(eControllerButton, 
+        eControllerButton_X, 
+        eControllerButton_Y, 
+        eControllerButton_A, 
+        eControllerButton_B,
+        eControllerButton_R1, 
+        eControllerButton_R2, 
+        eControllerButton_R3, 
+        eControllerButton_L1, 
+        eControllerButton_L2, 
+        eControllerButton_L3, 
+        eControllerButton_Start, 
+        eControllerButton_Select
+    );
+
+    ENUM_DECL(eKeyState, 
+        eKeyState_Up, 
+        eKeyState_Down
+    );
+
+    ENUM_DECL(eKey, 
+        eKey_A, 
+        eKey_B, 
+        eKey_C, 
+        eKey_D
+    );
+
+    ENUM_DECL(eAxis,
+        eAxis_X,
+        eAxis_Y,
+        eAxis_Z
+    );
+
+    class InputState {
+    };
+
+    class KeyboardState : public InputState {
+    public:
+        eKeyState   get(eKey);
+    };
+
+    class MouseState : public InputState {
+    public:
+        eKeyState   get(eMouseButton);        
+        real_t      get(eAxis);
+    };
+
+    class ControllerState : public InputState {
+    public:
+        eKeyState   get(eControllerButton);        
+        real_t      get(eAxis);        
+        real_t      get(eControllerButton, eAxis);
+    };
+
+    template<typename TInputState>
+    class IInputDevice {
+    public:
+        TInputState& read();
+        TInputState& current() const;
+        TInputState& last() const;
+
+    protected:
+    };
+
+    class MouseDevice : IInputDevice<MouseState> {
+    public:
+        MouseState& read();
+        MouseState& current() const;
+        MouseState& last() const;
+
+        real_t x(){
+            return _current.get(eAxis_X);
+        }
+
+        real_t y() {
+            return _current.get(eAxis_Y);
+        }
+
+        real_t z() {
+            return _current.get(eAxis_Z);
+        }
+
+        bool_t justPressed(eMouseButton);
+        bool_t justReleased(eMouseButton); 
+        bool_t isPressed(eMouseButton);
+
+    protected:
+        MouseState _current;
+        MouseState _last;
+    };
+
+    class InputMap {
+        virtual void sendMessages(InputState& state) {
+            for(auto& value : state.changed()) {
+
+            }
+        }
+    };
+    
+    #include <iostream>
+
+#include "sly/engine.h"
+#include "sly/kernel.h"
+
+using namespace sly;
+
+Engine::Engine(Kernel& kernel) :
+    _kernel(kernel) {
+
+}
+
+Engine::~Engine() {
+
+}
+
+retval<void> Engine::init(const EngineDesc& desc) { 
+    resources().init();
+    setupTasks();
+    return success();
+}
+
+retval<void> Engine::release() {
+    return success();
+}
+
+Kernel& Engine::kernel() const {
+    return _kernel;
+}
+
+ResourceSystem& Engine::resources() const {
+    static ResourceSystem instance(*this);
+    return instance;
+}
+
+gsl::span<Task> Engine::controllers() {
+    return gsl::make_span(_controllers, eEngineState_Size);
+}
+
+template<typename... TArgs>
+void waitFor(Task& ctrl, TArgs&... args) {
+    ctrl.wait();
+    waitFor(std::forward<TArgs>(args)...);
+}
+
+template<typename... TArgs>
+void waitFor(TArgs&... args) {
+}
+    
+
+
+retval<void> Engine::setupTasks() {
+    _controllers[eEngineState_NetworkAccept].init("eng::NetworkAccept", [&](){
+//      [network-accept]    update & process message
+    }, FALSE);
+
+    _controllers[eEngineState_InputAccept].init("eng::InputAccept", [&](){
+//      [input-accept]      update & process message
+    }, FALSE);
+
+    _controllers[eEngineState_AI].init("eng::AI", [&](){
+//      [ai system-update]  process commands, send events
+    }, FALSE);
+
+    _controllers[eEngineState_Game].init("eng::Game", [&](){
+//      [game] game logic, send soundfx to mixer, send network events
+//      [animation-collission] update animation states, if an animation causes collisions send events, send soundfx to mixer
+    }, FALSE);
+
+    _controllers[eEngineState_Physics].init("eng::Physics", [&](){
+//      [physics-collission] resolve collissions, send events
+
+    }, FALSE);
+
+    _controllers[eEngineState_NetworkSend].init("eng::NetworkSend", [&](){        
+//      [network-send] send network output
+
+
+    }, FALSE);
+
+    _controllers[eEngineState_DrawFrame].init("eng::DrawFrame", [&](){
+//      [render] pass a camera through the scenes to find out which entities are visible, submit drawables to the frame, lod values, submit frame to be rendered
+//      [sound] pass a camera through the scenes to find out which entities are visible, play sounds?
+        static Signal signal;
+        static bool_t signal_init = false;
+        if(!signal_init) {
+            static std::mutex mutex;
+            std::unique_lock(mutex);
+            if(!signal_init) {
+                signal.connect(_controllers[eEngineState_FrameWait].receiver());
+                signal_init = true;
+            }
+        }
+
+        DrawFrame frame;
+
+        //for(auto scene: _engine.scenes()) {
+            //scene.drawTo(frame);
+        //}
+        
+        signal.emit(eEngineSingal_RenderFrame, frame);
+
+    }, FALSE);
+
+    _controllers[eEngineState_FrameWait].init("gfx::FrameWait", [&](){
+        static Signal signal;
+        static bool_t signal_init = false;
+        
+        Semaphore semaphore;
+        DrawFrame frame;
+
+        if(!signal_init) {
+            static std::mutex mutex;
+            std::unique_lock(mutex);
+            if(!signal_init) {
+                signal.connect(_controllers[eEngineState_LoadResource].receiver());
+                signal.connect(_controllers[eEngineState_AnimationUpdate].receiver());
+                
+                signal_init = true;
+            }
+        }     
+
+        // the reiever has to be able to get the frame... how???   
+
+        DrawFrame frame = receiver().on(eEngineSingal_RenderFrame); 
+        signal.emit(eEngineSingal_RenderFrame, frame);
+
+    }, FALSE);
+
+    _controllers[eEngineState_FrameWait].receiver().init([](SignalReceiver& self, SignalValue value, va_list args) {
+        switch(value) {
+            case SIGNAL_START:
+                self.start();
+                break;
+            case eEngineSingal_RenderFrame:
+                return va_arg(args, DrawFrame);
+            default:
+                break;
+        }
+    });
+
+    _controllers[eEngineState_LoadResource].init("gfx::LoadResource", [&](){        
+//      [resources] load resources, garbage collect unref resources, set entity ready when resource loaded (deferred loading means ready now)
+        static bool_t signal_init = false;
+        
+        Semaphore semaphore;
+        DrawFrame frame;
+
+        if(!signal_init) {
+            static std::mutex mutex;
+            std::unique_lock(mutex);
+            if(!signal_init) {
+                _signalHandler = [&](SignalValue value, va_list args) {
+                    if(value == eEngineSingal_RenderFrame) {                
+                        semaphore.notify();
+                        frame = va_arg(args, DrawFrame);
+                    }            
+                };
+
+                signal_init = true;
+            }
+        }
+        
+        semaphore.wait();
+    }, FALSE);
+
+    _controllers[eEngineState_AnimationUpdate].init("gfx::AnimationUpdate", [&](){
+//      [animation] for entities that are visible update animations, set entity ready when animation done
+        static bool_t signal_init = false;
+        
+        Semaphore semaphore;
+        DrawFrame frame;
+
+        if(!signal_init) {
+            static std::mutex mutex;
+            std::unique_lock(mutex);
+            if(!signal_init) {                
+                signal.connect(_controllers[eEngineState_Render].receiver());
+                _signalHandler = [&](SignalValue value, va_list args) {
+                    if(value == eEngineSingal_RenderFrame) {                
+                        semaphore.notify();
+                        frame = va_arg(args, DrawFrame);
+                    }            
+                };
+
+                signal_init = true;
+            }
+        }
+        
+        semaphore.wait();
+        signal.emit(eEngineSingal_RenderFrame, frame);
+    }, FALSE);
+
+    _controllers[eEngineState_Render].init("gfx::Draw", [&](){
+        static bool_t signal_init = false;
+        DrawFrame frame;
+
+        if(!signal_init) {
+            static std::mutex mutex;
+            std::unique_lock(mutex);
+            if(!signal_init) {
+                _signalHandler = [&](SignalValue value, va_list args) {
+                    if(value == eEngineSingal_RenderFrame) {                
+                        frame = va_arg(args, DrawFrame);
+                    }            
+                };
+
+                signal_init = true;
+            }
+        }
+
+        //frame.sort();
+        _renderSignal.emit(eEngineSingal_RenderFrame, frame.opaque());
+        _renderSignal.emit(eEngineSingal_RenderFrame, frame.alpha());
+
+    }, FALSE);
+
+
+    _controllers[eEngineState_PostProcess].init("gfx::PostProcess", [&](){
+        static bool_t signal_init = false;
+        DrawFrame frame;
+
+        if(!signal_init) {
+            static std::mutex mutex;
+            std::unique_lock(mutex);
+            if(!signal_init) {
+                _signalHandler = [&](SignalValue value, va_list args) {
+                    if(value == eEngineSingal_RenderFrame) {                
+                        frame = va_arg(args, DrawFrame);
+                    }            
+                };
+
+                signal_init = true;
+            }
+        }
+
+        for(auto& effect : frame.effects()) {
+            effect.apply();
+        }
+
+    }, FALSE);
+
+    _controllers[eEngineState_Swap].init("gfx::Swap", [&](){
+        renderContext->present();        
+    }, FALSE);
+
+    for(size_t state = 0; state < eEngineState_Size; ++state) {
+        _signals[state].connect(_controllers[state].receiver());
+    }
+
+    for(auto renderer : _renderThreads) {
+        _renderSignal.connect(renderer.receiver());
+        _renderThreads.init("Render Thread", [&](){      
+            static bool_t signal_init = false;
+            DrawFrame frame;
+
+            if(!signal_init) {
+                static std::mutex mutex;
+                std::unique_lock(mutex);
+                if(!signal_init) {
+                    _signalHandler = [&](SignalValue value, va_list args) {
+                        if(value == eEngineSingal_RenderFrame) {                
+                            frame = va_arg(args, DrawFrame);
+                        }            
+                    };
+
+                    signal_init = true;
+                }
+            }
+        });
+    }
+
+    _gameCtrl.init("GameCtrl", [&](){      
+        LOG_VERBOSE("start game update loop");
+        DrawFrame frame;
+
+        auto handler = [&](SignalValue value, va_list args) {
+                        if(value == eEngineSingal_RenderFrame) {                
+                            frame = va_arg(args, DrawFrame);
+                        }            
+                    };
+
+        // network input & device input
+        _signals    [eEngineState_ProcessInput].emit(SIGNAL_START);
+        waitFor(_controllers[eEngineState_ProcessInput]);
+
+        // ai update
+        // game & animation state update
+        // physics update
+        
+        // send network signals & update drawables
+        _signals    [eEngineState_BuildFrame].emit(SIGNAL_START, &frame);
+        waitFor(_controllers[eEngineState_BuildFrame]);
+
+        //renderCtrl
+        _signals    [eEngineState_Render].emit(SIGNAL_START, frame);
+
+        LOG_VERBOSE("end game update loop");
+    }, TRUE, TRUE);  
+
+    _renderCtrl.init("GfxCtrl", [&](){      
+        _signals    [eEngineState_FrameWait].emit(SIGNAL_START); 
+        waitFor(_controllers[eEngineState_FrameWait]);
+
+        _signals    [eEngineState_LoadResource].emit(SIGNAL_START);  
+        _signals    [eEngineState_AnimationUpdate].emit(SIGNAL_START);    
+
+        waitFor(_controllers[eEngineState_LoadResource], _controllers[eEngineState_AnimationUpdate]);
+    
+        //_signals    [eEngineState_Render].emit(SIGNAL_START);  
+        //waitFor(_controllers[eEngineState_Render]);
+        
+        //_signals    [eEngineState_PostProcess].emit(SIGNAL_START);
+        //waitFor(_controllers[eEngineState_PostProcess]);
+
+        //_signals    [eEngineState_Swap].emit(SIGNAL_START);
+        //waitFor(_controllers[eEngineState_Swap]);
+    }, FALSE, TRUE);
+
+    Signal start;
+
+    start.connect(_gameCtrl.receiver());
+    start.connect(_renderCtrl.receiver());
+
+    start.emit(SIGNAL_START);
+
+    return success();
+}

@@ -9,12 +9,28 @@
 namespace sly {
     namespace gfx {
              
-        struct InputElementDesc {
+        struct InputElementDesc: public virtual ISerializable {
         public:
+            SLY_TYPEINFO;
+            
             std::string semanticName;
             eDataFormat format;
             eDataInputClassification scope;
             size_t offset;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                std::string type_string;
+                archive.read("name", semanticName);
+                archive.read("format", type_string);
+                format = sly::Enum<eDataFormat>::parse(type_string.c_str());                
+                
+                return sly::success();
+            }
         };
         
         class InputElementBuilder : public Builder<InputElementDesc> {

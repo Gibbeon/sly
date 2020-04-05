@@ -9,7 +9,7 @@ namespace sly {
         class IIndexBuffer : public IResource {
         public:
             virtual ~IIndexBuffer() {}            
-            virtual void init(IndexBufferDesc& desc) = 0;
+            virtual void init(BufferDesc& desc) = 0;
         
         protected:
             IIndexBuffer() {}

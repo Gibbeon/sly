@@ -23,9 +23,9 @@ sly::retval<void> D3D12DeviceImpl::init(const DeviceDesc& desc)
 
     #ifdef _DEBUG
     {
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<vptr_t*>(&_debugController))))
+        if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<vptr_t*>(&_debugTask))))
         {
-            _debugController->EnableDebugLayer();
+            _debugTask->EnableDebugLayer();
 
             // Enable additional debug layers.
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
@@ -55,7 +55,7 @@ sly::retval<void> D3D12DeviceImpl::release() {
     if(_initialized) {
         _factory->Release();
         _device->Release();
-        _debugController->Release();
+        _debugTask->Release();
         _initialized = false;
     }
     return success();
@@ -100,13 +100,13 @@ sly::retval<std::unique_ptr<IShader>> D3D12DeviceImpl::createShader(const Shader
 
 void D3D12DeviceImpl::createTexture(ITexture** ppWindow, const TextureDesc& desc) {}
 
-sly::retval<std::unique_ptr<IVertexBuffer>> D3D12DeviceImpl::createVertexBuffer(const VertexBufferDesc& desc) {
+sly::retval<std::unique_ptr<IVertexBuffer>> D3D12DeviceImpl::createVertexBuffer(const BufferDesc& desc) {
     auto buffer = std::make_unique<D3D12VertexBufferImpl>(*this);
     buffer->init(desc);
 
     return std::move(buffer);
 }
-void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, const IndexBufferDesc& desc) {}
+void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, const BufferDesc& desc) {}
 
 
 // #include "sly/d3d12/gfx/device.h"

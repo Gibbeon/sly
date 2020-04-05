@@ -25,10 +25,10 @@ void METALDeviceImpl::init(DeviceDesc& desc)
 
     #ifdef _DEBUG
     {
-        IMETALDebug* debugController;
-        if (SUCCEEDED(METALGetDebugInterface(IID_IMETALDebug, reinterpret_cast<vptr_t*>(&debugController))))
+        IMETALDebug* debugTask;
+        if (SUCCEEDED(METALGetDebugInterface(IID_IMETALDebug, reinterpret_cast<vptr_t*>(&debugTask))))
         {
-            debugController->EnableDebugLayer();
+            debugTask->EnableDebugLayer();
 
             // Enable additional debug layers.
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;

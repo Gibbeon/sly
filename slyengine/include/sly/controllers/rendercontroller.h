@@ -1,19 +1,9 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/kernel.h"
-#include "sly/runtime/activator.h"
-#include "sly/builders/enginebuilder.h"
-#include "sly/resources/resourcesystem.h"
-
-//#include "sly/signal.h"
-//#include "sly/task.h"
-//#include "sly/taskpool.h"
-//#include "sly/drawframe.h"
-
-//#include "sly/scene.h"
-
-
+#include "sly/engine.h"
+#include "sly/controller.h"
+#include "sly/drawframe.h"
 
 
 
@@ -68,56 +58,93 @@
 //              release frame
 
 namespace sly {
-    ENUM_DECL(eEngineState,
-        eEngineState_Input,
-        eEngineState_Update,
-        eEngineState_Notify,
-        eEngineState_Render,
-        eEngineState_Present,
-        eEngineState_Size
-    );
 
-    //class Scene;
-    class InputController;;
-    class RenderController;
-    class Engine {
-    public:        
-        Engine(Kernel& kernel = Kernel::get());
-        virtual ~Engine();
+    class RenderController : public IController {
+    public:
+        RenderController(const Engine& engine) : _engine(engine), _frameIndex(0) {}
+        virtual ~RenderController() {}
+
+        virtual retval<void> execute() {            
+            std::unique_lock lock(_drawMtx);
+            /*swap();
+            current().commit();
+           
+            // only 1 thread at the moment...
+            auto& frame = current().opaque();
+            {
+                _tasks.run([&]() {
+                    auto list = _device.createCommandList();
+
+                    while(!frame.end()) {
+                        auto list = frame.next();
+
+                        for(auto& drawable : list) {
+                            draw(list, drawable);
+                        }
+
+                        if(shouldSubmit(list)) {
+                            submit(list);
+                        }
+                    }
+                    submit(list);                                    
+                });
+            }        */   
+            
+
+           return success();      
+        }
+
+        virtual retval<void> draw(DrawFrame& frame) {
+            std::unique_lock lock(_submitMtx);
+           // next() = frame;
+
+           return success();
+        }
         
-        Engine( Engine const& )              = delete;
-        Engine( Engine && )                  = delete;
-        Engine& operator = ( Engine const& ) = delete;
-        Engine& operator = ( Engine && )     = delete;
+        virtual retval<void> draw(gfx::ICommandList& list, Drawable& drawable) {
+            //drawable.draw(list);          
 
-        virtual retval<void> init(const EngineDesc& desc = EngineBuilder().build());
-        virtual retval<void> release();
+           return success();  
+        }
 
-        virtual Kernel& kernel() const;
-        virtual ResourceSystem& resources() const;
-        //virtual GraphicsSystem& graphics() const;
+        virtual retval<void> submit(gfx::ICommandList& list) {
+           // _queue.executeCommandLists({list});
 
-        virtual InputController&         input() const; 
-        virtual RenderController&        graphics() const;   
-        virtual Activator&               activator() const;
+           return success();
+        }
 
-        retval<void>    update();
-        retval<void>    draw();
-        bool_t          ready();   
+        bool_t shouldSubmit(gfx::ICommandList& list) {
+            // submitting list after every state change
+            return true;
+        }
 
+        DrawFrame& current() {
+            return _frame[_frameIndex];
+        }
+
+        DrawFrame& next() {                  
+            return _frame[1 - _frameIndex];
+        }
+
+        const Engine& engine() {
+            return _engine;
+        }
     protected:
-        virtual retval<void> setupTasks();
-    
-    private:
-        Kernel&                     _kernel;
+        void swap() {
+            std::unique_lock lock(_submitMtx);
+            _frameIndex = 1 - _frameIndex;
+        }
 
-        //Task                        _gameCtrl;
-        //Task                         _renderCtrl;
-        //Semaphore                   isFrameReady; 
-        //Signal                      _gfxsignal;
-        //Signal                      _signals    [eEngineState_Size];
-        //std::vector<Task*>          _stateCtrls [eEngineState_Size];       
-        //Task                        _controllers[eEngineTask_Size];
+        const Engine&           _engine;
+        DrawFrame               _frame[2];
+        size_t                  _frameIndex;
+        //TaskPool                _tasks;
+        std::mutex              _submitMtx;
+        std::mutex              _drawMtx;
+
+        //gfx::IDevice&            _device;
+        //gfx::IRenderContext&     _context;
+        //gfx::ICommandQueue&      _queue;
     };
 }
 

@@ -3,6 +3,7 @@
 using namespace sly;
 
 void SignalReceiver::accept(SignalValue value, va_list args) {
+    Ensures(_handler);
     _handler(*this, value, args);
 }
 

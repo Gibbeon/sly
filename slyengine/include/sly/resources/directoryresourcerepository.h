@@ -57,6 +57,10 @@ namespace sly {
         virtual retval<std::shared_ptr<IInputStream>> getStream(ResourceHandle& handle) {
             auto path = (_basePath +"/" + handle.moniker + handle.extension);
             auto file = _engine.kernel().filesystem().open(path.c_str());
+            if(file.failed()) {
+                return failed<std::shared_ptr<IInputStream>>( (StatusCode)SLY_NOTFOUND, "Could not load file" );
+            }
+
             return file->stream().result();
         }
 

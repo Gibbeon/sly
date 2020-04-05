@@ -4,7 +4,7 @@
 #include "sly/gfx.h"
 #include "sly/spatial.h"
 #include "sly/drawable.h"
-#include "sly/drawgraph.h"
+//#include "sly/drawframe.h"
 #include "sly/camera.h"
 
 namespace sly { 
@@ -35,7 +35,7 @@ namespace sly {
         virtual retval<void> update(Spatial& parent) {
             _global = parent.matrix() * _local.matrix();
 
-            for(auto entity : _children) {
+            for(auto& entity : _children) {
                 entity->update(_global);
             }
             
@@ -43,7 +43,7 @@ namespace sly {
         }
 
         virtual retval<void> draw(Camera& camera
-                        , DrawGraph& drawgraph
+                        //, DrawFrame& drawgraph
                         //, SoundGraph& soundgroup
                         ) {
             
@@ -69,7 +69,7 @@ namespace sly {
                 return _drawable.value();
             }
 
-            return failed();
+            return failed<Drawable&>();
         }
 
     protected:

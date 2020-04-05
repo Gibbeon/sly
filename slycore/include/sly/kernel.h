@@ -23,7 +23,7 @@ namespace sly {
         virtual os::IFileSystem&            filesystem()    const = 0;
         virtual os::IOperatingSystem&       system()        const = 0;
         virtual os::IWindowSystem&          windows()       const = 0;
-        virtual gfx::IRenderSystem&         graphics()      const = 0;
+        virtual gfx::IRenderSystem&         graphics()     const = 0;
         
         //IConfiguration&      config();
         //IProfiler&           profiler();

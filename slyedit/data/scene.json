@@ -28,24 +28,55 @@
     "entities": [
         {
             "name": "name",
-            "type": "SimpleMesh",
+            "type": "sly::SimpleMesh",
             "data":
             {
-                "verticies": {
-                    "ref": "vertex:vertex"
+                "state": {
+                    "primitiveType": "ePrimativeType_Triangle",
+                    "inputElements": 
+                    [
+                        {
+                            "name": "POSITION",
+                            "format": "eDataFormat_R32G32B32_FLOAT"
+                        },
+                        {
+                            "name": "COLOR",
+                            "format": "eDataFormat_R32G32B32A32_FLOAT"
+                        }
+                    ],
+                    "shaders": 
+                    [
+                        {
+                            "type": "eShaderType_Vertex",
+                            "name": "VSMain",
+                            "data": "struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; }; PSInput VSMain(float4 position : POSITION, float4 color : COLOR) {  PSInput result; result.position = position; result.color = color; return result; }",
+                            "entryPoint": "VSMain",
+                            "target": "vs_5_0"
+                        },
+                        {
+                            "type": "eShaderType_Pixel",
+                            "name": "PSMain",
+                            "data": "struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; };  float4 PSMain(PSInput input) : SV_TARGET { return input.color; }",
+                            "entryPoint": "PSMain",
+                            "target": "ps_5_0"
+                        }
+                    ]
                 },
-                "shaders": [
-                    {
-                        "type": "vertex",
-                        "ref": "shaders:VSMain"
-                    },
-                    {
-                        "type": "pixel",
-                        "ref": "shaders:PSMain"
+                "buffers": [
+                {
+                    "name": "data",
+                    "type": "eBufferType_Vertex",                    
+                    "stride": 0,
+                    "sizeInBytes": 256,
+                    "data": 
+                        [
+                            0, 1, 0, 1, 0, 0, 1,                                
+                            0, 2, 0, 2, 0, 0, 2,                                
+                            0, 3, 0, 3, 0, 0, 3
+                        ]
                     }
-                ]
+                ]       
             }
         }
     ]
-
 }

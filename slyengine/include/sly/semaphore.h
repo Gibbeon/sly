@@ -6,34 +6,33 @@
 namespace sly {
     class Semaphore {
     public:
-        Semaphore() : _name("unknown"), _count(0) {
+        Semaphore() :  _count(0) {
 
 
         }
         
-        Semaphore(gsl::czstring<> name) : _name(name), _count(0) {
-
-        }
-
         void notify() {
             std::lock_guard<decltype(_mutex)> lock(_mutex);
             ++_count;
+
+            if(_count > 1) LOG_DEBUG("notify _count on a semaphore was greater than 1. %i", _count);
             
-            //LOG_VERBOSE("%s notify() -- _count %i", _name, _count);
             _condition.notify_one();
+        }
+
+        void notifyOne() {
+            notify();
         }
 
         void wait() {
             std::unique_lock<decltype(_mutex)> lock(_mutex);
-            //LOG_VERBOSE("%s sleep() _count %i", _name, _count);
             while(!_count) { // Handle spurious wake-ups.
-                //LOG_VERBOSE("%s waitFor() -- _count %i", _name, _count);
                 _condition.wait(lock);
-                //LOG_VERBOSE("%s notice() -- _count %i", _name, _count);
+                
+                if(_count) LOG_DEBUG("wait _count on a semaphore was greater than 1. %i", _count);
             }
             
-            --_count;
-            //LOG_VERBOSE("%s wake() _count %i", _name, _count);
+            _count = MAX(0, _count - 1);
         }
 
         bool try_wait() {
@@ -46,7 +45,6 @@ namespace sly {
         }
         
     private:
-        const char* _name;
         std::mutex              _mutex;
         std::condition_variable _condition;
         size_t                  _count;

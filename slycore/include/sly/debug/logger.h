@@ -19,16 +19,22 @@ namespace sly {
     public:
         Logger() {
             if(!_initialized) {
-                LogConfig config;
-                for(auto i = 0; i < eLogType_Count; i++) {
-                    config.configureFormatter(_formatter[i]);
-                    config.configureWriter(_writer[i]);
+                static std::mutex mutex;
+                std::scoped_lock lock(mutex);
+                if(!_initialized) {
+                    LogConfig config;
+                    for(auto i = 0; i < eLogType_Count; i++) {
+                        config.configureFormatter(_formatter[i]);
+                        config.configureWriter(_writer[i]);
+                    }
+                    _initialized = true;
                 }
-                _initialized = true;
             }
         }
 
         virtual void log(eLogType type, eLogLevel level, gsl::czstring<> cls,gsl::czstring<> line,gsl::czstring<> fmt, ...) {
+            static std::mutex mutex;
+            std::scoped_lock lock(mutex);
             va_list args;
             va_start(args, fmt);
             _writer[type].write(_formatter[type].format(type, level, cls, line, fmt, args));

@@ -10,7 +10,7 @@ namespace sly {
         public:
             D3D12VertexBufferImpl(D3D12DeviceImpl& device);
 
-            virtual retval<void> init(const VertexBufferDesc& desc = VertexBufferBuilder().build());            
+            virtual retval<void> init(const BufferDesc& desc = BufferBuilder().build());            
             virtual retval<void> release();
 
             virtual void write(vptr_t data, size_t size, size_t stride);

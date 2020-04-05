@@ -12,12 +12,21 @@ namespace sly {
         SignalReceiver(vptr_t parent) : 
             _parent(parent)
         {
+            Ensures(_parent); 
 
         }
 
+        SignalReceiver( SignalReceiver const& )              = delete;
+        SignalReceiver( SignalReceiver && )                  = delete;
+        SignalReceiver& operator = ( SignalReceiver const& ) = delete;
+        SignalReceiver& operator = ( SignalReceiver && )     = delete;
+
+
+
         void init(std::function<void(SignalReceiver&, SignalValue, va_list)> handler) 
         {
-            _handler = handler;            
+            _handler = handler;
+            Ensures(_handler);             
         }
 
         void accept(SignalValue value, va_list args);
@@ -25,7 +34,10 @@ namespace sly {
         void terminate(SignalConnection& connection);
 
         template<typename T>
-        T& parent() const { return *reinterpret_cast<T*>(_parent); }
+        T& parent() const { 
+            Expects(_parent); 
+            return *reinterpret_cast<T*>(_parent);
+        }
 
     protected:
         vptr_t _parent;

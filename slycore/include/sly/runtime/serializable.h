@@ -10,7 +10,6 @@ namespace sly {
     public:
         virtual ~ISerializable() {}
         
-
         //virtual gsl::czstring<> getType() const = 0;
         //virtual gsl::czstring<> getName() const = 0;
 

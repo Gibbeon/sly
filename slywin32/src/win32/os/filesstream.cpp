@@ -13,6 +13,12 @@ sly::retval<void> Win32FileStream::open(gsl::czstring<> file) {
 
     HANDLE hFile = CreateFile(file, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 
+    if (hFile == (HANDLE)-1)
+    {
+        auto value = GetLastError();
+        return failed<void>((sly::StatusCode)value, (sly::ErrorMessage)GetLastErrorMessage().c_str());
+    } 
+
     LARGE_INTEGER lpFileSize;
     GetFileSizeEx(hFile, &lpFileSize);
 
@@ -61,9 +67,15 @@ size_t Win32FileStream::size() const {
 }
 
 sly::retval<void> Win32FileStream::close() {
-    UnmapViewOfFile(_file);
-
-    CloseHandle(_handle);
+    if(!UnmapViewOfFile(_file)) {
+        auto value = GetLastError();
+        return failed<void>((sly::StatusCode)value, (sly::ErrorMessage)GetLastErrorMessage().c_str());
+    }
+    
+    if(!CloseHandle(_handle)) {
+        auto value = GetLastError();
+        return failed<void>((sly::StatusCode)value, (sly::ErrorMessage)GetLastErrorMessage().c_str());
+    }
 
     return success();
 }

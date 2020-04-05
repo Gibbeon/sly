@@ -1,7 +1,7 @@
 
 #include "sly.h"
 #include "sly/engine.h"
-//#include "sly/scene.h"
+#include "sly/scene.h"
 #include "sly/d3d12.h"
 //#include "sly/d3d12/gfx/commandlist.h"
 #include "sly/io/memorystream.h"
@@ -59,41 +59,6 @@ struct Vertex
     sly::gfx::color_t color;
 };
 
-struct ShaderDesc2 : public virtual sly::ISerializable {
-public:
-    SLY_TYPEINFO;
-
-    std::string data;
-    std::string entry;
-    std::string target;
-    std::string name;
-    std::string type;
-
-    sly::retval<void> serialize(sly::ISerializer& archive) {
-        //archive.begin(*this, name);
-        
-        archive.write("name", name);
-        archive.write("type", getType().name());
-        archive.write("data", data);
-        archive.write("entryPoint", entry);
-        archive.write("target", target);
-
-        //archive.end();
-
-        return sly::success();
-    }
-
-    sly::retval<void> deserialize(sly::IDeserializer& archive) {
-        archive.read("type", type);
-        archive.read("data", data);
-        archive.read("entryPoint", entry);
-        archive.read("target", target);
-        archive.read("name", name);
-
-        return sly::success();
-    }
-};
-
 void configureRenderInterfaces(const sly::Engine& engine) {
     #ifdef _WIN32
         engine.kernel().graphics().interfaces().push_back(sly::d3d12::gfx::GetRenderInterface());
@@ -133,12 +98,29 @@ int main()
 
     window->setVisible(true);
 
+    auto fn = []() { return new sly::SimpleMesh(); };
+
+    engine->activator().assign<sly::SimpleMesh>(sly::TypeInfo::get<sly::SimpleMesh>().name(), fn );
     engine->resources().mount("slyedit/data");
 
-    //sly::Scene* scene = &sly::Scene(*engine);
-    //scene->load("scene");
+    sly::Scene* scene = &sly::Scene(*engine);
+    scene->load("scene");
 
-    auto list = device->createCommandList();
+    while(true) {
+        //engine->begin();
+        engine->update();
+
+        scene->update();
+        scene->draw(context);
+
+        //engine->draw();
+        //engine->present();
+        //engine->end();
+    }
+
+    //scene->release();
+
+    /*auto list = device->createCommandList();
 
     auto vsshader = device->createShader(
         sly::gfx::ShaderBuilder()
@@ -217,10 +199,12 @@ int main()
 
         context->present();
     }
-    rsState->release();
-    psshader->release();
-    vsshader->release();
-    list->release();
+    */
+
+    //rsState->release();
+    //psshader->release();
+    //vsshader->release();
+    //list->release();
     context->release();
     device->release();
     window->release();

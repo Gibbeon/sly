@@ -34,8 +34,6 @@ template <unsigned c> struct f<c, 0>{enum {value = c};};
 
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 
-
-
 #define LOG_VERBOSE(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Verbose, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
 #define LOG_DEBUG(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Debug, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
 #define LOG_WARN(fmt, ...) sly::Logger<decltype(this)>().log(eLogType_Logger, eLogLevel_Warning, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
@@ -45,3 +43,5 @@ template <unsigned c> struct f<c, 0>{enum {value = c};};
 #define S_LOG_DEBUG(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Debug, __FILENAME__ ,  STRINGIFY(__LINE__), fmt, __VA_ARGS__)
 #define S_LOG_WARN(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Warning, __FILENAME__ , STRINGIFY(__LINE__), fmt, __VA_ARGS__)
 #define S_LOG_ERROR(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Error, __FILENAME__ ,  STRINGIFY(__LINE__), fmt, __VA_ARGS__)
+
+#define DBG(x) LOG_DEBUG(STRINGIFY(x)); (x)

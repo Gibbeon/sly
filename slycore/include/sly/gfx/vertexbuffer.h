@@ -9,7 +9,7 @@ namespace sly {
         class IVertexBuffer : public virtual IResource {
         public:
             virtual ~IVertexBuffer() {}
-            virtual retval<void> init(const VertexBufferDesc& desc) = 0;
+            virtual retval<void> init(const BufferDesc& desc) = 0;
 
             virtual size_t address() = 0;
             virtual size_t size() = 0;

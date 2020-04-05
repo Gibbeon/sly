@@ -1,19 +1,8 @@
 #pragma once
 
 #include "sly/global.h"
-#include "sly/kernel.h"
-#include "sly/runtime/activator.h"
-#include "sly/builders/enginebuilder.h"
-#include "sly/resources/resourcesystem.h"
-
-//#include "sly/signal.h"
-//#include "sly/task.h"
-//#include "sly/taskpool.h"
-//#include "sly/drawframe.h"
-
-//#include "sly/scene.h"
-
-
+#include "sly/engine.h"
+#include "sly/controller.h"
 
 
 
@@ -68,56 +57,22 @@
 //              release frame
 
 namespace sly {
-    ENUM_DECL(eEngineState,
-        eEngineState_Input,
-        eEngineState_Update,
-        eEngineState_Notify,
-        eEngineState_Render,
-        eEngineState_Present,
-        eEngineState_Size
-    );
 
-    //class Scene;
-    class InputController;;
-    class RenderController;
-    class Engine {
-    public:        
-        Engine(Kernel& kernel = Kernel::get());
-        virtual ~Engine();
-        
-        Engine( Engine const& )              = delete;
-        Engine( Engine && )                  = delete;
-        Engine& operator = ( Engine const& ) = delete;
-        Engine& operator = ( Engine && )     = delete;
+    class InputController : public IController {
+    public:
+        InputController(const Engine& engine) : _engine(engine) {}
+        virtual ~InputController() {}
+        virtual retval<void> execute() {
 
-        virtual retval<void> init(const EngineDesc& desc = EngineBuilder().build());
-        virtual retval<void> release();
 
-        virtual Kernel& kernel() const;
-        virtual ResourceSystem& resources() const;
-        //virtual GraphicsSystem& graphics() const;
+           return success();
+        }
 
-        virtual InputController&         input() const; 
-        virtual RenderController&        graphics() const;   
-        virtual Activator&               activator() const;
-
-        retval<void>    update();
-        retval<void>    draw();
-        bool_t          ready();   
-
+        const Engine& engine() {
+            return _engine;
+        }
     protected:
-        virtual retval<void> setupTasks();
-    
-    private:
-        Kernel&                     _kernel;
-
-        //Task                        _gameCtrl;
-        //Task                         _renderCtrl;
-        //Semaphore                   isFrameReady; 
-        //Signal                      _gfxsignal;
-        //Signal                      _signals    [eEngineState_Size];
-        //std::vector<Task*>          _stateCtrls [eEngineState_Size];       
-        //Task                        _controllers[eEngineTask_Size];
+        const Engine& _engine;
     };
 }
 

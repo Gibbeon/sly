@@ -27,8 +27,7 @@ namespace sly {
         struct ShaderDesc;
         struct TextureDesc;
         struct CommandQueueDesc;
-        struct VertexBufferDesc;
-        struct IndexBufferDesc;
+        struct BufferDesc;
         struct RenderStateDesc;
         
         class IDevice {
@@ -40,7 +39,7 @@ namespace sly {
             virtual retval<std::unique_ptr<IRenderContext>> createRenderContext(os::IWindow& window, const RenderContextDesc& desc = RenderContextBuilder().build()) = 0;
             virtual retval<std::unique_ptr<ICommandList>> createCommandList(const CommandListDesc& desc = CommandListBuilder().build()) = 0;
             virtual retval<std::unique_ptr<IShader>> createShader(const ShaderDesc& desc = ShaderBuilder().build()) =0;
-            virtual retval<std::unique_ptr<IVertexBuffer>> createVertexBuffer(const VertexBufferDesc& desc = VertexBufferBuilder().build()) = 0;
+            virtual retval<std::unique_ptr<IVertexBuffer>> createVertexBuffer(const BufferDesc& desc = BufferBuilder().build()) = 0;
             virtual retval<std::unique_ptr<IRenderState>> createRenderState(const RenderStateDesc& desc = RenderStateBuilder().build()) = 0;
 
             //virtual void createRenderContext(IRenderContext** ppWindow, const RenderContextDesc& desc) = 0;
@@ -48,7 +47,7 @@ namespace sly {
             //virtual void createCommandList(ICommandList** ppWindow,  const CommandListDesc& desc) = 0;
             //virtual void createRenderState(IRenderState** ppWindow,  const RenderStateDesc& desc) = 0;
             virtual void createTexture(ITexture** ppWindow,  const TextureDesc& desc) = 0;
-            virtual void createIndexBuffer(IIndexBufer** ppWindow,  const IndexBufferDesc& desc) = 0;
+            virtual void createIndexBuffer(IIndexBufer** ppWindow,  const BufferDesc& desc) = 0;
 
             // render target, stencil buffer, etc? need to review this some more
             

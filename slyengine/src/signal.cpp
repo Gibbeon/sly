@@ -14,7 +14,7 @@ Signal::~Signal() {
 }
 
 void Signal::emit(SignalValue value, ...) {       
-    for(auto connection : _connections) {
+    for(auto& connection : _connections) {
         va_list args;        
         va_start(args, value);  
         connection.transmit(value, args);

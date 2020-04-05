@@ -267,3 +267,10 @@ typedef enum  {                                                        \
 } EnumName;                                                            \
                                                                        \
 namespace { bool_t EnumName ## _initialized = ::sly::Enum<EnumName>::init<IDENTITY(COUNT(__VA_ARGS__)),STRING_LEN(__VA_ARGS__)>( IDENTITY(COUNT(__VA_ARGS__)) , { IDENTITY(STRINGIZE(__VA_ARGS__)) }, { IDENTITY(IGNORE_ASSIGN(__VA_ARGS__)) });  }                                                                 
+
+#define ENUM_DECL_OFTYPE(EnumName, Type, ...)                          \
+typedef enum : Type {                                                  \
+    __VA_ARGS__                                                        \
+} EnumName;                                                            \
+                                                                       \
+namespace { bool_t EnumName ## _initialized = ::sly::Enum<EnumName>::init<IDENTITY(COUNT(__VA_ARGS__)),STRING_LEN(__VA_ARGS__)>( IDENTITY(COUNT(__VA_ARGS__)) , { IDENTITY(STRINGIZE(__VA_ARGS__)) }, { IDENTITY(IGNORE_ASSIGN(__VA_ARGS__)) });  }                                                                 
