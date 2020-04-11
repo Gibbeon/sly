@@ -15,7 +15,7 @@ namespace sly {
             uint_t sizeInBytes;
             uint_t stride;
 
-            std::shared_ptr<uint_t> data;
+            f32* data;
 
             sly::retval<void> serialize(sly::ISerializer& archive) {
                 //archive.begin(*this, name);
@@ -32,13 +32,13 @@ namespace sly {
                 archive.read("sizeInBytes", sizeInBytes);
                 archive.read("stride", stride);
 
-                data.reset((uint_t*)malloc(sizeInBytes));
+                data = (f32*)malloc(sizeInBytes);
 
                 auto array = archive.array("data");
                 for(size_t i = 0; i < array->size(); i++) {
-                    uint_t item;
+                    f32 item;
                     array->read(i, item);
-                    data.get()[i] = item;
+                    data[i] = item;
                 }
 
                 return sly::success();

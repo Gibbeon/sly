@@ -49,6 +49,8 @@ namespace sly {
                 archive.read("target", target);
                 archive.read("name", name);
 
+                size = data.length();
+
                 return sly::success();
             }
         };

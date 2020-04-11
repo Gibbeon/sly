@@ -19,6 +19,7 @@ namespace sly {
 
             virtual IRenderTarget& currentRenderTarget() = 0;
             virtual ICommandQueue& commandQueue() = 0;
+            virtual IDevice& getDevice() = 0;
 
         protected:
             IRenderContext() {}

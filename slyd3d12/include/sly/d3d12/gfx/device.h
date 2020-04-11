@@ -12,10 +12,10 @@ namespace sly {
             virtual retval<void> release();
             
             virtual retval<std::unique_ptr<IRenderContext>> createRenderContext(os::IWindow& window, const RenderContextDesc& desc = RenderContextBuilder().build());
-            virtual retval<std::unique_ptr<ICommandList>> createCommandList(const CommandListDesc& desc = CommandListBuilder().build());
-            virtual retval<std::unique_ptr<IShader>> createShader(const ShaderDesc& desc = ShaderBuilder().build());
-            virtual retval<std::unique_ptr<IVertexBuffer>> createVertexBuffer(const BufferDesc& desc = BufferBuilder().build());
-            virtual retval<std::unique_ptr<IRenderState>> createRenderState(const RenderStateDesc& desc = RenderStateBuilder().build());
+            virtual retval<ICommandList*> createCommandList(const CommandListDesc& desc = CommandListBuilder().build());
+            virtual retval<IShader*> createShader(const ShaderDesc& desc = ShaderBuilder().build());
+            virtual retval<IVertexBuffer*> createVertexBuffer(const BufferDesc& desc = BufferBuilder().build());
+            virtual retval<IRenderState*> createRenderState(const RenderStateDesc& desc = RenderStateBuilder().build());
 
             //virtual void createRenderContext(IRenderContext** ppWindow, const RenderContextDesc& desc);
             virtual void createCommandQueue(ICommandQueue** queue, const CommandQueueDesc& desc);

@@ -31,14 +31,19 @@ sly::retval<void> D3D12CommandQueueImpl::release() {
 
     return success();
 }
-    
-void D3D12CommandQueueImpl::executeCommandLists(gsl::span<const ICommandList* const> lists) {
-    std::vector<ID3D12CommandList*> newV( lists.size() );
-    auto lambda = [](const sly::gfx::ICommandList *const data) { return std::addressof(static_cast<D3D12CommandListImpl*>(const_cast<ICommandList*>(data))->getID3D12CommandList()); };
+    ID3D12CommandList* ptr2[16];
+void D3D12CommandQueueImpl::executeCommandLists(gsl::span<ICommandList*> lists) {
+    //std::vector<ID3D12CommandList*> newV( lists.size() );
+    //auto lambda = [](const sly::gfx::ICommandList *const data) { return std::addressof(static_cast<D3D12CommandListImpl*>(const_cast<ICommandList*>(data))->getID3D12CommandList()); };
 
-    std::transform( lists.begin(), lists.end(), newV.begin(), lambda );
+    //std::transform( lists.begin(), lists.end(), newV.begin(), lambda );
 
-    _queue->ExecuteCommandLists(lists.size(), newV.data());
+    //_queue->ExecuteCommandLists(lists.size(), newV.data());
+
+    auto cmd = reinterpret_cast<D3D12CommandListImpl*>(lists.at(0));
+    auto& ptr = cmd->getID3D12CommandList();
+    ptr2[0] = &ptr;
+    _queue->ExecuteCommandLists(1, ptr2);
 
 }
 

@@ -37,11 +37,13 @@
                     [
                         {
                             "name": "POSITION",
-                            "format": "eDataFormat_R32G32B32_FLOAT"
+                            "format": "eDataFormat_R32G32B32_FLOAT",
+                            "offset": 0
                         },
                         {
                             "name": "COLOR",
-                            "format": "eDataFormat_R32G32B32A32_FLOAT"
+                            "format": "eDataFormat_R32G32B32A32_FLOAT",
+                            "offset": 12
                         }
                     ],
                     "shaders": 
@@ -66,13 +68,13 @@
                 {
                     "name": "data",
                     "type": "eBufferType_Vertex",                    
-                    "stride": 0,
-                    "sizeInBytes": 256,
+                    "stride": 28,
+                    "sizeInBytes": 84,
                     "data": 
                         [
-                            0, 1, 0, 1, 0, 0, 1,                                
-                            0, 2, 0, 2, 0, 0, 2,                                
-                            0, 3, 0, 3, 0, 0, 3
+                            0.0, 0.33, 0.0, 1.0, 1.0, 1.0, 1.0,                                
+                            0.25, -0.33, 0.0, 0.0, 1.0, 0.0, 1.0,                                    
+                            -0.25, -0.33, 0.0, 0.0, 0.0, 1.0, 1.0   
                         ]
                     }
                 ]       

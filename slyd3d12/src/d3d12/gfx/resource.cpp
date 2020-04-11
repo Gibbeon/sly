@@ -22,7 +22,7 @@ void D3D12ResourceImpl::init(ResourceDesc& desc) {
          IID_ID3D12Resource, 
          reinterpret_cast<vptr_t*>(&_resource));
     
-    write(desc.data.get(), desc.sizeInBytes, desc.stride);
+    write(desc.data, desc.sizeInBytes, desc.stride);
 }
 
 void D3D12ResourceImpl::write(vptr_t data, size_t size, size_t stride) {

@@ -6,11 +6,92 @@
 
 namespace sly {
 
+    struct DrawableDesc {
+    public:
+        std::vector<gfx::BufferDesc> buffers;
+        gfx::RenderStateDesc state;
+
+    };
+
     class Drawable {
     public:
+        Drawable(gfx::IDevice& device): _device(device), _indexBuffer(nullptr) {
+
+        }
+
+        ~Drawable() {
+
+        }
+
+        retval<void>init(DrawableDesc& desc) {
+            for(auto& buffer: desc.buffers) {
+                switch(buffer.type) {
+                    case gfx::eBufferType_Vertex:
+                        auto vb = _device.createVertexBuffer(buffer);
+                        //vb->init(buffer);
+                        _vertexBuffers.push_back(vb);
+                    break;
+                }
+            }
+
+            DrawableFragmentDesc fragmentDesc;
+
+            fragmentDesc.baseVertexLocation = 0;
+            fragmentDesc.countPerInstance = 3;
+            fragmentDesc.instanceCount = 1;
+            fragmentDesc.startInstanceLocation = 0;
+            fragmentDesc.startLocation = 0;
+
+            DrawableFragment fragment;
+            fragment.init(fragmentDesc);
+            _fragments.push_back(fragment);
+
+            /*auto rsState = device->createRenderState( 
+                sly::gfx::RenderStateBuilder()
+                    .setVSShader(vsshader) //renderPipelineDesc.SetVertexFunction(vertFunc);
+                    .setPSShader(psshader) //renderPipelineDesc.SetFragmentFunction(fragFunc);
+                    .setPrimitiveType(sly::gfx::ePrimativeType_Triangle)
+                    .setRTVFormats(0, sly::gfx::eDataFormat_R8G8B8A8_UNORM) //renderPipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
+                    .addInputElementDesriptor(            
+                        sly::gfx::InputElementBuilder()
+                            .setSemanticName("POSITION")
+                            .setFormat(sly::gfx::eDataFormat_R32G32B32_FLOAT)
+                            .build()
+                    )
+                    .addInputElementDesriptor(
+                        sly::gfx::InputElementBuilder()
+                            .setSemanticName("COLOR")
+                            .setFormat(sly::gfx::eDataFormat_R32G32B32A32_FLOAT)
+                            .setOffset(12)
+                            .build()
+                    )
+                    .build();*/
+                //);
+
+                //gotta have the shaders
+
+            for(auto& shader: desc.state.shaders) {
+                auto pShader = _device.createShader(shader);
+                switch(shader.type) {
+                    case gfx::eShaderType_Vertex:
+                        desc.state.vsShader = pShader;
+                    case gfx::eShaderType_Pixel:
+                        desc.state.psShader = pShader;
+                    break;
+                }
+
+                // make unique is trying to destroy the shader here
+            }
+
+            _state = _device.createRenderState(desc.state);            
+            return success();      
+
+        }
+
         retval<void> draw(  gfx::ICommandList& list
                             , uint_t vertexSlot = 0) const {
 
+            list.setRenderState(*_state);
             list.setVertexBuffer(*_vertexBuffers[0]);
 
             //IF_EXISTS(_indexBuffer, list.setIndexBuffer(_indexBuffer));
@@ -45,6 +126,10 @@ namespace sly {
         }
 
     protected:
+
+        gfx::IDevice& _device;
+        
+        gfx::IRenderState*              _state; 
 
         std::vector<gfx::Material*>         _materials;
         std::vector<gfx::IVertexBuffer*>    _vertexBuffers;  

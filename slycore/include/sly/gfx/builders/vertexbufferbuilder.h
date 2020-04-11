@@ -4,7 +4,7 @@
 #include "sly/builder.h"
 #include "sly/gfx/resource.h"
 #include "sly/gfx/inputelement.h"
-#include "sly/gfx/builders/resourcebuilder.h"
+#include "sly/gfx/builders/resourcebuilder.h" 
 
 namespace sly {
     namespace gfx {
@@ -17,7 +17,17 @@ namespace sly {
         public:
             eBufferType type;
 
-            
+            sly::retval<void> deserialize(sly::IDeserializer& archive) {
+                ResourceDesc::deserialize(archive);
+
+                std::string type_string;
+                
+                archive.read("type", type_string);
+
+                type = sly::Enum<eBufferType>::parse(type_string.c_str());
+
+                return sly::success();
+            }         
 
         };
 
@@ -32,7 +42,7 @@ namespace sly {
             }
 
             BufferBuilder& setData(vptr_t data, size_t sizeInBytes, size_t stride) { 
-                _descriptor.data.reset((uint_t*)data); 
+                _descriptor.data = (f32*)data;
                 _descriptor.stride = stride;  
                 _descriptor.sizeInBytes = sizeInBytes; 
                 return *this; 

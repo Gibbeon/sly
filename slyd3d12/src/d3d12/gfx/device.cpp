@@ -69,11 +69,11 @@ sly::retval<std::unique_ptr<IRenderContext>> D3D12DeviceImpl::createRenderContex
     return std::move(context);
 }
 
-sly::retval<std::unique_ptr<ICommandList>> D3D12DeviceImpl::createCommandList(const CommandListDesc& desc) {
-    auto list = std::make_unique<D3D12CommandListImpl>(*this);
+sly::retval<ICommandList*> D3D12DeviceImpl::createCommandList(const CommandListDesc& desc) {
+    auto list = new D3D12CommandListImpl(*this);
     list->init(desc);
 
-    return std::move(list);
+    return list;
 }
 
 
@@ -84,27 +84,27 @@ void D3D12DeviceImpl::createCommandQueue(ICommandQueue** queue, const CommandQue
 
 
 
-sly::retval<std::unique_ptr<IRenderState>> D3D12DeviceImpl::createRenderState(const RenderStateDesc& desc) {
-    auto state = std::make_unique<D3D12RenderStateImpl>(*this);
+sly::retval<IRenderState*> D3D12DeviceImpl::createRenderState(const RenderStateDesc& desc) {
+    auto state = new D3D12RenderStateImpl(*this);
     state->init(desc);
 
-    return std::move(state);
+    return state;
 }
 
-sly::retval<std::unique_ptr<IShader>> D3D12DeviceImpl::createShader(const ShaderDesc& desc) {
-    auto shader = std::make_unique<D3D12ShaderImpl>(*this);
+sly::retval<IShader*> D3D12DeviceImpl::createShader(const ShaderDesc& desc) {
+    auto shader = new D3D12ShaderImpl(*this);
     shader->init(desc);
 
-    return std::move(shader);
+    return shader;
 }
 
 void D3D12DeviceImpl::createTexture(ITexture** ppWindow, const TextureDesc& desc) {}
 
-sly::retval<std::unique_ptr<IVertexBuffer>> D3D12DeviceImpl::createVertexBuffer(const BufferDesc& desc) {
-    auto buffer = std::make_unique<D3D12VertexBufferImpl>(*this);
+sly::retval<IVertexBuffer*> D3D12DeviceImpl::createVertexBuffer(const BufferDesc& desc) {
+    auto buffer = new D3D12VertexBufferImpl(*this);
     buffer->init(desc);
 
-    return std::move(buffer);
+    return buffer;
 }
 void D3D12DeviceImpl::createIndexBuffer(IIndexBufer** ppWindow, const BufferDesc& desc) {}
 

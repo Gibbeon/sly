@@ -14,7 +14,7 @@ namespace sly {
             virtual retval<void> init(const CommandQueueDesc& desc) = 0;
             virtual retval<void> release() = 0;
             
-            virtual void executeCommandLists(gsl::span<const ICommandList* const> lists) = 0;
+            virtual void executeCommandLists(gsl::span<ICommandList*> lists) = 0;
 
             virtual void flush() = 0;
         protected:

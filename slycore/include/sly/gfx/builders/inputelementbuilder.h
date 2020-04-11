@@ -16,7 +16,7 @@ namespace sly {
             std::string semanticName;
             eDataFormat format;
             eDataInputClassification scope;
-            size_t offset;
+            uint_t offset;
 
             sly::retval<void> serialize(sly::ISerializer& archive) {
 
@@ -24,10 +24,14 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                scope = eDataInputClassification_PerVertex;
+                offset = 0;
+
                 std::string type_string;
                 archive.read("name", semanticName);
                 archive.read("format", type_string);
-                format = sly::Enum<eDataFormat>::parse(type_string.c_str());                
+                format = sly::Enum<eDataFormat>::parse(type_string.c_str());
+                archive.read("offset", offset);                
                 
                 return sly::success();
             }

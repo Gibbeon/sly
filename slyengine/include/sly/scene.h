@@ -10,63 +10,7 @@
 
 namespace sly { 
 
-    struct SimpleMesh : public virtual sly::ISerializable {
-    public:
-        SLY_TYPEINFO;
-
-        std::vector<gfx::BufferDesc> buffers;
-        gfx::RenderStateDesc state;
-        
-        sly::retval<void> serialize(sly::ISerializer& archive) {
-            
-
-            return sly::success();
-        }
-
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            auto bufferArray = archive.array("buffers");
-
-            for(size_t i = 0; i < bufferArray->size(); i++) {
-                gfx::BufferDesc buffer;
-                bufferArray->read(i, buffer);
-                buffers.push_back(buffer);
-            }
-            
-            archive.read("state", state);
-
-            return sly::success();
-        }
-    };
-
-    struct EntityDesc : public virtual sly::ISerializable {
-    public:
-        SLY_TYPEINFO;
-
-        std::string name;
-        std::string type;
-        
-        std::shared_ptr<ISerializable> data;
-
-        sly::retval<void> serialize(sly::ISerializer& archive) {
-            //archive.begin(*this, name);
-            
-            archive.write("name", name);
-            archive.write("type", getType().name());           
-            
-            //archive.end();
-
-            return sly::success();
-        }
-
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            archive.read("name", name);
-            archive.read("type", type);
-
-            data = archive.create(type.c_str(), "data").result();
-
-            return sly::success();
-        }
-    };
+    
 
     struct SceneDesc : public virtual sly::ISerializable {
     public:
@@ -103,7 +47,8 @@ namespace sly {
     class Scene {
     public:
         Scene(const Engine& engine) : 
-            _engine(engine) {
+            _engine(engine),
+            _list(nullptr) {
 
         }
 
@@ -122,22 +67,57 @@ namespace sly {
         }
 
         retval<void> draw(gfx::IRenderContext& context, Camera& camera) {
+
+            if(!_list) {
+                _list = context.getDevice().createCommandList();
+            }
+
+            sly::gfx::Viewport viewport(0, 0, 1024, 768);
+            sly::rect_t<> scissorRect(0, 0, 1024, 768);
+            sly::gfx::color_t clearColor(.4f, .4f, .4f, 0.5f);
+
+            auto& wtf = context.currentRenderTarget();
+
+            _list->begin();
+            _list->setRenderTarget(wtf);
+            _list->clear(clearColor);
+            _list->setViewport(viewport);    
+            _list->setScissorRect(scissorRect);
+
             //_engine.gfx().draw([&]() {
             //    DrawGraph graph;
                  
-            //    for(auto entity : _entities) {
-            //        entity->draw(camera, graph);
-            //    }
+                for(auto entity : _entities) {
+                    entity->draw(context, *_list, camera);//, graph);
+                }
              //   return graph;
-           //});                     
+           //});    
 
-            return success();
+            _list->end();
+
+           std::vector<sly::gfx::ICommandList*> lists;
+            lists.push_back(_list);
+
+           context.commandQueue().executeCommandLists(lists);  
+           context.commandQueue().flush(); 
+
+           //list.result()->release();
+           //delete (list.result());             
+
+           return success();
         }
 
         retval<void> load(gsl::czstring<> name) {
             auto resources = _engine.resources().find(name).result();
             for(auto resource : resources) {
                 auto res = resource.create<SceneDesc>();
+
+                for(auto desc : res->entities) {
+                    Entity* entity = new Entity();
+                    entity->init(desc);
+                    _entities.push_back(entity);
+                }
+                
                 LOG_DEBUG("Loaded Res?");
             }
 
@@ -148,6 +128,7 @@ namespace sly {
         const Engine&               _engine;   
         Camera                      _camera;        
         std::vector<Entity*>        _entities;
+        gfx::ICommandList*          _list;
     };
 }
 

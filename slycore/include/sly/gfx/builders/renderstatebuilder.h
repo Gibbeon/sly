@@ -116,10 +116,29 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                
+                vsShader = 0;
+                psShader = 0;
+                sampleMax = UINT_MAX;
+                primitiveType = ePrimativeType_Default;
+                numberRenderTargets = 1;
+                sampleDesc = 1;            
+                memset(rtvFormats, eDataFormat_Default, 8);
+
+                rtvFormats[0] = eDataFormat_Default;                
+                rtvFormats[1] = eDataFormat_Default;
+                rtvFormats[2] = eDataFormat_Default;
+                rtvFormats[3] = eDataFormat_Default;
+                rtvFormats[4] = eDataFormat_Default;
+                rtvFormats[5] = eDataFormat_Default;
+                rtvFormats[6] = eDataFormat_Default;
+                rtvFormats[7] = eDataFormat_Default;
+
+                
+
                 std::string type_string;
                 archive.read("primitiveType", type_string);
-                ePrimativeType bob;
-
+                
                 primitiveType = sly::Enum<ePrimativeType>::parse(type_string.c_str());
                 auto shaderArray = archive.array("shaders");
 

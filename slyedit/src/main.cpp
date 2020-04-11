@@ -113,6 +113,9 @@ int main()
         scene->update();
         scene->draw(context);
 
+        window->processMessages();
+        context->present();
+
         //engine->draw();
         //engine->present();
         //engine->end();

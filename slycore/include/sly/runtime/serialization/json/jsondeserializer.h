@@ -60,6 +60,15 @@ namespace sly {
             return success();
         }  
 
+        virtual retval<void> read(gsl::czstring<> name, f32& value) {
+            auto elem = _data[name];
+            if(elem.is_null()) {
+                return failed();
+            }
+            value = elem.get<std::remove_reference<decltype(value)>::type>();
+            return success();
+        }  
+
         virtual retval<void> read(gsl::czstring<> name, std::string& value) {
             auto elem = _data[name];
             if(elem.is_null()) {
@@ -90,6 +99,15 @@ namespace sly {
         }       
 
         virtual retval <void> read(size_t index, uint_t& value) {
+            auto elem = _data[index];
+            if(elem.is_null()) {
+                return failed();
+            }
+            value = elem.get<std::remove_reference<decltype(value)>::type>();
+            return success();
+        }  
+
+        virtual retval <void> read(size_t index, f32& value) {
             auto elem = _data[index];
             if(elem.is_null()) {
                 return failed();

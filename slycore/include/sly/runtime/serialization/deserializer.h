@@ -12,11 +12,13 @@ namespace sly {
         virtual retval<std::unique_ptr<IDeserializer>> array(gsl::czstring<> name) = 0;
 
         virtual retval<void> read(gsl::czstring<> name, uint_t& value)  = 0;
+        virtual retval<void> read(gsl::czstring<> name, f32& value)  = 0;
         virtual retval<void> read(gsl::czstring<> name, std::string& value)  = 0;
         virtual retval<void> read(gsl::czstring<> name, vptr_t& value, size_t size)  = 0;
         virtual retval<void> read(gsl::czstring<> name, ISerializable& result) = 0;
 
         virtual retval<void> read(size_t index, uint_t& value)  = 0;
+        virtual retval<void> read(size_t index, f32& value)  = 0;
         virtual retval<void> read(size_t index, std::string& value)  = 0;
         virtual retval<void> read(size_t index, vptr_t& value, size_t size)  = 0;
         virtual retval<void> read(size_t index, ISerializable& result) = 0;
