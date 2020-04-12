@@ -100,18 +100,18 @@ int main()
 
     //auto fn = []() { return new sly::SimpleMesh(); };
 
-    engine->activator().assign<sly::SimpleMesh>();
+    engine->activator().add<sly::SimpleMesh>();
     engine->resources().mount("slyedit/data");
 
-    sly::Scene* scene = &sly::Scene(*engine);
-    scene->load("scene");
+    sly::Scene scene;
+    auto value = engine->resources().find("scene")->create(scene);
 
     while(true) {
         //engine->begin();
         engine->update();
 
-        scene->update();
-        scene->draw(context);
+        scene.update();
+        scene.draw(context);
 
         window->processMessages();
         context->present();

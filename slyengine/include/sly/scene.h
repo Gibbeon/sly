@@ -9,47 +9,18 @@
 #include "sly/runtime/serializable.h"
 
 namespace sly { 
-
-    struct SceneDesc : public sly::ISerializable {
+        
+    class Scene : public sly::ISerializable{
     public:
         SLY_TYPEINFO;
 
-        std::string name;
-        std::string type;
-        std::vector<EntityDesc> entities;
+        Scene() : _list(nullptr) {}
 
-        sly::retval<void> serialize(sly::ISerializer& archive) {
-            //archive.begin(*this, name);
-            
-            archive.write("name", name);
-            archive.write("type", getType().name());
-
-            return sly::success();
-        }
-
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            archive.property("name").read(name);
-            archive.property("type").read(type);
-
-            auto& record = archive.open("entities");
-            for(size_t i = 0; i < record.size(); i++) {
-                EntityDesc desc;            
-                record.at(i).read(desc);
-                entities.push_back(desc);
-            }
-            record.close();
-
-            return sly::success();
-        }
-    };
-        
-    class Scene {
-    public:
-        Scene(const Engine& engine) : 
-            _engine(engine),
-            _list(nullptr) {
-
-        }
+       // Scene(const Engine& engine) : 
+        //    _engine(engine),
+        //    _list(nullptr) {
+//
+  //      }
 
         retval<void> update() {            
             for(auto& entity : _entities) {
@@ -104,25 +75,40 @@ namespace sly {
            return success();
         }
 
-        retval<void> load(gsl::czstring<> name) {
-            auto resource = _engine.resources().find(name).result();
+        sly::retval<void> serialize(sly::ISerializer& archive) {
+            //archive.begin(*this, name);
             
-            auto res = resource.create<SceneDesc>();
+            archive.write("name", _name);
+            archive.write("type", getType().name());
 
-            for(auto desc : res->entities) {
+            return sly::success();
+        }
+
+        sly::retval<void> deserialize(sly::IDeserializer& archive) {
+            archive.property("name").read(_name);
+            archive.property("type").read(_type);
+
+            auto& record = archive.open("entities");
+            for(size_t i = 0; i < record.size(); i++) {
+                EntityDesc desc;            
+                record.at(i).read(desc);
                 Entity* entity = new Entity();
                 entity->init(desc);
                 _entities.push_back(entity);
             }
+            record.close();
 
-            return success();
+            return sly::success();
         }
 
     private:    
-        const Engine&               _engine;   
+        //const Engine&               _engine;   
         Camera                      _camera;        
         std::vector<Entity*>        _entities;
         gfx::ICommandList*          _list;
+        
+        std::string _name;
+        std::string _type;
     };
 }
 

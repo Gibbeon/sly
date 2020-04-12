@@ -93,7 +93,8 @@ namespace sly {
             return to<V>();
         }
 
-        type_reference result() { return _value; }  
+        type result() { return _value; }         
+        type_reference ref() { return _value; }  
         
         template <typename Y = T, typename std::enable_if_t<is_unique_ptr<Y>::value || is_shared_ptr<Y>::value>* = nullptr>  
         operator type_reference() const { 
@@ -106,7 +107,7 @@ namespace sly {
         }  
 
         template <typename Y = T, typename std::enable_if_t<!is_unique_ptr<Y>::value && !is_shared_ptr<Y>::value>* = nullptr>      
-        operator type_reference() { return result(); }   
+        operator type() { return result(); }   
 
         template <typename Y = T, typename std::enable_if_t<std::is_pointer<Y>::value || is_unique_ptr<Y>::value || is_shared_ptr<Y>::value>* = nullptr>
         type_reference operator->() { return _value; }

@@ -13,21 +13,46 @@ namespace sly {
             _deserializer->property("type").read(_type);
         }
 
+        retval<std::shared_ptr<ISerializable>> create() { 
+            std::shared_ptr<ISerializable> result;
+            auto object = _deserializer->create(_type.c_str());
+            if(object.succeeded()) {
+                result.reset(reinterpret_cast<ISerializable*>(&object.result()));
+                return result;
+            }
+            return failed<std::shared_ptr<ISerializable>>();
+        }
+
         template<typename T>
-        retval<T> create() {      
-            // this creates something dynamic, which it must by design
-            // now do I know to manage
+        retval<void> create(T& out) {      
+            // this object would have had to be created dynamically
+            auto object = _deserializer->create(_type.c_str());
+
+            if(object.succeeded()) {
+                out = *(reinterpret_cast<T*>(&object.result()));
+
+                return success();
+            } else {
+                out.deserialize(*_deserializer.get());
+                return success();
+            }
+
+            return failed();
+        }
+
+        template<typename T>
+        retval<std::shared_ptr<T>> create() {      
+            std::shared_ptr<T> result;
 
             auto object = _deserializer->create(_type.c_str());
 
             if(object.succeeded()) {
-                T copy = *(reinterpret_cast<T*>(&object.result()));
-                return copy;
+                result.reset(reinterpret_cast<T*>(&object.result()));
+                return result;
             } else {
-                T copy;
-                ISerializable* pCopy = reinterpret_cast<ISerializable*>(&copy);
-                pCopy->deserialize(*_deserializer.get());
-                return copy;
+                result = std::make_shared<T>();
+                result->deserialize(*_deserializer.get());
+                return result;
             }
 
             return failed<T>();

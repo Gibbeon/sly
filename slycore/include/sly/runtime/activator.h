@@ -76,15 +76,15 @@ namespace sly {
         }
 
         template<typename TType>
-        retval<void> assign(gsl::czstring<> name, std::function<TType*(vptr_t)> constructor, size_t size = sizeof(TType)) {
+        retval<void> add(gsl::czstring<> name, std::function<TType*(vptr_t)> constructor, size_t size = sizeof(TType)) {
 
             _map.insert_or_assign(name, std::make_pair( size, std::bind( constructor , std::placeholders::_1 )));
             return success();
         }
 
         template<typename TFrom, typename TTo = TFrom>
-        retval<void> assign() {
-            return assign<TTo>(
+        retval<void> add() {
+            return add<TTo>(
                 TypeInfo::get<TFrom>().name(), 
                 [](vptr_t ptr) {
                     return new (ptr) TTo();
