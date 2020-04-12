@@ -67,6 +67,15 @@ void configureRenderInterfaces(const sly::Engine& engine) {
     #endif  
 }
 
+
+class TestScene : public sly::Scene {
+public:
+    virtual sly::retval<void> update() {
+        LOG_VERBOSE("TestScene");
+        return sly::success();
+    }
+};
+
 #ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 #else
@@ -98,20 +107,23 @@ int main()
 
     window->setVisible(true);
 
-    //auto fn = []() { return new sly::SimpleMesh(); };
 
+    //engine->activator().add<TestScene>();
     engine->activator().add<sly::SimpleMesh>();
+
     engine->resources().mount("slyedit/data");
 
-    sly::Scene scene;
-    auto value = engine->resources().find("scene")->create(scene);
+    std::shared_ptr<sly::Scene> scene;
+    auto value = engine->resources().find("scene")->create<sly::Scene>();
+
+    scene = value.result();
 
     while(true) {
         //engine->begin();
         engine->update();
 
-        scene.update();
-        scene.draw(context);
+        scene->update();
+        scene->draw(context);
 
         window->processMessages();
         context->present();

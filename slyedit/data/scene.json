@@ -1,5 +1,6 @@
 {
     "name": "name",
+    "type": "sly::Scene",
     "renderstate": {   
         "clearColor":
         {

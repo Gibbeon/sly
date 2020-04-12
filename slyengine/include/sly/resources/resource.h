@@ -44,18 +44,23 @@ namespace sly {
         retval<std::shared_ptr<T>> create() {      
             std::shared_ptr<T> result;
 
-            auto object = _deserializer->create(_type.c_str());
+            auto object = _deserializer->create(_type.c_str());            
 
             if(object.succeeded()) {
-                result.reset(reinterpret_cast<T*>(&object.result()));
+                auto& value = object.result();
+                result.reset(reinterpret_cast<T*>(&value));
                 return result;
             } else {
-                result = std::make_shared<T>();
-                result->deserialize(*_deserializer.get());
-                return result;
+                if(TypeInfo::get<T>().name() == _type) {
+                    result = std::make_shared<T>();
+                    result->deserialize(*_deserializer.get());
+                    return result;
+                }
+
+                return failed<std::shared_ptr<T>>();
             }
 
-            return failed<T>();
+            return failed<std::shared_ptr<T>>();
         }
 
         const std::string& name() const { return _name; };

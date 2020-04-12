@@ -22,7 +22,7 @@ namespace sly {
 //
   //      }
 
-        retval<void> update() {            
+        virtual retval<void> update() {            
             for(auto& entity : _entities) {
                 entity->update();
             };
@@ -30,13 +30,13 @@ namespace sly {
             return success();
         }
 
-        retval<void> draw(gfx::IRenderContext& context) {
+        virtual retval<void> draw(gfx::IRenderContext& context) {
             draw(context, _camera);
 
             return success();
         }
 
-        retval<void> draw(gfx::IRenderContext& context, Camera& camera) {
+        virtual retval<void> draw(gfx::IRenderContext& context, Camera& camera) {
 
             if(!_list) {
                 _list = context.getDevice().createCommandList();
@@ -75,7 +75,7 @@ namespace sly {
            return success();
         }
 
-        sly::retval<void> serialize(sly::ISerializer& archive) {
+        virtual sly::retval<void> serialize(sly::ISerializer& archive) {
             //archive.begin(*this, name);
             
             archive.write("name", _name);
@@ -84,7 +84,7 @@ namespace sly {
             return sly::success();
         }
 
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
+        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) {
             archive.property("name").read(_name);
             archive.property("type").read(_type);
 
