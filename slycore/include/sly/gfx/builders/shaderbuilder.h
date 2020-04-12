@@ -41,13 +41,13 @@ namespace sly {
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) {
                 std::string type_string;
-                archive.read("type", type_string);
+                 archive.property("type").read(type_string);
                 
                 type = sly::Enum<eShaderType>::parse(type_string.c_str());
-                archive.read("data", data);
-                archive.read("entryPoint", entry);
-                archive.read("target", target);
-                archive.read("name", name);
+                archive.property("data").read(data);
+                archive.property("entryPoint").read(entry);
+                archive.property("target").read(target);
+                archive.property("name").read(name);
 
                 size = data.length();
 

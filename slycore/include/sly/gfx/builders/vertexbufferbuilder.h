@@ -22,7 +22,7 @@ namespace sly {
 
                 std::string type_string;
                 
-                archive.read("type", type_string);
+                archive.property("type").read(type_string);
 
                 type = sly::Enum<eBufferType>::parse(type_string.c_str());
 

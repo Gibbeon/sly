@@ -22,7 +22,7 @@ namespace sly {
         std::string name;
         std::string type;
         
-        std::shared_ptr<ISerializable> data;
+        std::optional<ISerializable*> data;
 
         sly::retval<void> serialize(sly::ISerializer& archive) {
             //archive.begin(*this, name);
@@ -36,10 +36,12 @@ namespace sly {
         }
 
         sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            archive.read("name", name);
-            archive.read("type", type);
+            archive.property("name").read(name);
+            archive.property("type").read(type);
 
-            data = archive.create(type.c_str(), "data").result();
+            data = &(archive.property("data").create(type.c_str()).result());
+
+            //data = archive.create(type.c_str(), "data").result();
 
             return sly::success();
         }
@@ -60,15 +62,16 @@ namespace sly {
         }
 
         sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            auto bufferArray = archive.array("buffers");
+            auto& bufferArray = archive.property("buffers");
 
-            for(size_t i = 0; i < bufferArray->size(); i++) {
+            for(size_t i = 0; i < bufferArray.size(); i++) {
                 gfx::BufferDesc buffer;
-                bufferArray->read(i, buffer);
+                bufferArray.at(i).read(buffer);
                 buffers.push_back(buffer);
             }
+            bufferArray.close();
             
-            archive.read("state", state);
+            archive.property("state").read(state);
 
             return sly::success();
         }
@@ -79,7 +82,7 @@ namespace sly {
         Entity() {}
 
         virtual retval<void> init(EntityDesc& desc) {
-            sly::ISerializable* serial = &(*desc.data);
+            sly::ISerializable* serial = &(*desc.data.value());
             SimpleMesh* desc2 = (SimpleMesh*)(serial);
             
                 drawableDesc.buffers = desc2->buffers;

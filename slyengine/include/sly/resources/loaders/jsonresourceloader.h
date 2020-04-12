@@ -22,7 +22,8 @@ namespace sly {
         virtual retval<std::vector<Resource>> load(IResourceRepository& repo, ResourceHandle& handle) {
             auto stream = repo.getStream(handle);
             auto& value = *(stream.result());
-            auto derserializer = JsonDeserializer(value, _engine.activator());
+            auto string = TextReader(value).readAll();
+            auto derserializer = JsonDeserializer(string, _engine.activator());
             
             auto result = std::vector<Resource>();
             result.reserve(derserializer.size());

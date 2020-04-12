@@ -45,3 +45,4 @@ template <unsigned c> struct f<c, 0>{enum {value = c};};
 #define S_LOG_ERROR(fmt, ...) sly::Logger<>().log(sly::eLogType_Logger, sly::eLogLevel_Error, __FILENAME__ ,  STRINGIFY(__LINE__), fmt, __VA_ARGS__)
 
 #define DBG(x) LOG_DEBUG(STRINGIFY(x)); (x)
+#define TODO() __halt()

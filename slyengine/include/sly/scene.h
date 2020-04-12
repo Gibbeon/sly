@@ -30,15 +30,16 @@ namespace sly {
         }
 
         sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            archive.read("name", name);
-            archive.read("type", type);
+            archive.property("name").read(name);
+            archive.property("type").read(type);
 
-            auto array = archive.array("entities");
-            for(size_t i = 0; i < array->size(); i++) {
+            auto& record = archive.open("entities");
+            for(size_t i = 0; i < record.size(); i++) {
                 EntityDesc desc;            
-                array->read(i, desc);
+                record.at(i).read(desc);
                 entities.push_back(desc);
             }
+            record.close();
 
             return sly::success();
         }
@@ -100,9 +101,7 @@ namespace sly {
 
            context.commandQueue().executeCommandLists(lists);  
            context.commandQueue().flush(); 
-
-           //list.result()->release();
-           //delete (list.result());             
+      
 
            return success();
         }

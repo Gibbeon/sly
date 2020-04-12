@@ -26,7 +26,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 
 typedef float f32;
-typedef float f64;
+typedef double f64;
 typedef long double f80;
 
 typedef bool bool_t;

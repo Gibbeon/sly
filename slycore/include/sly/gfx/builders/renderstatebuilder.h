@@ -137,24 +137,25 @@ namespace sly {
                 
 
                 std::string type_string;
-                archive.read("primitiveType", type_string);
+                archive.property("primitiveType").read(type_string);
                 
                 primitiveType = sly::Enum<ePrimativeType>::parse(type_string.c_str());
-                auto shaderArray = archive.array("shaders");
-
-                for(size_t i = 0; i < shaderArray->size(); i++) {
+                
+                auto& shaderArray = archive.open("shaders");
+                for(size_t i = 0; i < shaderArray.size(); i++) {
                     gfx::ShaderDesc shader;
-                    shaderArray->read(i, shader);
+                    shaderArray.at(i).read(shader);
                     shaders.push_back(shader);
                 }
+                shaderArray.close();
 
-                auto elementsArray = archive.array("inputElements");
-
-                for(size_t i = 0; i < elementsArray->size(); i++) {
+                auto& elementsArray = archive.open("inputElements");
+                for(size_t i = 0; i < elementsArray.size(); i++) {
                     gfx::InputElementDesc element;
-                    elementsArray->read(i, element);
+                    elementsArray.at(i).read(element);
                     inputElements.push_back(element);
                 }
+                elementsArray.close();
                 
                 return sly::success();
             }

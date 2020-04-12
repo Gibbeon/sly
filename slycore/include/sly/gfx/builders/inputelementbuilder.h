@@ -28,10 +28,10 @@ namespace sly {
                 offset = 0;
 
                 std::string type_string;
-                archive.read("name", semanticName);
-                archive.read("format", type_string);
+                archive.property("name").read(semanticName);
+                archive.property("format").read(type_string);
                 format = sly::Enum<eDataFormat>::parse(type_string.c_str());
-                archive.read("offset", offset);                
+                archive.property("offset").read(offset);                
                 
                 return sly::success();
             }

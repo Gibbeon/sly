@@ -11,14 +11,15 @@ namespace sly {
         Activator() {}
         ~Activator() {}
 
-        std::shared_ptr<ISerializable> create(gsl::czstring<> name) {
+        retval<ISerializable&> create(gsl::czstring<> name) {
             auto fn = _map[name];
             auto value = fn();
-            ISerializable* convert = reinterpret_cast<ISerializable*>(value);
+            
+            //ISerializable* convert = reinterpret_cast<ISerializable*>(value);
 
-            std::shared_ptr<ISerializable> result;
-            result.reset((ISerializable*)value);
-            return result;
+            //std::shared_ptr<ISerializable> result;
+            //result.reset((ISerializable*)value);
+            return *value;
         }
 
         template<typename TType>

@@ -10,8 +10,8 @@ namespace sly {
 
         Resource(std::shared_ptr<IDeserializer> deserializer) :
             _deserializer(deserializer) {
-            _deserializer->read("name", _name);
-            _deserializer->read("type", _type);
+            _deserializer->property("name").read(_name);
+            _deserializer->property("type").read(_type);
         }
 
         template<typename T>

@@ -28,18 +28,19 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) {
-                archive.read("name", name);
-                archive.read("sizeInBytes", sizeInBytes);
-                archive.read("stride", stride);
+                archive.property("name").read(name);
+                archive.property("sizeInBytes").read(sizeInBytes);
+                archive.property("stride").read(stride);
 
                 data = (f32*)malloc(sizeInBytes);
 
-                auto array = archive.array("data");
-                for(size_t i = 0; i < array->size(); i++) {
+                auto& array = archive.open("data");
+                for(size_t i = 0; i < array.size(); i++) {
                     f32 item;
-                    array->read(i, item);
+                    array.at(i).read(item);
                     data[i] = item;
                 }
+                array.close();
 
                 return sly::success();
             }
