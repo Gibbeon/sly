@@ -51,7 +51,7 @@ retval<void> ResourceSystem::unmount(gsl::czstring<> moniker) {
     return success();
 }
 
-retval<std::vector<Resource>> ResourceSystem::find(gsl::czstring<> moniker) {
+retval<Resource> ResourceSystem::find(gsl::czstring<> moniker) {
     for(auto repo : _repositories) {
         for(auto& value : repo->resources()) {
             if(value.moniker == moniker) {
@@ -64,7 +64,7 @@ retval<std::vector<Resource>> ResourceSystem::find(gsl::czstring<> moniker) {
         }
     }
 
-    return failed<std::vector<Resource>>();
+    return failed<Resource>();
 }
 
 

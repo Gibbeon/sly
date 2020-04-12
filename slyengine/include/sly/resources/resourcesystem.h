@@ -20,7 +20,7 @@ namespace sly {
 
         virtual retval<void> mount(gsl::czstring<> moniker) = 0;
         virtual retval<void> unmount(gsl::czstring<> moniker) = 0;
-        virtual retval<std::vector<Resource>> find(gsl::czstring<> moniker) = 0;
+        virtual retval<Resource> find(gsl::czstring<> moniker) = 0;
 
     protected:
         IResourceSystem() {}
@@ -38,7 +38,7 @@ namespace sly {
         virtual retval<void> mount(gsl::czstring<> moniker);
         virtual retval<void> unmount(gsl::czstring<> moniker);
 
-        virtual retval<std::vector<Resource>> find(gsl::czstring<> moniker);
+        virtual retval<Resource> find(gsl::czstring<> moniker);
     
     protected:
         const Engine& _engine;

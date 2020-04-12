@@ -10,26 +10,90 @@ namespace sly {
     public:
         Activator() {}
         ~Activator() {}
+        
+        template<typename TType, typename std::enable_if_t<!std::is_constructible<TType>::value>* = nullptr>
+        retval<TType*> create(gsl::czstring<> name, vptr_t buffer = nullptr, size_t size = sizeof(TType)) {
+            Expects(size >= sizeof(TType));
 
-        retval<ISerializable&> create(gsl::czstring<> name) {
-            auto fn = _map[name];
-            auto value = fn();
+            auto iter = _map.find(name);
+
+            if(iter == _map.end()) {
+                return failed<TType*>();
+            }
+
+        auto pair = (*iter).second;
             
-            //ISerializable* convert = reinterpret_cast<ISerializable*>(value);
+            if(buffer == nullptr) {
+                size = pair.first;
+                buffer = malloc(size);
+            }
 
-            //std::shared_ptr<ISerializable> result;
-            //result.reset((ISerializable*)value);
-            return *value;
+            Expects(size >= pair.first);
+            auto value = reinterpret_cast<TType*>(pair.second(buffer));
+            return value;
+        }
+
+        template<typename TType, typename std::enable_if_t<std::is_constructible<TType>::value>* = nullptr>
+        retval<TType*> create(gsl::czstring<> name, vptr_t buffer = nullptr, size_t size = sizeof(TType)) {
+            Expects(size >= sizeof(TType));
+
+            auto iter = _map.find(name);
+
+            if(iter == _map.end()) {
+                if(buffer == nullptr) {
+                    buffer = malloc(size);
+                }
+
+                return new (buffer) TType();
+            }
+            
+            auto pair = (*iter).second;
+
+            if(buffer == nullptr) {
+                size = pair.first;
+                buffer = malloc(size);
+            }
+
+            Expects(size >= pair.first);
+            return reinterpret_cast<TType*>(pair.second(buffer));
+        }
+
+
+        template<typename TType>
+        retval<TType> create(gsl::czstring<> name, TType& result) {
+            return *create<TType>(name, &result);
         }
 
         template<typename TType>
-        retval<void> assign(gsl::czstring<> name, std::function<TType*()> fn) {
-            _map.insert( std::make_pair( name, std::bind( fn ) ));
-            //auto kvp = _map.insert_or_assign(name, fn);
+        retval<TType*> create(gsl::czstring<> name, TType*& result) {
+            auto value = create<TType>(name, nullptr, sizeof(TType));
+            if(value.succeeded()) {
+                result = value.result();
+            } else {
+                result = nullptr;
+            }
+            return value;
+        }
+
+        template<typename TType>
+        retval<void> assign(gsl::czstring<> name, std::function<TType*(vptr_t)> constructor, size_t size = sizeof(TType)) {
+
+            _map.insert_or_assign(name, std::make_pair( size, std::bind( constructor , std::placeholders::_1 )));
             return success();
         }
 
+        template<typename TFrom, typename TTo = TFrom>
+        retval<void> assign() {
+            return assign<TTo>(
+                TypeInfo::get<TFrom>().name(), 
+                [](vptr_t ptr) {
+                    return new (ptr) TTo();
+            });
+        }
+
     protected:
-        std::map<std::string, std::function<ISerializable*()>> _map;
+        std::map<std::string, std::pair<size_t, 
+            std::function<vptr_t(vptr_t)>>
+        > _map;
     };
 }

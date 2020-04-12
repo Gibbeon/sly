@@ -7,18 +7,30 @@ namespace sly {
     class Resource {
     public: 
         Resource() {}
-
-        Resource(std::shared_ptr<IDeserializer> deserializer) :
-            _deserializer(deserializer) {
+        Resource(std::shared_ptr<IDeserializer> deserializer) {
+            _deserializer = deserializer;
             _deserializer->property("name").read(_name);
             _deserializer->property("type").read(_type);
         }
 
         template<typename T>
-        retval<std::shared_ptr<T>> create() {            
-            auto result = std::make_shared<T>();
-            _deserializer->read(*result.get());
-            return result;
+        retval<T> create() {      
+            // this creates something dynamic, which it must by design
+            // now do I know to manage
+
+            auto object = _deserializer->create(_type.c_str());
+
+            if(object.succeeded()) {
+                T copy = *(reinterpret_cast<T*>(&object.result()));
+                return copy;
+            } else {
+                T copy;
+                ISerializable* pCopy = reinterpret_cast<ISerializable*>(&copy);
+                pCopy->deserialize(*_deserializer.get());
+                return copy;
+            }
+
+            return failed<T>();
         }
 
         const std::string& name() const { return _name; };

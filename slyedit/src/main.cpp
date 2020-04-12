@@ -98,9 +98,9 @@ int main()
 
     window->setVisible(true);
 
-    auto fn = []() { return new sly::SimpleMesh(); };
+    //auto fn = []() { return new sly::SimpleMesh(); };
 
-    engine->activator().assign<sly::SimpleMesh>(sly::TypeInfo::get<sly::SimpleMesh>().name(), fn );
+    engine->activator().assign<sly::SimpleMesh>();
     engine->resources().mount("slyedit/data");
 
     sly::Scene* scene = &sly::Scene(*engine);

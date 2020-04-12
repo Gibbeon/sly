@@ -19,24 +19,10 @@ namespace sly {
             return handle.extension == ".json";
         }
 
-        virtual retval<std::vector<Resource>> load(IResourceRepository& repo, ResourceHandle& handle) {
+        virtual retval<Resource> load(IResourceRepository& repo, ResourceHandle& handle) {
             auto stream = repo.getStream(handle);
-            auto& value = *(stream.result());
-            auto string = TextReader(value).readAll();
-            auto derserializer = JsonDeserializer(string, _engine.activator());
-            
-            auto result = std::vector<Resource>();
-            result.reserve(derserializer.size());
-
-            if(derserializer.size() > 1) {
-                for(auto& elem : derserializer.data()) {                    
-                   result.push_back(Resource(std::make_shared<JsonDeserializer>(elem, _engine.activator())));
-                }
-            } else {
-                result.push_back(Resource(std::make_shared<JsonDeserializer>(derserializer.data(), _engine.activator())));
-            }
-
-            return result;           
+            auto value = std::make_shared<JsonDeserializer>(*stream.result().get(), _engine.activator());
+            return Resource(value);           
         }
 
     private:

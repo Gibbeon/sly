@@ -15,10 +15,11 @@ using json = nlohmann::json;
 namespace sly { 
     class JsonDeserializer : public IDeserializer {
     public:    
-        JsonDeserializer(std::string& data, Activator& activator)  : JsonDeserializer(json::parse(data.c_str()), _activator) { }    
-        JsonDeserializer(gsl::czstring<> data, Activator& activator)  : JsonDeserializer(json::parse(data), _activator) { }
-        JsonDeserializer(vptr_t data, size_t size, Activator& activator) : JsonDeserializer(json::parse((char_t*)data), _activator) {}
-        JsonDeserializer(json data, Activator& activator) : _activator(activator) {
+        JsonDeserializer(IInputStream& stream, Activator& activator = Activator()) : JsonDeserializer(json::parse(TextReader(stream).readAll()), activator) {}
+        JsonDeserializer(std::string& data, Activator& activator = Activator())  : JsonDeserializer(json::parse(data.c_str()), activator) { }    
+        JsonDeserializer(gsl::czstring<> data, Activator& activator = Activator())  : JsonDeserializer(json::parse(data), activator) { }
+        JsonDeserializer(vptr_t data, size_t size, Activator& activator = Activator()) : JsonDeserializer(json::parse((char_t*)data), activator) {}
+        JsonDeserializer(json data, Activator& activator = Activator()) : _activator(activator) {
             _data.push_back(data);
         }
 
@@ -141,14 +142,16 @@ namespace sly {
         }
 
         virtual retval<ISerializable&> create(gsl::czstring<> type) {
-            auto result = _activator.create(type);
-            
-            if(result.succeeded()) {
-                auto value = read(result.result());
+            ISerializable* result;
+            auto retval = _activator.create<ISerializable>(type, result);
+
+            if(retval.succeeded()) {
+                auto value = read(*result);
                 if(value.succeeded()) {
-                    return result.result();
+                    return *result;
                 }
             }
+            
 
             return failed<ISerializable&>();         
         }

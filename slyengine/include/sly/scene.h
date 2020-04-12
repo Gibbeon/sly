@@ -10,9 +10,7 @@
 
 namespace sly { 
 
-    
-
-    struct SceneDesc : public virtual sly::ISerializable {
+    struct SceneDesc : public sly::ISerializable {
     public:
         SLY_TYPEINFO;
 
@@ -107,17 +105,14 @@ namespace sly {
         }
 
         retval<void> load(gsl::czstring<> name) {
-            auto resources = _engine.resources().find(name).result();
-            for(auto resource : resources) {
-                auto res = resource.create<SceneDesc>();
+            auto resource = _engine.resources().find(name).result();
+            
+            auto res = resource.create<SceneDesc>();
 
-                for(auto desc : res->entities) {
-                    Entity* entity = new Entity();
-                    entity->init(desc);
-                    _entities.push_back(entity);
-                }
-                
-                LOG_DEBUG("Loaded Res?");
+            for(auto desc : res->entities) {
+                Entity* entity = new Entity();
+                entity->init(desc);
+                _entities.push_back(entity);
             }
 
             return success();
