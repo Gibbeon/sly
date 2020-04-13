@@ -6,11 +6,31 @@
 
 namespace sly {
 
-    struct DrawableDesc {
+    struct DrawableDesc : public sly::ISerializable {
     public:
+        SLY_TYPEINFO;
+
         std::vector<gfx::BufferDesc> buffers;
         gfx::RenderStateDesc state;
+        
+        sly::retval<void> serialize(sly::ISerializer& archive) {
+            return sly::success();
+        }
 
+        sly::retval<void> deserialize(sly::IDeserializer& archive) {
+            auto& bufferArray = archive.property("buffers");
+
+            for(size_t i = 0; i < bufferArray.size(); i++) {
+                gfx::BufferDesc buffer;
+                bufferArray.at(i).read(buffer);
+                buffers.push_back(buffer);
+            }
+            bufferArray.close();
+            
+            archive.property("state").read(state);
+
+            return sly::success();
+        }
     };
 
     class Drawable {
@@ -25,7 +45,7 @@ namespace sly {
 
         retval<void>init(DrawableDesc& desc) {
             for(auto& buffer: desc.buffers) {
-                switch(buffer.type) {
+                switch(buffer.bufferType) {
                     case gfx::eBufferType_Vertex:
                         auto vb = _device.createVertexBuffer(buffer);
                         //vb->init(buffer);
@@ -72,7 +92,7 @@ namespace sly {
 
             for(auto& shader: desc.state.shaders) {
                 auto pShader = _device.createShader(shader);
-                switch(shader.type) {
+                switch(shader.shaderType) {
                     case gfx::eShaderType_Vertex:
                         desc.state.vsShader = pShader;
                     case gfx::eShaderType_Pixel:

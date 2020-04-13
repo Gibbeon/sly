@@ -18,7 +18,7 @@ namespace sly {
         public:
             SLY_TYPEINFO;
 
-            eShaderType type;
+            eShaderType shaderType;
             std::string data;
             size_t size;
             std::string entry;
@@ -40,10 +40,7 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) {
-                std::string type_string;
-                 archive.property("type").read(type_string);
-                
-                type = sly::Enum<eShaderType>::parse(type_string.c_str());
+                archive.property("shaderType").read(shaderType);
                 archive.property("data").read(data);
                 archive.property("entryPoint").read(entry);
                 archive.property("target").read(target);

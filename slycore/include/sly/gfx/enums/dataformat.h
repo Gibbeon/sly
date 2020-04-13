@@ -10,7 +10,19 @@ namespace sly {
             eDataFormat_R8G8B8A8_UNORM,
             eDataFormat_Max,
             eDataFormat_Default = eDataFormat_R8G8B8A8_UNORM
-         );     
+         );  
+
+        static size_t sizeOf(eDataFormat format) {
+            static const size_t formatSizes[] = 
+            {
+                sizeof(f32) * 3 , //eDataFormat_R32G32B32_FLOAT
+                sizeof(f32) * 4 , //eDataFormat_R32G32B32A32_FLOAT
+                sizeof(u8) * 4  , //eDataFormat_R8G8B8A8_UNORM
+            };
+
+            Expects(format < sizeof(formatSizes) && format >= 0);
+            return formatSizes[format];
+        }
     }
 }
 

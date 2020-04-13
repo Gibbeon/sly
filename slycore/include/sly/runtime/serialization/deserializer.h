@@ -23,7 +23,7 @@ namespace sly {
             auto it = input.begin();
             auto dest_ptr = dest;
     
-            for(size_t i = 0; i < input.size() / 3; ++i)
+            for(std::ptrdiff_t i = 0; i < input.size() / 3; ++i)
             {
                 temp  = (*it++) << 16;
                 temp += (*it++) << 8;
@@ -126,31 +126,31 @@ namespace sly {
         virtual size_t size() = 0;
 
         //integer
-        virtual retval<void> read(u8& value) = 0;
-        virtual retval<void> read(u16& value) = 0;
-        virtual retval<void> read(u32& value) = 0;
-        virtual retval<void> read(u64& value) = 0;
-        virtual retval<void> read(s8& value) = 0;
-        virtual retval<void> read(s16& value) = 0;
-        virtual retval<void> read(s32& value) = 0;
-        virtual retval<void> read(s64& value) = 0;
+        virtual retval<void> read( u8& value,  u8 default = 0) = 0;
+        virtual retval<void> read(u16& value, u16 default = 0) = 0;
+        virtual retval<void> read(u32& value, u32 default = 0) = 0;
+        virtual retval<void> read(u64& value, u64 default = 0) = 0;
+        virtual retval<void> read( s8& value,  s8 default = 0) = 0;
+        virtual retval<void> read(s16& value, s16 default = 0) = 0;
+        virtual retval<void> read(s32& value, s32 default = 0) = 0;
+        virtual retval<void> read(s64& value, s64 default = 0) = 0;
         
         //floating point
-        virtual retval<void> read(f32& value) = 0;
-        virtual retval<void> read(f64& value) = 0;
-        virtual retval<void> read(f80& value) = 0;
+        virtual retval<void> read(f32& value, f32 default = 0) = 0;
+        virtual retval<void> read(f64& value, f64 default = 0) = 0;
+        virtual retval<void> read(f80& value, f80 default = 0) = 0;
 
         //strings
-        virtual retval<void> read(std::string& value) = 0;
+        virtual retval<void> read(std::string& value, std::string default = "") = 0;
 
         //objects
         virtual retval<void> read(ISerializable& value) = 0;
 
         //bytes
-        virtual retval<void> read(vptr_t buffer, size_t size) = 0;
+        virtual retval<size_t> read(vptr_t buffer, size_t size) = 0;
 
         //boolean
-        virtual retval<void> read(bool_t& value) = 0;
+        virtual retval<void> read(bool_t& value, bool_t default = false) = 0;
         
         virtual IDeserializer&  open(gsl::czstring<> name) = 0;
         virtual retval<void>    close() = 0;
@@ -160,7 +160,20 @@ namespace sly {
         virtual IDeserializer& property(gsl::czstring<> name) = 0;
 
         //activator
+        virtual retval<ISerializable&> create() = 0;
         virtual retval<ISerializable&> create(gsl::czstring<> type) = 0;
+
+        template<typename TEnum, typename std::enable_if_t<std::is_enum<TEnum>::value>* = nullptr>
+        retval<void> read(TEnum& value, TEnum default = (TEnum)0) {
+            std::string type_string;
+            if(read(type_string).succeeded()) {
+                value = sly::Enum<TEnum>::parse(type_string.c_str());  
+                return success();
+            } else {
+                value = default;
+                return failed();
+            }          
+        }
 
     protected:
         IDeserializer() {}

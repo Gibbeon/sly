@@ -101,9 +101,9 @@ namespace sly {
             size_t                      numberRenderTargets;
             eDataFormat                 rtvFormats[8];
             eDataFormat                 dsvFormat;
-
-            std::vector<InputElementDesc>   inputElements; 
-            std::vector<ShaderDesc>         shaders;            
+ 
+            std::vector<ShaderDesc>         shaders;  
+            std::vector<InputElementDesc>   inputElements;          
 
             //UINT                               NodeMask; // used for multi adapter
             //D3D12_CACHED_PIPELINE_STATE        CachedPSO; //blob for caching on adapter
@@ -134,12 +134,7 @@ namespace sly {
                 rtvFormats[6] = eDataFormat_Default;
                 rtvFormats[7] = eDataFormat_Default;
 
-                
-
-                std::string type_string;
-                archive.property("primitiveType").read(type_string);
-                
-                primitiveType = sly::Enum<ePrimativeType>::parse(type_string.c_str());
+                archive.property("primitiveType").read(primitiveType);
                 
                 auto& shaderArray = archive.open("shaders");
                 for(size_t i = 0; i < shaderArray.size(); i++) {

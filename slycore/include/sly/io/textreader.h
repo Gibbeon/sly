@@ -9,7 +9,7 @@ namespace sly {
     class TextReader {
     public:
         TextReader(IInputStream& stream) : _stream(stream), _offset(0), _size(0), _position(0) { 
-            fill(); 
+            //fill(); 
         }
 
         char_t* current()
@@ -71,13 +71,18 @@ namespace sly {
         };
 
         std::string readAll() {
-            return read([](char_t n) -> bool_t{ return false; });
+            //return read([](char_t n) -> bool_t{ return false; });
+            std::string result;
+            result.reserve(_stream.size());
+            result.resize(_stream.size());
+            _stream.read(result.data(), _stream.size());
+            return result;
         }; 
 
         bool_t fill() {
             if(! (_stream.position() >= _stream.size())) {
                 _size = _stream.read(_buffer, MIN(NBufferSize,  _stream.size() - _stream.position()));     
-                _stream.seek(-((s32)_size)); // so we don't want to increment the stream until we actually read the data from the reader       
+                //_stream.seek(-((s32)_size)); // so we don't want to increment the stream until we actually read the data from the reader       
                 _offset = 0;
                 return true;
             }

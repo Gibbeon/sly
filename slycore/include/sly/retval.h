@@ -124,6 +124,11 @@ namespace sly {
         bool_t succeeded() { return statusCode() == SUCCESS; }
         bool_t failed() { return statusCode() != SUCCESS; }
 
+        template<typename X>
+        X as() {
+            return (X)result;
+        }
+
     private:
         StatusCode _statusCode;
         T _value;
@@ -155,6 +160,11 @@ namespace sly {
         bool_t succeeded() { return statusCode() == SUCCESS; }
         bool_t failed() { return statusCode() != SUCCESS; }
 
+        template<typename X>
+        X as() {
+            return (X)result();
+        }
+
     private:
         StatusCode _statusCode;
         type_pointer _value;
@@ -177,6 +187,11 @@ namespace sly {
 
         bool_t succeeded() { return statusCode() == SUCCESS; }
         bool_t failed() { return statusCode() != SUCCESS; }
+
+        template<typename X>
+        X as() {
+            return (X)result;
+        }
 
 
     private:

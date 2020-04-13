@@ -35,50 +35,50 @@ namespace sly {
         json& data() { return _data.back(); }
 
          //integer
-        virtual retval<void> read(u8& value) {
-            return readValue(value);
+        virtual retval<void> read(u8& value, u8 default) {
+            return readValue(value, default);
         }
-        virtual retval<void> read(u16& value){
-            return readValue(value);
+        virtual retval<void> read(u16& value, u16 default){
+            return readValue(value, default);
         }
-        virtual retval<void> read(u32& value){
-            return readValue(value);
+        virtual retval<void> read(u32& value, u32 default){
+            return readValue(value, default);
         }
-        virtual retval<void> read(u64& value){
-            return readValue(value);
+        virtual retval<void> read(u64& value, u64 default){
+            return readValue(value, default);
         }
-        virtual retval<void> read(s8& value){
-            return readValue(value);
+        virtual retval<void> read(s8& value, s8 default){
+            return readValue(value, default);
         }
-        virtual retval<void> read(s16& value){
-            return readValue(value);
+        virtual retval<void> read(s16& value, s16 default){
+            return readValue(value, default);
         }
-        virtual retval<void> read(s32& value){
-            return readValue(value);
+        virtual retval<void> read(s32& value, s32 default){
+            return readValue(value, default);
         }
-        virtual retval<void> read(s64& value) {
-            return readValue(value);
+        virtual retval<void> read(s64& value, s64 default) {
+            return readValue(value, default);
         }
         
         //floating point
-        virtual retval<void> read(f32& value) {
-            return readValue(value);
+        virtual retval<void> read(f32& value, f32 default) {
+            return readValue(value, default);
         }
-        virtual retval<void> read(f64& value) {
-            return readValue(value);
+        virtual retval<void> read(f64& value, f64 default) {
+            return readValue(value, default);
         }
-        virtual retval<void> read(f80& value) {
-            return readValue(value);
+        virtual retval<void> read(f80& value, f80 default) {
+            return readValue(value, default);
         }
 
         //boolean
-        virtual retval<void> read(bool_t& value) {
-            return readValue(value);
+        virtual retval<void> read(bool_t& value, bool_t default) {
+            return readValue(value, default);
         }
 
         //strings
-        virtual retval<void> read(std::string& value){
-            return readValue(value);
+        virtual retval<void> read(std::string& value, std::string default){
+            return readValue(value, default);
         }
 
         virtual retval<void> read(ISerializable& value) {
@@ -101,22 +101,25 @@ namespace sly {
             return success();
         }
 
-        virtual retval<void> read(vptr_t buffer, size_t size) {
+        virtual retval<size_t> read(vptr_t buffer, size_t size) {
             Base64 decoder;
             
             auto elem = data();
             _data.pop_back();
 
             if(elem.is_null()) {
-                return failed();
+                return failed<size_t>();
             }
 
-            std::string value = elem.get<std::string>();            
-            if(!decoder.decode(value.c_str(), value.length(), (char_t*)buffer, size).succeeded()) {
-                return failed();
+            std::string value = elem.get<std::string>();  
+
+            auto decoded = decoder.decode(value.c_str(), value.length(), (char_t*)buffer, size);
+
+            if(!decoded.succeeded()) {
+                return failed<size_t>();
             }
 
-            return success();
+            return decoded.result();
         }
 
         virtual IDeserializer& at(size_t index) {
@@ -141,6 +144,16 @@ namespace sly {
             return success();
         }
 
+        //activator
+        virtual retval<ISerializable&> create() {
+            std::string type;
+            if(property("type").read(type).succeeded()) {
+                return create(type.c_str());
+            }
+
+            return failed<ISerializable&>();
+        }
+
         virtual retval<ISerializable&> create(gsl::czstring<> type) {
             ISerializable* result;
             auto retval = _activator.create<ISerializable>(type, result);
@@ -159,11 +172,12 @@ namespace sly {
 
     private:
         template<typename TValueType>
-        retval<void> readValue(TValueType& value) {
+        retval<void> readValue(TValueType& value, TValueType default) {
             auto elem = data();
             _data.pop_back();
 
             if(elem.is_null()) {
+                value = default;
                 return failed();
             }
 

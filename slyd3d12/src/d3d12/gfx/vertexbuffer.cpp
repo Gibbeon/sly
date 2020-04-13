@@ -31,7 +31,7 @@ sly::retval<void> D3D12VertexBufferImpl::init(const BufferDesc& desc) {
          IID_ID3D12Resource, 
          reinterpret_cast<vptr_t*>(&_resource));
     
-    write(desc.data , desc.sizeInBytes, desc.stride);
+    write(desc.data, desc.sizeInBytes, desc.stride);
     
     _initialized = true;
     return success();
@@ -46,6 +46,8 @@ sly::retval<void> D3D12VertexBufferImpl::release() {
 }
 
 void D3D12VertexBufferImpl::write(vptr_t data, size_t size, size_t stride) {
+    if(size == 0) return;
+
     byte_t* dest;
     D3D12_RANGE readRange = {0, 0};        // We do not intend to read from this resource on the CPU.
     _resource->Map(0, &readRange, reinterpret_cast<vptr_t*>(&dest));

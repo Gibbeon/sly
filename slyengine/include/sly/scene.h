@@ -10,17 +10,11 @@
 
 namespace sly { 
         
-    class Scene : public sly::ISerializable{
+    class Scene : public sly::ISerializable {
     public:
         SLY_TYPEINFO;
 
         Scene() : _list(nullptr) {}
-
-       // Scene(const Engine& engine) : 
-        //    _engine(engine),
-        //    _list(nullptr) {
-//
-  //      }
 
         virtual retval<void> update() {            
             for(auto& entity : _entities) {
@@ -75,40 +69,39 @@ namespace sly {
            return success();
         }
 
-        virtual sly::retval<void> serialize(sly::ISerializer& archive) {
-            //archive.begin(*this, name);
-            
+        virtual sly::retval<void> serialize(sly::ISerializer& archive) {            
+            archive.write("type", getType().name());      //begin record      
             archive.write("name", _name);
-            archive.write("type", getType().name());
 
             return sly::success();
         }
 
-        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) {
+        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) {            
             archive.property("name").read(_name);
-            archive.property("type").read(_type);
 
             auto& record = archive.open("entities");
             for(size_t i = 0; i < record.size(); i++) {
-                EntityDesc desc;            
-                record.at(i).read(desc);
-                Entity* entity = new Entity();
-                entity->init(desc);
-                _entities.push_back(entity);
+                auto result = record.at(i).create();
+
+                if(result.succeeded()) {
+                    Entity& entity = result.as<Entity&>();
+                    _entities.push_back(&entity);
+                } else {
+                    return sly::failed();
+                }
             }
+
             record.close();
 
             return sly::success();
         }
 
-    private:    
-        //const Engine&               _engine;   
+    private:      
         Camera                      _camera;        
         std::vector<Entity*>        _entities;
         gfx::ICommandList*          _list;
         
         std::string _name;
-        std::string _type;
     };
 }
 

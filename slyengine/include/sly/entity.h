@@ -14,81 +14,26 @@ namespace sly {
         bool_t visible;
     };
 
-
-    struct EntityDesc : public virtual sly::ISerializable {
+    struct EntityDesc {
     public:
         SLY_TYPEINFO;
 
         std::string name;
-        std::string type;
         
-        std::optional<ISerializable*> data;
-
-        sly::retval<void> serialize(sly::ISerializer& archive) {
-            //archive.begin(*this, name);
-            
-            archive.write("name", name);
-            archive.write("type", getType().name());           
-            
-            //archive.end();
-
-            return sly::success();
-        }
-
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            archive.property("name").read(name);
-            archive.property("type").read(type);
-
-            data = &(archive.property("data").create(type.c_str()).result());
-
-            //data = archive.create(type.c_str(), "data").result();
-
-            return sly::success();
-        }
+        DrawableDesc drawable;
+        
     };
 
-    
-    struct SimpleMesh : public sly::ISerializable {
+    class Entity : public sly::ISerializable {
     public:
         SLY_TYPEINFO;
-
-        std::vector<gfx::BufferDesc> buffers;
-        gfx::RenderStateDesc state;
         
-        sly::retval<void> serialize(sly::ISerializer& archive) {
-            
-
-            return sly::success();
-        }
-
-        sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            auto& bufferArray = archive.property("buffers");
-
-            for(size_t i = 0; i < bufferArray.size(); i++) {
-                gfx::BufferDesc buffer;
-                bufferArray.at(i).read(buffer);
-                buffers.push_back(buffer);
-            }
-            bufferArray.close();
-            
-            archive.property("state").read(state);
-
-            return sly::success();
-        }
-    };
-
-    class Entity {
-    public:
         Entity() {}
 
-        virtual retval<void> init(EntityDesc& desc) {
-            sly::ISerializable* serial = &(*desc.data.value());
-            SimpleMesh* desc2 = (SimpleMesh*)(serial);
-            
-                drawableDesc.buffers = desc2->buffers;
-                drawableDesc.state = desc2->state;  
-
-                return success();      
+        retval<void> init(EntityDesc& desc) {
+            _name = desc.name;
+            drawableDesc = desc.drawable;  
+            return success();
         }
 
         virtual retval<void> update() {
@@ -134,9 +79,6 @@ namespace sly {
                 _drawable->draw(list);
             }
 
-        
-
-
             return success();
         }
 
@@ -160,6 +102,23 @@ namespace sly {
             return failed<Drawable&>();
         }
 
+        sly::retval<void> serialize(sly::ISerializer& archive) {
+            //archive.begin(*this, name);
+            
+            archive.write("name", _name);  
+
+            return sly::success();
+        }
+
+        sly::retval<void> deserialize(sly::IDeserializer& archive) {
+            EntityDesc desc;
+
+            archive.property("name").read(desc.name);
+            archive.property("drawable").read(desc.drawable);
+
+            return init(desc);
+        }
+
     protected:
         Spatial                 _local;
         Spatial                 _global;
@@ -170,6 +129,8 @@ namespace sly {
         std::optional<Entity*>  _parent;
         std::optional<Drawable> _drawable;
         std::vector<Entity*>    _children;
+
+        std::string             _name;
     };
 }
 

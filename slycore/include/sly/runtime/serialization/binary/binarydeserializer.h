@@ -7,7 +7,7 @@
 #include "sly/runtime/serialization/deserializer.h"
 
 namespace sly { 
-    class BinaryDeserializer : public IDeserializer {
+    /*class BinaryDeserializer : public IDeserializer {
     public:
         BinaryDeserializer(IInputStream& stream, Activator& activator) : _stream(stream), _activator(activator) {}
         virtual ~BinaryDeserializer() {}
@@ -98,6 +98,15 @@ namespace sly {
         }
 
         //activator
+        virtual retval<ISerializable&> create() {
+            std::string type;
+            if(property("type").read(type).succeeded()) {
+                return create(type.c_str());
+            }
+
+            return failed<ISerializable&>();
+        }
+
         virtual retval<ISerializable&> create(gsl::czstring<> type) {    
             auto result = _activator.create(type);
             
@@ -120,5 +129,5 @@ namespace sly {
 
         IInputStream& _stream;   
         Activator& _activator;
-    };
+    };*/
 }

@@ -2,6 +2,7 @@
 #include "sly/d3d12/gfx/shader.h"
 #include "sly/d3d12/gfx/convert.h"
 #include "sly/d3d12/dxh.h"
+#include "sly/win32.h"
 
 using namespace sly::gfx;
 
@@ -16,8 +17,8 @@ sly::retval<void> D3D12RenderStateImpl::init(const RenderStateDesc& desc) {
     ID3DBlob* signature;
     ID3DBlob* error;
 
-    D3D12SerializeRootSignature(&rootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
-    getID3D12Device().CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature));
+    ThrowIfFailed(D3D12SerializeRootSignature(&rootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
+    ThrowIfFailed(getID3D12Device().CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
    
     for(size_t i = 0; i < desc.inputElements.size(); i++) {
         _inputElement[i] = D3D12_INPUT_ELEMENT_DESC_CAST(desc.inputElements[i]);
@@ -42,7 +43,7 @@ sly::retval<void> D3D12RenderStateImpl::init(const RenderStateDesc& desc) {
     pso.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     pso.SampleDesc.Count = 1;
 
-    getID3D12Device().CreateGraphicsPipelineState(&pso, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState));
+    ThrowIfFailed(getID3D12Device().CreateGraphicsPipelineState(&pso, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
 
     _initialized = true;
 

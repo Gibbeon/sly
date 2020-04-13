@@ -67,15 +67,6 @@ void configureRenderInterfaces(const sly::Engine& engine) {
     #endif  
 }
 
-
-class TestScene : public sly::Scene {
-public:
-    virtual sly::retval<void> update() {
-        LOG_VERBOSE("TestScene");
-        return sly::success();
-    }
-};
-
 #ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pszArgs, int nCmdShow)
 #else
@@ -83,8 +74,6 @@ int main()
 #endif
 {   
     sly::Engine* engine = &sly::Engine();
-
-    S_LOG_VERBOSE("Hi");
 
     // load configuration, plugins, etc
     Ensures(engine->init().succeeded());
@@ -107,10 +96,7 @@ int main()
 
     window->setVisible(true);
 
-
-    //engine->activator().add<TestScene>();
-    engine->activator().add<sly::SimpleMesh>();
-
+    engine->activator().add<sly::Entity>();
     engine->resources().mount("slyedit/data");
 
     std::shared_ptr<sly::Scene> scene;
