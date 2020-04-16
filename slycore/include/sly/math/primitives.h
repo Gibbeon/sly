@@ -84,8 +84,23 @@ namespace sly {
     };
 
     template<typename T = real_t>
-    class rect_t : vec<4, T> {
+    class rect_t : vec<4, T>, public sly::ISerializable {
     public:
+        SLY_TYPEINFO;
+
+        virtual sly::retval<void> serialize(sly::ISerializer& archive) {
+            return success(); 
+        }
+
+        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+            DESERIALIZE("left", x, 0);
+            DESERIALIZE("top", y, 0);
+            DESERIALIZE("width", z, 0);
+            DESERIALIZE("height", w, 0);
+            return success();            
+        }
+        rect_t() {}
+        
         rect_t(T left,T top,T width,T height) {
             x = left;
             y = top;

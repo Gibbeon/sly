@@ -5,8 +5,22 @@
 namespace sly {
     namespace gfx {
         template<typename TColorType = float>
-        struct colort_t
-        {
+        struct colort_t : public sly::ISerializable {
+        public:
+            SLY_TYPEINFO;
+
+            virtual sly::retval<void> serialize(sly::ISerializer& archive) {
+                return success(); 
+            }
+
+            virtual sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                DESERIALIZE(r);
+                DESERIALIZE(g);
+                DESERIALIZE(b);
+                DESERIALIZE(a);
+                return success();            
+            }
+
             colort_t() {}
             colort_t(TColorType r, TColorType g, TColorType b, TColorType a) :
                 r(r), g(g), b(b), a(a)

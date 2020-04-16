@@ -9,12 +9,61 @@
 #include "sly/runtime/serializable.h"
 
 namespace sly { 
+
+    struct SceneDesc : sly::ISerializable {
+    public:
+        SLY_TYPEINFO;
+
+        Camera                      camera;
+        gfx::Viewport               viewport;  
+        std::vector<Entity*>        entities;
+        gfx::color_t                clearColor;
+        sly::rect_t<>               scissorRect;
+
+        virtual sly::retval<void> serialize(sly::ISerializer& archive) {            
+            archive.write("type", getType().name());      //begin record      
+            //archive.write("name", name);
+
+            return sly::success();
+        }
+
+        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) {                        
+            DESERIALIZE(clearColor);
+            DESERIALIZE(viewport);
+            DESERIALIZE(scissorRect);
+
+            {
+                auto& __array = archive.open("entities");
+                for(size_t i = 0; i < __array.size(); i++) {                          
+                    auto result = __array[i].create();
+                    if(result.succeeded()) {
+                        entities.push_back(&(result.as<Entity&>()));
+                    } else {
+                        return sly::failed();
+                    }
+                }
+                __array.close();
+            }  
+
+            return sly::success();
+        }
+    };
         
     class Scene : public sly::ISerializable {
     public:
         SLY_TYPEINFO;
 
         Scene() : _list(nullptr) {}
+
+        virtual retval<void> init(SceneDesc desc) {
+            _viewport = desc.viewport;
+            _camera = desc.camera;
+            _entities = std::move(desc.entities);
+            _clearColor = desc.clearColor;
+            _scissorRect = desc.scissorRect;
+
+            return success();
+        };
 
         virtual retval<void> update() {            
             for(auto& entity : _entities) {
@@ -36,17 +85,11 @@ namespace sly {
                 _list = context.getDevice().createCommandList();
             }
 
-            sly::gfx::Viewport viewport(0, 0, 1024, 768);
-            sly::rect_t<> scissorRect(0, 0, 1024, 768);
-            sly::gfx::color_t clearColor(.4f, .4f, .4f, 0.5f);
-
-            auto& wtf = context.currentRenderTarget();
-
             _list->begin();
-            _list->setRenderTarget(wtf);
-            _list->clear(clearColor);
-            _list->setViewport(viewport);    
-            _list->setScissorRect(scissorRect);
+            _list->setRenderTarget(context.currentRenderTarget());
+            _list->clear(_clearColor);
+            _list->setViewport(_viewport);    
+            _list->setScissorRect(_scissorRect);
 
             //_engine.gfx().draw([&]() {
             //    DrawGraph graph;
@@ -59,7 +102,7 @@ namespace sly {
 
             _list->end();
 
-           std::vector<sly::gfx::ICommandList*> lists;
+            std::vector<sly::gfx::ICommandList*> lists;
             lists.push_back(_list);
 
            context.commandQueue().executeCommandLists(lists);  
@@ -69,39 +112,26 @@ namespace sly {
            return success();
         }
 
-        virtual sly::retval<void> serialize(sly::ISerializer& archive) {            
-            archive.write("type", getType().name());      //begin record      
-            archive.write("name", _name);
-
+        virtual sly::retval<void> serialize(sly::ISerializer& archive) { 
             return sly::success();
         }
 
-        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) {            
-            archive.property("name").read(_name);
-
-            auto& record = archive.open("entities");
-            for(size_t i = 0; i < record.size(); i++) {
-                auto result = record.at(i).create();
-
-                if(result.succeeded()) {
-                    Entity& entity = result.as<Entity&>();
-                    _entities.push_back(&entity);
-                } else {
-                    return sly::failed();
-                }
-            }
-
-            record.close();
-
-            return sly::success();
+        virtual sly::retval<void> deserialize(sly::IDeserializer& archive) {  
+            SceneDesc desc;
+            archive.read(desc);      
+            return init(desc);
         }
+
+        
 
     private:      
-        Camera                      _camera;        
+        Camera                      _camera;
+        gfx::Viewport               _viewport;  
+        gfx::color_t                _clearColor;
+        sly::rect_t<>               _scissorRect;
+              
         std::vector<Entity*>        _entities;
         gfx::ICommandList*          _list;
-        
-        std::string _name;
     };
 }
 
