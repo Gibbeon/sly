@@ -5,12 +5,29 @@
 
 namespace sly {
 
-    struct DrawableFragmentDesc {
+    struct DrawableFragmentDesc : ISerializable {
+        SLY_TYPEINFO;
+
         uint_t                                      startInstanceLocation;
         uint_t                                      instanceCount;
-        uint_t                                      countPerInstance;
+        uint_t                                      vertexCount;
         uint_t                                      startLocation;
         int_t                                       baseVertexLocation;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+            return sly::success();
+        }
+
+        sly::retval<void> deserialize(sly::IDeserializer& archive) {            
+            DESERIALIZE(startInstanceLocation);
+            DESERIALIZE(instanceCount, 1);
+            DESERIALIZE(vertexCount);
+            DESERIALIZE(startLocation);
+            DESERIALIZE(baseVertexLocation);
+
+
+            return sly::success();
+        }
     };
 
     class DrawableFragment {
@@ -18,7 +35,7 @@ namespace sly {
         retval<void> init(DrawableFragmentDesc desc) {
             _startInstanceLocation = desc.startInstanceLocation;
             _instanceCount = desc.instanceCount;
-            _countPerInstance = desc.countPerInstance;
+            _countPerInstance = desc.vertexCount;
             _startLocation = desc.startLocation;
             _baseVertexLocation = desc.baseVertexLocation;
             

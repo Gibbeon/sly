@@ -156,7 +156,7 @@ int main()
         sly::gfx::RenderStateBuilder()
             .setVSShader(vsshader) //renderPipelineDesc.SetVertexFunction(vertFunc);
             .setPSShader(psshader) //renderPipelineDesc.SetFragmentFunction(fragFunc);
-            .setPrimitiveType(sly::gfx::ePrimativeType_Triangle)
+            .setPrimitiveType(sly::gfx::ePrimitiveType_Triangle)
             .setRTVFormats(0, sly::gfx::eDataFormat_R8G8B8A8_UNORM) //renderPipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
             .addInputElementDesriptor(            
                 sly::gfx::InputElementBuilder()
@@ -325,7 +325,7 @@ int main()
         .setVSShader(*vsshader) //renderPipelineDesc.SetVertexFunction(vertFunc);
         .setPSShader(*psshader) //renderPipelineDesc.SetFragmentFunction(fragFunc);
         .setSampleMax(UINT_MAX)
-        .setPrimitiveType(sly::gfx::ePrimativeType_Triangle)
+        .setPrimitiveType(sly::gfx::ePrimitiveType_Triangle)
         .setNumberRenderTargets(1)
         .setRTVFormats(0, sly::gfx::eDataFormat_R8G8B8A8_UNORM) //renderPipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
         .setSampleDesc(1)

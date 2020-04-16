@@ -4,7 +4,8 @@
 #include "sly/gfx/managedresource.h"
 #include "sly/gfx/viewport.h"
 #include "sly/gfx/color.h"
-#include "sly/math/primatives.h"
+#include "sly/gfx/enums.h"
+#include "sly/math/primitives.h"
 #include "sly/gfx/builders/commandlistbuilder.h"
 
 namespace sly {
@@ -25,7 +26,8 @@ namespace sly {
             virtual void setViewport(Viewport& viewport) = 0;
             virtual void setScissorRect(rect_t<real_t> rect) = 0;
             virtual void setVertexBuffer(IVertexBuffer& buffer) = 0;
-            virtual void setRenderTarget(IRenderTarget& target) = 0;
+            virtual void setRenderTarget(IRenderTarget& target) = 0;  
+            virtual void setPrimitiveType(ePrimitiveType type) = 0;
             
             virtual void clear(color_t color) = 0;
 

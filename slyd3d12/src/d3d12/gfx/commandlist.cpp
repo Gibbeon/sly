@@ -69,9 +69,14 @@ void D3D12CommandListImpl::setScissorRect(sly::rect_t<real_t> rect) {
     _list->RSSetScissorRects(1, &D3D12_RECT_CAST(rect));
 }
 
+void D3D12CommandListImpl::setPrimitiveType(ePrimitiveType type) { 
+    //get this from the vertex buffers?   
+    _list->IASetPrimitiveTopology(D3DConvert<D3D12_PRIMITIVE_TOPOLOGY>(type));
+}
+
 void D3D12CommandListImpl::setVertexBuffer(IVertexBuffer& buffer) { 
     //get this from the vertex buffers?   
-    _list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     D3D12_VERTEX_BUFFER_VIEW view;
 
@@ -86,8 +91,7 @@ void D3D12CommandListImpl::clear(color_t color) {
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
     rtvHandle.ptr = _target->getBufferLocation();
 
-    const float clearColor[] = { 0.4f, 0.4f, 0.4f, 1.0f };
-    _list->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+    _list->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 }
 
 void D3D12CommandListImpl::draw(size_t a, size_t b, size_t c, size_t d) {

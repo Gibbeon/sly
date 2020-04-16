@@ -163,18 +163,43 @@ namespace sly {
         virtual retval<ISerializable&> create() = 0;
         virtual retval<ISerializable&> create(gsl::czstring<> type) = 0;
 
+        IDeserializer& operator[](size_t index) {
+            return at(index);
+        }
+
+        template<typename T>
+        void read(byte_t* buffer, size_t count = UINT_MAX) {
+            Expects(this->size() <= count);
+            
+            for(size_t i = 0; i < this->size(); i++) {                    
+                this->at(i).read(*reinterpret_cast<T*>(buffer));
+                buffer += sizeof(T);
+            }
+        }
+
         template<typename TEnum, typename std::enable_if_t<std::is_enum<TEnum>::value>* = nullptr>
         retval<void> read(TEnum& value, TEnum default = (TEnum)0) {
             std::string type_string;
-            if(read(type_string).succeeded()) {
-                value = sly::Enum<TEnum>::parse(type_string.c_str());  
-                return success();
-            } else {
-                value = default;
-                return failed();
-            }          
+            if(read(type_string).succeeded() && !type_string.empty()) {
+                auto parsed = sly::Enum<TEnum>::parse(type_string.c_str());
+                if(parsed.succeeded()) {
+                    value = parsed;
+                    return success();
+                }
+            }
+            value = default;
+            return failed();    
         }
 
+        
+        template<typename TType>
+        retval<void> read(ISerializable& value, TType& default = TType()) {
+            if(!read(value).succeeded()) {
+                value = default;
+                return failed();
+            }
+            return success();
+        }
     protected:
         IDeserializer() {}
     };

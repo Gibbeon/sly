@@ -28,6 +28,9 @@ namespace sly {
         virtual size_t size() {
             if(data().is_array())
                 return data().size();
+                
+            if(data().is_null())
+                return 0;
 
             return 1;
         }
@@ -82,14 +85,12 @@ namespace sly {
         }
 
         virtual retval<void> read(ISerializable& value) {
-            Expects(data().is_object());
-
-            auto elem = data();
-
-            if(elem.is_null()) {
+            if(data().is_null()) {
                 _data.pop_back();
                 return failed();
             }
+
+            Expects(data().is_object());
 
             auto result = value.deserialize(*this);              
             _data.pop_back(); 
@@ -130,13 +131,15 @@ namespace sly {
 
         virtual IDeserializer& property(gsl::czstring<> name) {
             Expects(data().is_object());
-
             _data.push_back(data()[name]);
             return *this;            
         }
 
-        virtual IDeserializer&  open(gsl::czstring<> name) {
-            return property(name);
+        virtual IDeserializer&  open(gsl::czstring<> name) { 
+            Expects(data().is_object());
+            _data.push_back(data()[name]);           
+            Ensures(data().is_array() || data().is_null());
+            return *this;
         }
 
         virtual retval<void>    close() {

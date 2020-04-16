@@ -11,6 +11,7 @@ D3D12RenderStateImpl::D3D12RenderStateImpl(D3D12DeviceImpl& device) : _pipelineS
 }
 
 sly::retval<void> D3D12RenderStateImpl::init(const RenderStateDesc& desc) {
+    // root signature create needs to be pulled out of here
     CD3DX12_ROOT_SIGNATURE_DESC rootSignature;
     rootSignature.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -19,29 +20,23 @@ sly::retval<void> D3D12RenderStateImpl::init(const RenderStateDesc& desc) {
 
     ThrowIfFailed(D3D12SerializeRootSignature(&rootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
     ThrowIfFailed(getID3D12Device().CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
-   
-    for(size_t i = 0; i < desc.inputElements.size(); i++) {
-        _inputElement[i] = D3D12_INPUT_ELEMENT_DESC_CAST(desc.inputElements[i]);
-    }
+       
 
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC pso = {};
-    pso.InputLayout = { _inputElement, (UINT)desc.inputElements.size() };
+       // create a PSO convert 
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC pso {};
+
+    D3DAssign(pso, desc);
+    
+    pso.InputLayout.pInputElementDescs = _inputElement;
     pso.pRootSignature = _rootSignature;
 
-    D3D12ShaderImpl* vsd3dShader = reinterpret_cast<D3D12ShaderImpl*>(desc.vsShader);
-    D3D12ShaderImpl* psd3dShader = reinterpret_cast<D3D12ShaderImpl*>(desc.psShader);
+    for(size_t i = 0; i < desc.inputElements.size(); i++) {  
+        D3DAssign(const_cast<D3D12_INPUT_ELEMENT_DESC*>(pso.InputLayout.pInputElementDescs)[i], desc.inputElements[i]);
+    }
 
-    pso.VS = { vsd3dShader->getBuffer(), vsd3dShader->getSizeInBytes() };
-    pso.PS = { psd3dShader->getBuffer(), psd3dShader->getSizeInBytes() };
-    pso.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-    pso.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-    pso.DepthStencilState.DepthEnable = FALSE;
-    pso.DepthStencilState.StencilEnable = FALSE;
-    pso.SampleMask = UINT_MAX;
-    pso.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-    pso.NumRenderTargets = 1;
-    pso.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-    pso.SampleDesc.Count = 1;
+    pso.CachedPSO = D3D12_CACHED_PIPELINE_STATE();
+    pso.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+    pso.DSVFormat = DXGI_FORMAT_UNKNOWN;
 
     ThrowIfFailed(getID3D12Device().CreateGraphicsPipelineState(&pso, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
 

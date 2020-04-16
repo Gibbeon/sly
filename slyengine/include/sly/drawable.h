@@ -10,24 +10,41 @@ namespace sly {
     public:
         SLY_TYPEINFO;
 
-        std::vector<gfx::BufferDesc> buffers;
         gfx::RenderStateDesc state;
+        gfx::ePrimitiveType primitiveType;
+
+        std::vector<gfx::BufferDesc> buffers;
+        std::vector<gfx::ShaderDesc> shaders;
+        DrawableFragmentDesc fragment;
         
         sly::retval<void> serialize(sly::ISerializer& archive) {
             return sly::success();
         }
 
         sly::retval<void> deserialize(sly::IDeserializer& archive) {
-            auto& bufferArray = archive.property("buffers");
-
-            for(size_t i = 0; i < bufferArray.size(); i++) {
-                gfx::BufferDesc buffer;
-                bufferArray.at(i).read(buffer);
-                buffers.push_back(buffer);
+            {
+                gfx::BufferDesc __desc;
+                auto& __array = archive.open("buffers");
+                for(size_t i = 0; i < __array.size(); i++) {
+                    __array[i].read(__desc);
+                    buffers.push_back(__desc);
+                }
+                __array.close();
             }
-            bufferArray.close();
-            
-            archive.property("state").read(state);
+
+            {
+                gfx::ShaderDesc __desc;
+                auto& __array = archive.open("shaders");
+                for(size_t i = 0; i < __array.size(); i++) {
+                    __array[i].read(__desc);
+                    shaders.push_back(__desc);
+                }
+                __array.close();
+            }
+
+            DESERIALIZE(state);
+            DESERIALIZE(fragment);
+            DESERIALIZE(primitiveType, gfx::ePrimitiveType_Default);
 
             return sly::success();
         }
@@ -48,62 +65,30 @@ namespace sly {
                 switch(buffer.bufferType) {
                     case gfx::eBufferType_Vertex:
                         auto vb = _device.createVertexBuffer(buffer);
-                        //vb->init(buffer);
                         _vertexBuffers.push_back(vb);
                     break;
                 }
             }
 
-            DrawableFragmentDesc fragmentDesc;
-
-            fragmentDesc.baseVertexLocation = 0;
-            fragmentDesc.countPerInstance = 3;
-            fragmentDesc.instanceCount = 1;
-            fragmentDesc.startInstanceLocation = 0;
-            fragmentDesc.startLocation = 0;
-
             DrawableFragment fragment;
-            fragment.init(fragmentDesc);
+            fragment.init(desc.fragment);
             _fragments.push_back(fragment);
 
-            /*auto rsState = device->createRenderState( 
-                sly::gfx::RenderStateBuilder()
-                    .setVSShader(vsshader) //renderPipelineDesc.SetVertexFunction(vertFunc);
-                    .setPSShader(psshader) //renderPipelineDesc.SetFragmentFunction(fragFunc);
-                    .setPrimitiveType(sly::gfx::ePrimativeType_Triangle)
-                    .setRTVFormats(0, sly::gfx::eDataFormat_R8G8B8A8_UNORM) //renderPipelineDesc.GetColorAttachments()[0].SetPixelFormat(mtlpp::PixelFormat::BGRA8Unorm);
-                    .addInputElementDesriptor(            
-                        sly::gfx::InputElementBuilder()
-                            .setSemanticName("POSITION")
-                            .setFormat(sly::gfx::eDataFormat_R32G32B32_FLOAT)
-                            .build()
-                    )
-                    .addInputElementDesriptor(
-                        sly::gfx::InputElementBuilder()
-                            .setSemanticName("COLOR")
-                            .setFormat(sly::gfx::eDataFormat_R32G32B32A32_FLOAT)
-                            .setOffset(12)
-                            .build()
-                    )
-                    .build();*/
-                //);
-
-                //gotta have the shaders
-
-            for(auto& shader: desc.state.shaders) {
+            for(auto& shader: desc.shaders) {
                 auto pShader = _device.createShader(shader);
                 switch(shader.shaderType) {
                     case gfx::eShaderType_Vertex:
                         desc.state.vsShader = pShader;
+                        break;
                     case gfx::eShaderType_Pixel:
                         desc.state.psShader = pShader;
+                        break;
                     break;
                 }
-
-                // make unique is trying to destroy the shader here
             }
 
-            _state = _device.createRenderState(desc.state);            
+            _state = _device.createRenderState(desc.state); 
+            _primitiveType = desc.primitiveType;           
             return success();      
 
         }
@@ -112,7 +97,9 @@ namespace sly {
                             , uint_t vertexSlot = 0) const {
 
             list.setRenderState(*_state);
+            list.setPrimitiveType(_primitiveType);
             list.setVertexBuffer(*_vertexBuffers[0]);
+            
 
             //IF_EXISTS(_indexBuffer, list.setIndexBuffer(_indexBuffer));
 
@@ -155,6 +142,7 @@ namespace sly {
         std::vector<gfx::IVertexBuffer*>    _vertexBuffers;  
         std::optional<gfx::IIndexBuffer*>   _indexBuffer;  
         std::vector<DrawableFragment>       _fragments;
+        gfx::ePrimitiveType   _primitiveType;
     };
 }
 

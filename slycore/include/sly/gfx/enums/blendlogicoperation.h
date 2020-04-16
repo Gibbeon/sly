@@ -8,6 +8,7 @@ namespace sly {
             eBlendLogicOperation_Clear,
             eBlendLogicOperation_Set,
             eBlendLogicOperation_Copy,
+            eBlendLogicOperation_CopyInverted,
             eBlendLogicOperation_Nothing,
             eBlendLogicOperation_Invert,
             eBlendLogicOperation_And,

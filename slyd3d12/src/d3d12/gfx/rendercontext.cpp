@@ -59,9 +59,6 @@ sly::retval<void> D3D12RenderContextImpl::init(const RenderContextDesc& desc) {
         getID3D12Device().CreateRenderTargetView(ptr, 0, rtvHandle); // writes the location of a render target view heap entry at the heap location
         
             _renderTargets[n].init(ptr, rtvHandle.ptr);
-
-
-
     }    
 
     return success();

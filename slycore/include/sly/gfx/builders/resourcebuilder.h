@@ -8,7 +8,7 @@ namespace sly {
     namespace gfx {
         //eBufferDataType_Float
 
-        struct ResourceDesc : public virtual sly::ISerializable {
+        struct ResourceDesc : public sly::ISerializable {
         public:
             SLY_TYPEINFO;
 
@@ -18,7 +18,7 @@ namespace sly {
             size_t count;
             size_t sizeInBytes;
 
-            vptr_t data;
+            std::shared_ptr<byte_t[]> data;
 
             sly::retval<void> serialize(sly::ISerializer& archive) {
                 //archive.begin(*this, name);
@@ -31,17 +31,25 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) {
-                archive.property("name").read(name);
-                archive.property("stride").read(stride);
+                DESERIALIZE(name);
+                DESERIALIZE(stride, sizeof(f32));                
+                DESERIALIZE(count);
+                DESERIALIZE(sizeInBytes);
 
-                auto& array = archive.open("array");
+                /*{
+                    auto& __array = archive.open("array");
+                    count       = count ? count : __array.size();
+                    sizeInBytes = sizeInBytes ? sizeInBytes : (count * stride);
 
-                for(size_t i = 0; i < array.size(); i++) {
-                    f32 item;
-                    array.at(i).read(item);
-                    //data[i] = item;
-                }
-                array.close();
+                    Expects(__array.size() == count);
+                    Expects(sizeInBytes == count);
+                    
+                    data = std::make_shared<byte_t>(new byte_t[sizeInBytes], std::default_delete<byte_t[]>());
+                    for(size_t i = 0; i < __array.size(); i++) {
+                        __array[i].read(((f32*)data.get())[i]);
+                    }
+                    __array.close();
+                }*/
 
                 return sly::success();
             }

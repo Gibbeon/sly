@@ -20,8 +20,7 @@ namespace sly {
 
             eShaderType shaderType;
             std::string data;
-            size_t size;
-            std::string entry;
+            std::string entryPoint;
             std::string target;
             std::string name;
 
@@ -31,7 +30,7 @@ namespace sly {
                 archive.write("name", name);
                 //archive.write("type", getType().name());
                 //archive.write("data", data);
-                archive.write("entryPoint", entry);
+                archive.write("entryPoint", entryPoint);
                 archive.write("target", target);
 
                 //archive.end();
@@ -40,13 +39,11 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) {
-                archive.property("shaderType").read(shaderType);
-                archive.property("data").read(data);
-                archive.property("entryPoint").read(entry);
-                archive.property("target").read(target);
-                archive.property("name").read(name);
-
-                size = data.length();
+                DESERIALIZE(shaderType);
+                DESERIALIZE(data);
+                DESERIALIZE(entryPoint);
+                DESERIALIZE(target);
+                DESERIALIZE(name);
 
                 return sly::success();
             }
@@ -59,10 +56,10 @@ namespace sly {
             ShaderBuilder() : Builder() {}
             virtual ~ShaderBuilder() {}
 
-            ShaderBuilder& setData(std::string data, size_t size) { _descriptor.data = data; _descriptor.size = size; return * this; }
-            ShaderBuilder& setEntryPoint(gsl::zstring<> entry) { _descriptor.entry = entry; return * this; }
-            ShaderBuilder& setTarget(gsl::zstring<> target) { _descriptor.target = target; return * this; }
-            ShaderBuilder& setName(gsl::zstring<> name) { _descriptor.name = name; return * this; }
+            //ShaderBuilder& setData(std::string data, size_t size) { _descriptor.data = data; _descriptor.size = size; return * this; }
+            //ShaderBuilder& setEntryPoint(gsl::zstring<> entry) { _descriptor.entry = entry; return * this; }
+            //ShaderBuilder& setTarget(gsl::zstring<> target) { _descriptor.target = target; return * this; }
+            //ShaderBuilder& setName(gsl::zstring<> name) { _descriptor.name = name; return * this; }
         };
     }
 }

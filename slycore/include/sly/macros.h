@@ -20,6 +20,13 @@ template< unsigned int value_ > struct static_log2
 template<> struct static_log2< 1 > { static const unsigned int result = 0 ; } ;
 template<> struct static_log2< 0 > { } ;
 
+template<  unsigned int align_to = 16, typename TType =  unsigned int > 
+TType align(TType value_)
+{
+    return (value_ + (align_to - 1)) & ~(align_to - 1);
+};
+
+
 template< const char char_, const char* str_, unsigned int value_ = 0 > struct static_strlen
 {
     static const unsigned int result = static_strlen<str_[value_], str_, value_ + 1>::result;

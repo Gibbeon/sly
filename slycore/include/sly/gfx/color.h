@@ -22,6 +22,8 @@ namespace sly {
                 };                
                 TColorType data[4];
             };
+
+            operator const TColorType*() { return data; }
         };
 
         typedef colort_t<float> color_t;

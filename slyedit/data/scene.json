@@ -32,8 +32,43 @@
             "type": "sly::Entity",
             "drawable":
             {
+                "shaders": 
+                [
+                    {
+                        "shaderType": "eShaderType_Vertex",
+                        "name": "VSMain",
+                        "data": "struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; }; PSInput VSMain(float4 position : POSITION, float4 color : COLOR) {  PSInput result; result.position = position; result.color = color; return result; }",
+                        "entryPoint": "VSMain",
+                        "target": "vs_5_0"
+                    },
+                    {
+                        "shaderType": "eShaderType_Pixel",
+                        "name": "PSMain",
+                        "data": "struct PSInput { float4 position : SV_POSITION; float4 color : COLOR; };  float4 PSMain(PSInput input) : SV_TARGET { return input.color; }",
+                        "entryPoint": "PSMain",
+                        "target": "ps_5_0"
+                    }
+                ],
+                "primitiveType": "ePrimitiveType_TriangleStrip",
+                "fragment": {
+                    "vertexCount": 5
+                },
                 "state": {
-                    "primitiveType": "ePrimativeType_Triangle",
+                    "blend": {
+                        "alphaToCoverageEnable": false,
+                        "independentBlendEnable": false,
+                        "targets": [
+                            {
+                                "blendEnable": false,
+                                "srcBlend": "eBlendType_SourceAlpha",
+                                "destBlend": "eBlendType_InverseSourceAlpha",
+                                "blendOp": "eBlendOperation_Add"
+                            }
+                        ]
+                    },
+                    "rasterizer": {
+                        "fillMode": "ePolygonFillMode_Wireframe"
+                    },
                     "inputElements": 
                     [
                         {
@@ -69,7 +104,6 @@
                 [
                     {
                         "name": "triange_colored",
-                        "bufferType": "eBufferType_Vertex", 
                         "descriptors": 
                         [
                             {
@@ -85,7 +119,7 @@
                         [
                             {
                                 "POSITION": [ -0.25, 0.33, 0.0 ],
-                                "COLOR":    [ 1.0, 1.0, 1.0, 1.0 ]
+                                "COLOR":    [ 1.0, 1.0, 1.0, 0.0 ]
                             }, 
                             {
                                 "POSITION": [  0.25, -0.33, 0.0 ],
@@ -93,8 +127,20 @@
                             },
                             {
                                 "POSITION": [ -0.25, -0.33, 0.0 ],
-                                "COLOR":    [ 0.0, 0.0, 1.0, 1.0 ]  
-                            }                                                   
+                                "COLOR":    [ 0.0, 0.0, 1.0, 0.0 ]  
+                            }, 
+                            {
+                                "POSITION": [  -0.5, 0.33, 0.0 ],
+                                "COLOR":    [ 1.0, 1.0, 1.0, 1.0 ]
+                            }, 
+                            {
+                                "POSITION": [  0.5, 0.33, 0.0 ],
+                                "COLOR":    [ 1.0, 1.0, 1.0, 0.0 ]
+                            } , 
+                            {
+                                "POSITION": [  0.5, -0.33, 0.0 ],
+                                "COLOR":    [ 1.0, 1.0, 1.0, 1.0 ]
+                            }                                               
                         ]
                     }
                 ]       

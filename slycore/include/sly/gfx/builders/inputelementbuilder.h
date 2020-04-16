@@ -26,14 +26,11 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) { 
-                scope = eDataInputClassification_PerVertex;
-                offset = 0;
-
-                archive.property("name").read(semanticName);
-                archive.property("format").read(format);
-                archive.property("offset").read(offset); 
-
-                size = gfx::sizeOf(format);               
+                DESERIALIZE("name", semanticName, "__noname");
+                DESERIALIZE(format, eDataFormat_Default);
+                DESERIALIZE(offset);
+                DESERIALIZE(scope, eDataInputClassification_PerVertex);
+                DESERIALIZE(size, gfx::sizeOf(format));
                 
                 return sly::success();
             }

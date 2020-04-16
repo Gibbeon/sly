@@ -5,7 +5,7 @@
 #include "sly/d3d12/gfx/device.h"
 #include "sly/d3d12/gfx/renderstate.h"
 #include "sly/d3d12/gfx/rendertarget.h"
-#include "sly/math/primatives.h"
+#include "sly/math/primitives.h"
 
 namespace sly {
     namespace gfx {
@@ -27,7 +27,8 @@ namespace sly {
             virtual void setViewport(Viewport& viewport);
             virtual void setScissorRect(rect_t<real_t> rect);
             virtual void setVertexBuffer(IVertexBuffer& buffer);
-            virtual void setRenderTarget(IRenderTarget& target);            
+            virtual void setRenderTarget(IRenderTarget& target);  
+            virtual void setPrimitiveType(ePrimitiveType type);          
             //virtual void setConstantBuffer(IRenderTarget& target);
             
             virtual void clear(color_t color);
