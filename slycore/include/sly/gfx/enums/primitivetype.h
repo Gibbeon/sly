@@ -58,47 +58,107 @@ namespace sly {
             ePrimitiveTopologyType_Default = ePrimitiveTopologyType_Triangle
         );
 
-        /*D3D_PRIMITIVE_TOPOLOGY_UNDEFINED	= 0,
-        D3D_PRIMITIVE_TOPOLOGY_POINTLIST	= 1,
-        D3D_PRIMITIVE_TOPOLOGY_LINELIST	= 2,
-        D3D_PRIMITIVE_TOPOLOGY_LINESTRIP	= 3,
-        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST	= 4,
-        D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP	= 5,
-        D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ	= 10,
-        D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ	= 11,
-        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ	= 12,
-        D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ	= 13,
-        D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST	= 33,
-        D3D_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST	= 34,
-        D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST	= 35,
-        D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST	= 36,
-        D3D_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST	= 37,
-        D3D_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST	= 38,
-        D3D_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST	= 39,
-        D3D_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST	= 40,
-        D3D_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST	= 41,
-        D3D_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST	= 42,
-        D3D_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST	= 43,
-        D3D_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST	= 44,
-        D3D_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST	= 45,
-        D3D_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST	= 46,
-        D3D_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST	= 47,
-        D3D_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST	= 48,
-        D3D_PRIMITIVE_TOPOLOGY_17_CONTROL_POINT_PATCHLIST	= 49,
-        D3D_PRIMITIVE_TOPOLOGY_18_CONTROL_POINT_PATCHLIST	= 50,
-        D3D_PRIMITIVE_TOPOLOGY_19_CONTROL_POINT_PATCHLIST	= 51,
-        D3D_PRIMITIVE_TOPOLOGY_20_CONTROL_POINT_PATCHLIST	= 52,
-        D3D_PRIMITIVE_TOPOLOGY_21_CONTROL_POINT_PATCHLIST	= 53,
-        D3D_PRIMITIVE_TOPOLOGY_22_CONTROL_POINT_PATCHLIST	= 54,
-        D3D_PRIMITIVE_TOPOLOGY_23_CONTROL_POINT_PATCHLIST	= 55,
-        D3D_PRIMITIVE_TOPOLOGY_24_CONTROL_POINT_PATCHLIST	= 56,
-        D3D_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST	= 57,
-        D3D_PRIMITIVE_TOPOLOGY_26_CONTROL_POINT_PATCHLIST	= 58,
-        D3D_PRIMITIVE_TOPOLOGY_27_CONTROL_POINT_PATCHLIST	= 59,
-        D3D_PRIMITIVE_TOPOLOGY_28_CONTROL_POINT_PATCHLIST	= 60,
-        D3D_PRIMITIVE_TOPOLOGY_29_CONTROL_POINT_PATCHLIST	= 61,
-        D3D_PRIMITIVE_TOPOLOGY_30_CONTROL_POINT_PATCHLIST	= 62,
-        D3D_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST	= 63,
-        D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST	= 64,   */     
+        
+        ENUM_DECL(eRootSignatureFlag,
+            eRootSignatureFlag_None	= 0,
+            eRootSignatureFlag_Allow_InputAssemblerInputLayout = 0x1,
+            eRootSignatureFlag_Deny_VertexShaderRootAccess = 0x2,
+            eRootSignatureFlag_Deny_HullShaderRootAccess = 0x4,
+            eRootSignatureFlag_Deny_DomainShaderRootAccess = 0x8,
+            eRootSignatureFlag_Deny_GeometryShaderRootAccess = 0x10,
+            eRootSignatureFlag_Deny_PixelShaderRootAccess = 0x20,
+            eRootSignatureFlag_Allow_StreamOutput = 0x40,
+            eRootSignatureFlag_LocalRootSignature = 0x80
+        ); 
+
+        ENUM_DECL(eFilterType,
+            eFiltertype_Min_Mag_Mip_Point,
+            eFiltertype_Min_Mag_Point_Mip_Linear,
+            eFiltertype_Min_Point_Mag_Linear_Mip_Point,
+            eFiltertype_Min_Point_Mag_Mip_Linear,
+            eFiltertype_Min_Linear_Mag_Mip_Point,
+            eFiltertype_Min_Linear_Mag_Point_Mip_Linear,
+            eFiltertype_Min_Mag_Linear_Mip_Point,
+            eFiltertype_Min_Mag_Mip_Linear,
+            eFiltertype_Anisotropic,
+            eFiltertype_Comparison_Min_Mag_Mip_Point,
+            eFiltertype_Comparison_Min_Mag_Point_Mip_Linear,
+            eFiltertype_Comparison_Min_Point_Mag_Linear_Mip_Point,
+            eFiltertype_Comparison_Min_Point_Mag_Mip_Linear,
+            eFiltertype_Comparison_Min_Linear_Mag_Mip_Point,
+            eFiltertype_Comparison_Min_Linear_Mag_Point_Mip_Linear,
+            eFiltertype_Comparison_Min_Mag_Linear_Mip_Point,
+            eFiltertype_Comparison_Min_Mag_Mip_Linear,
+            eFiltertype_Comparison_Anisotropic,
+            eFiltertype_Minimum_Min_Mag_Mip_Point,
+            eFiltertype_Minimum_Min_Mag_Point_Mip_Linear,
+            eFiltertype_Minimum_Min_Point_Mag_Linear_Mip_Point,
+            eFiltertype_Minimum_Min_Point_Mag_Mip_Linear,
+            eFiltertype_Minimum_Min_Linear_Mag_Mip_Point,
+            eFiltertype_Minimum_Min_Linear_Mag_Point_Mip_Linear,
+            eFiltertype_Minimum_Min_Mag_Linear_Mip_Point,
+            eFiltertype_Minimum_Min_Mag_Mip_Linear,
+            eFiltertype_Minimum_Anisotropic,
+            eFiltertype_Maximum_Min_Mag_Mip_Point,
+            eFiltertype_Maximum_Min_Mag_Point_Mip_Linear,
+            eFiltertype_Maximum_Min_Point_Mag_Linear_Mip_Point,
+            eFiltertype_Maximum_Min_Point_Mag_Mip_Linear,
+            eFiltertype_Maximum_Min_Linear_Mag_Mip_Point,
+            eFiltertype_Maximum_Min_Linear_Mag_Point_Mip_Linear,
+            eFiltertype_Maximum_Min_Mag_Linear_Mip_Point,
+            eFiltertype_Maximum_Min_Mag_Mip_Linear,
+            eFiltertype_Maximum_Anisotropic); 
+            
+            ENUM_DECL(eTextureAddressMode,
+                eTextureAddressMode_Wrap,
+                eTextureAddressMode_Mirror,
+                eTextureAddressMode_Clamp,
+                eTextureAddressMode_Border,
+                eTextureAddressMode_Mirror_Once);
+
+                ENUM_DECL(eStaticBorderColor,
+eStaticBorderColor_Transparent_Black,
+eStaticBorderColor_Opaque_Black,
+eStaticBorderColor_Opaque_White);
+
+ENUM_DECL(eShaderVisibility,
+eShaderVisibility_All,
+eShaderVisibility_Vertex,
+eShaderVisibility_Hull,
+eShaderVisibility_Domain,
+eShaderVisibility_Geometry,
+eShaderVisibility_Pixel);
+
+ENUM_DECL(eRootParameterType,
+eRootParameterType_Descriptor_Table,
+eRootParameterType_32Bit_Constants,
+eRootParameterType_Cbv,
+eRootParameterType_Srv,
+eRootParameterType_Uav);
+
+ENUM_DECL(eDescriptorRangeType,
+eDescriptorRangeType_Srv,
+eDescriptorRangeType_Uav,
+eDescriptorRangeType_Cbv,
+eDescriptorRangeType_Sampler);
     }
 }
+
+/*
+s_PresentRS.Reset(4, 2);
+    s_PresentRS[0].InitAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 2);
+    s_PresentRS[1].InitAsConstants(0, 6, D3D12_SHADER_VISIBILITY_ALL);
+    s_PresentRS[2].InitAsBufferSRV(2, D3D12_SHADER_VISIBILITY_PIXEL);
+    s_PresentRS[3].InitAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 0, 1);
+    s_PresentRS.InitStaticSampler(0, SamplerLinearClampDesc);
+    s_PresentRS.InitStaticSampler(1, SamplerPointClampDesc);
+    s_PresentRS.Finalize(L"Present");
+
+    SamplerLinearClampDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+    SamplerLinearClampDesc.SetTextureAddressMode(D3D12_TEXTURE_ADDRESS_MODE_CLAMP);
+    SamplerLinearClamp = SamplerLinearClampDesc.CreateDescriptor();
+
+    SamplerPointClampDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+    SamplerPointClampDesc.SetTextureAddressMode(D3D12_TEXTURE_ADDRESS_MODE_CLAMP);
+    SamplerPointClamp = SamplerPointClampDesc.CreateDescriptor();
+    */

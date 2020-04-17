@@ -2,11 +2,197 @@
 
 #include "sly/global.h"
 #include "sly/builder.h"
+#include "sly/gfx/builders/inputelementbuilder.h"
 #include "sly/gfx/shader.h"
+#include "sly/gfx/rootsignature.h"
 #include "sly/gfx/enums.h"
 
 namespace sly {
-    namespace gfx {       
+    namespace gfx {    
+
+        struct RootDescriptorRangeDesc : public ISerializable {
+        public:
+            SLY_TYPEINFO;
+
+            eDescriptorRangeType rangeType;
+            uint_t numDescriptors;
+            uint_t baseShaderRegister;
+            uint_t registerSpace;
+            uint_t offsetInDescriptorsFromTableStart;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                DESERIALIZE(rangeType);
+                DESERIALIZE(numDescriptors);
+                DESERIALIZE(baseShaderRegister);
+                DESERIALIZE(registerSpace);
+                DESERIALIZE(offsetInDescriptorsFromTableStart);
+
+                return sly::success();
+            }
+        };
+
+        struct RootConstantsDesc : public ISerializable {
+        public:
+            SLY_TYPEINFO;
+
+            uint_t shaderRegister;
+            uint_t registerSpace;
+            uint_t num32BitValues;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                DESERIALIZE(shaderRegister);
+                DESERIALIZE(registerSpace);
+                DESERIALIZE(num32BitValues);
+
+                return sly::success();
+            }
+        };
+        
+        struct RootDescriptorDesc : public ISerializable {
+        public:
+            SLY_TYPEINFO;
+
+            uint_t shaderRegister;
+            uint_t registerSpace;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                DESERIALIZE(shaderRegister);
+                DESERIALIZE(registerSpace);
+
+                return sly::success();
+            }
+        };
+
+        struct RootParameterDesc : public ISerializable {  
+        public:
+            SLY_TYPEINFO;
+
+            eRootParameterType parameterType;
+            eShaderVisibility shaderVisibility;
+            RootConstantsDesc constants;
+            RootDescriptorDesc descriptor;
+
+            std::vector<RootDescriptorRangeDesc> descriptors;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                DESERIALIZE(parameterType);
+                DESERIALIZE(shaderVisibility);
+                DESERIALIZE(constants);
+                DESERIALIZE(descriptor);
+
+                {
+                    gfx::RootDescriptorRangeDesc desc;
+                    auto& __array = archive.open("descriptors");
+
+                    for(size_t i = 0; i < __array.size(); i++) {                          
+                        __array[i].read(desc);
+                        descriptors.push_back(desc);
+                    }
+                    __array.close();
+                } 
+
+
+                return sly::success();
+            }
+        };
+
+        struct StaticSamplerDesc : public ISerializable {
+        public:
+            SLY_TYPEINFO;
+
+            eFilterType filter;
+            eTextureAddressMode addressU;
+            eTextureAddressMode addressV;
+            eTextureAddressMode addressW;
+            real_t mipLODBias;
+            uint_t maxAnisotropy;
+            eCompareFunction comparisonFunc;
+            eStaticBorderColor borderColor;
+            real_t minLOD;
+            real_t maxLOD;
+            uint_t shaderRegister;
+            uint_t registerSpace;
+            eShaderVisibility shaderVisibility;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                DESERIALIZE(filter, eFiltertype_Anisotropic);
+                DESERIALIZE(addressU, eTextureAddressMode_Wrap);
+                DESERIALIZE(addressV, eTextureAddressMode_Wrap);
+                DESERIALIZE(addressW, eTextureAddressMode_Wrap);
+                DESERIALIZE(mipLODBias);
+                DESERIALIZE(maxAnisotropy, 16);
+                DESERIALIZE(comparisonFunc, eCompareFunction_LessOrEqual);
+                DESERIALIZE(borderColor, eStaticBorderColor_Opaque_White);
+                DESERIALIZE(minLOD);
+                DESERIALIZE(maxLOD, 3.402823466e+38f);
+                DESERIALIZE(shaderRegister);
+                DESERIALIZE(registerSpace);
+                DESERIALIZE(shaderVisibility, eShaderVisibility_All);
+
+                return sly::success();
+            }
+        };
+
+        struct RootSignatureDesc : public ISerializable {
+        public:
+            SLY_TYPEINFO;
+
+            std::vector<RootParameterDesc> parameters;
+            std::vector<StaticSamplerDesc> staticSamplers;
+            eRootSignatureFlag flags;
+
+            sly::retval<void> serialize(sly::ISerializer& archive) {
+                return sly::success();
+            }
+
+            sly::retval<void> deserialize(sly::IDeserializer& archive) { 
+                
+                DESERIALIZE(flags);
+
+                {                    
+                    auto& __array = archive.open("parameters");
+
+                    for(size_t i = 0; i < __array.size(); i++) {
+                        gfx::RootParameterDesc desc;                          
+                        __array[i].read(desc);
+                        parameters.push_back(desc);
+                    }
+                    __array.close();
+                } 
+                {
+                    auto& __array = archive.open("staticSamplers");
+
+                    for(size_t i = 0; i < __array.size(); i++) {                          
+                        gfx::StaticSamplerDesc desc;                         
+                        __array[i].read(desc);
+                        staticSamplers.push_back(desc);
+                    }
+                    __array.close();
+                } 
+
+                return sly::success();
+            }
+        };
 
         struct BlendTargetDesc : public ISerializable {
         public:
@@ -233,7 +419,6 @@ namespace sly {
             }
         };
 
-
         struct SampleDesc : public ISerializable {
         public:
             SLY_TYPEINFO;
@@ -263,6 +448,10 @@ namespace sly {
             IShader* dsShader = nullptr;
             IShader* hsShader = nullptr;
             IShader* gsShader = nullptr; 
+            IRootSignature* pRootSignature = nullptr; 
+            //IShader* gsShader = nullptr; 
+
+            RootSignatureDesc           signature;
 
             BlendStateDesc              blend;
             RenderStateStreamOutput     streamOutput;
@@ -291,18 +480,18 @@ namespace sly {
             }
 
             sly::retval<void> deserialize(sly::IDeserializer& archive) { 
-                DESERIALIZE("depthStencilFormat", dsvFormat, eDataFormat_Default);
+                DESERIALIZE("depthStencilFormat", dsvFormat, eDataFormat_Unknown);
                 DESERIALIZE(PrimitiveTopologyType, ePrimitiveTopologyType_Default);
                 DESERIALIZE(indexBufferStripCutValue, eIndexBufferStripCutValue_Disabled);
                 DESERIALIZE(sampleMax, UINT_MAX);
+                DESERIALIZE(signature);
                 
                 // need to default objects
                 DESERIALIZE(blend);
                 DESERIALIZE(streamOutput);
                 DESERIALIZE("rasterizer", rasterizerState, RasterizerStateDesc());
                 DESERIALIZE("depthStencil", depthStencilState, DepthStencilDesc());
-                DESERIALIZE(sampleDesc);
-                DESERIALIZE(dsvFormat, eDataFormat_Unknown);                
+                DESERIALIZE(sampleDesc);           
 
                 nodeMask = 0;
 

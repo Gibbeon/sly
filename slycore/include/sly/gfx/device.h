@@ -20,7 +20,9 @@ namespace sly {
         class IIndexBufer;
         class IVertexBuffer;
         class IRenderState;
+        class IRootSignature;
 
+        struct RootSignatureDesc;
         struct RenderContextDesc;
         struct CommandListDesc;
         struct ResourceDesc;
@@ -41,6 +43,7 @@ namespace sly {
             virtual retval<IShader*> createShader(const ShaderDesc& desc = ShaderBuilder().build()) =0;
             virtual retval<IVertexBuffer*> createVertexBuffer(const BufferDesc& desc = BufferBuilder().build()) = 0;
             virtual retval<IRenderState*> createRenderState(const RenderStateDesc& desc = RenderStateBuilder().build()) = 0;
+            virtual retval<IRootSignature*> createRootSignature(const RootSignatureDesc& desc) = 0;
 
             //virtual void createRenderContext(IRenderContext** ppWindow, const RenderContextDesc& desc) = 0;
             virtual void createCommandQueue(ICommandQueue** queue,  const CommandQueueDesc& desc) = 0;

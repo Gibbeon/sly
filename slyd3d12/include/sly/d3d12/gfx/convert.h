@@ -30,6 +30,7 @@ constexpr TTo enum_convert_assign(TFrom src, TTo& dest) {
 namespace sly {
     namespace gfx {
         ENUM_MAP_DECL_BEGIN(eDataFormat, DXGI_FORMAT) {
+            ENUM_MAP(eDataFormat_Unknown, DXGI_FORMAT_UNKNOWN);
             ENUM_MAP(eDataFormat_R32G32B32A32_TYPELESS, DXGI_FORMAT_R32G32B32A32_TYPELESS);
             ENUM_MAP(eDataFormat_R32G32B32A32_FLOAT, DXGI_FORMAT_R32G32B32A32_FLOAT);
             ENUM_MAP(eDataFormat_R32G32B32A32_UINT, DXGI_FORMAT_R32G32B32A32_UINT);
@@ -144,6 +145,36 @@ namespace sly {
         }
         ENUM_MAP_DECL_END(eCompareFunction, D3D12_COMPARISON_FUNC);
 
+ENUM_MAP_DECL_BEGIN(eStaticBorderColor, D3D12_STATIC_BORDER_COLOR) {
+ENUM_MAP(eStaticBorderColor_Transparent_Black, D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK);
+ENUM_MAP(eStaticBorderColor_Opaque_Black, D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK);
+ENUM_MAP(eStaticBorderColor_Opaque_White, D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE);
+} ENUM_MAP_DECL_END(eStaticBorderColor, D3D12_STATIC_BORDER_COLOR);
+
+ENUM_MAP_DECL_BEGIN(eShaderVisibility, D3D12_SHADER_VISIBILITY) {
+ENUM_MAP(eShaderVisibility_All, D3D12_SHADER_VISIBILITY_ALL);
+ENUM_MAP(eShaderVisibility_Vertex, D3D12_SHADER_VISIBILITY_VERTEX);
+ENUM_MAP(eShaderVisibility_Hull, D3D12_SHADER_VISIBILITY_HULL);
+ENUM_MAP(eShaderVisibility_Domain, D3D12_SHADER_VISIBILITY_DOMAIN);
+ENUM_MAP(eShaderVisibility_Geometry, D3D12_SHADER_VISIBILITY_GEOMETRY);
+ENUM_MAP(eShaderVisibility_Pixel, D3D12_SHADER_VISIBILITY_PIXEL);
+} ENUM_MAP_DECL_END(eShaderVisibility, D3D12_SHADER_VISIBILITY);
+
+ENUM_MAP_DECL_BEGIN(eRootParameterType, D3D12_ROOT_PARAMETER_TYPE) {
+ENUM_MAP(eRootParameterType_Descriptor_Table, D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE);
+ENUM_MAP(eRootParameterType_32Bit_Constants, D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS);
+ENUM_MAP(eRootParameterType_Cbv, D3D12_ROOT_PARAMETER_TYPE_CBV);
+ENUM_MAP(eRootParameterType_Srv, D3D12_ROOT_PARAMETER_TYPE_SRV);
+ENUM_MAP(eRootParameterType_Uav, D3D12_ROOT_PARAMETER_TYPE_UAV);
+} ENUM_MAP_DECL_END(eRootParameterType, D3D12_ROOT_PARAMETER_TYPE);
+
+ENUM_MAP_DECL_BEGIN(eDescriptorRangeType, D3D12_DESCRIPTOR_RANGE_TYPE) {
+ENUM_MAP(eDescriptorRangeType_Srv, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+ENUM_MAP(eDescriptorRangeType_Uav, D3D12_DESCRIPTOR_RANGE_TYPE_UAV);
+ENUM_MAP(eDescriptorRangeType_Cbv, D3D12_DESCRIPTOR_RANGE_TYPE_CBV);
+ENUM_MAP(eDescriptorRangeType_Sampler, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER);
+} ENUM_MAP_DECL_END(eDescriptorRangeType, D3D12_DESCRIPTOR_RANGE_TYPE);
+ 
         ENUM_MAP_DECL_BEGIN(eDepthWriteMask, D3D12_DEPTH_WRITE_MASK) {
             ENUM_MAP(eDepthWriteMask_Zero, D3D12_DEPTH_WRITE_MASK_ZERO);
             ENUM_MAP(eDepthWriteMask_All, D3D12_DEPTH_WRITE_MASK_ALL);
@@ -167,8 +198,64 @@ namespace sly {
             ENUM_MAP(ePrimitiveTopologyType_Line, D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
             ENUM_MAP(ePrimitiveTopologyType_Triangle, D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
             ENUM_MAP(ePrimitiveTopologyType_Patch, D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
-        }
+        }        
         ENUM_MAP_DECL_END(ePrimitiveTopologyType, D3D12_PRIMITIVE_TOPOLOGY_TYPE);
+
+        ENUM_MAP_DECL_BEGIN(eRootSignatureFlag, D3D12_ROOT_SIGNATURE_FLAGS) {
+            case eRootSignatureFlag_None:
+                return (D3D12_ROOT_SIGNATURE_FLAG_NONE);
+            default:
+                return (D3D12_ROOT_SIGNATURE_FLAGS)value;
+        }        
+        ENUM_MAP_DECL_END(eRootSignatureFlag, D3D12_ROOT_SIGNATURE_FLAGS);
+
+        ENUM_MAP_DECL_BEGIN(eFilterType, D3D12_FILTER) {
+            ENUM_MAP(eFiltertype_Min_Mag_Mip_Point, D3D12_FILTER_MIN_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Min_Mag_Point_Mip_Linear, D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Min_Point_Mag_Linear_Mip_Point, D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Min_Point_Mag_Mip_Linear, D3D12_FILTER_MIN_POINT_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Min_Linear_Mag_Mip_Point, D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Min_Linear_Mag_Point_Mip_Linear, D3D12_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Min_Mag_Linear_Mip_Point, D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Min_Mag_Mip_Linear, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Anisotropic, D3D12_FILTER_ANISOTROPIC);
+            ENUM_MAP(eFiltertype_Comparison_Min_Mag_Mip_Point, D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Comparison_Min_Mag_Point_Mip_Linear, D3D12_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Comparison_Min_Point_Mag_Linear_Mip_Point, D3D12_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Comparison_Min_Point_Mag_Mip_Linear, D3D12_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Comparison_Min_Linear_Mag_Mip_Point, D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Comparison_Min_Linear_Mag_Point_Mip_Linear, D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Comparison_Min_Mag_Linear_Mip_Point, D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Comparison_Min_Mag_Mip_Linear, D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Comparison_Anisotropic, D3D12_FILTER_COMPARISON_ANISOTROPIC);
+            ENUM_MAP(eFiltertype_Minimum_Min_Mag_Mip_Point, D3D12_FILTER_MINIMUM_MIN_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Minimum_Min_Mag_Point_Mip_Linear, D3D12_FILTER_MINIMUM_MIN_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Minimum_Min_Point_Mag_Linear_Mip_Point, D3D12_FILTER_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Minimum_Min_Point_Mag_Mip_Linear, D3D12_FILTER_MINIMUM_MIN_POINT_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Minimum_Min_Linear_Mag_Mip_Point, D3D12_FILTER_MINIMUM_MIN_LINEAR_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Minimum_Min_Linear_Mag_Point_Mip_Linear, D3D12_FILTER_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Minimum_Min_Mag_Linear_Mip_Point, D3D12_FILTER_MINIMUM_MIN_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Minimum_Min_Mag_Mip_Linear, D3D12_FILTER_MINIMUM_MIN_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Minimum_Anisotropic, D3D12_FILTER_MINIMUM_ANISOTROPIC);
+            ENUM_MAP(eFiltertype_Maximum_Min_Mag_Mip_Point, D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Maximum_Min_Mag_Point_Mip_Linear, D3D12_FILTER_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Maximum_Min_Point_Mag_Linear_Mip_Point, D3D12_FILTER_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Maximum_Min_Point_Mag_Mip_Linear, D3D12_FILTER_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Maximum_Min_Linear_Mag_Mip_Point, D3D12_FILTER_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT);
+            ENUM_MAP(eFiltertype_Maximum_Min_Linear_Mag_Point_Mip_Linear, D3D12_FILTER_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Maximum_Min_Mag_Linear_Mip_Point, D3D12_FILTER_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT);
+            ENUM_MAP(eFiltertype_Maximum_Min_Mag_Mip_Linear, D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR);
+            ENUM_MAP(eFiltertype_Maximum_Anisotropic, D3D12_FILTER_MAXIMUM_ANISOTROPIC);
+        } 
+        ENUM_MAP_DECL_END(eFilterType, D3D12_FILTER);
+
+        ENUM_MAP_DECL_BEGIN(eTextureAddressMode, D3D12_TEXTURE_ADDRESS_MODE) {
+            ENUM_MAP(eTextureAddressMode_Wrap, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
+            ENUM_MAP(eTextureAddressMode_Mirror, D3D12_TEXTURE_ADDRESS_MODE_MIRROR);
+            ENUM_MAP(eTextureAddressMode_Clamp, D3D12_TEXTURE_ADDRESS_MODE_CLAMP);
+            ENUM_MAP(eTextureAddressMode_Border, D3D12_TEXTURE_ADDRESS_MODE_BORDER);
+            ENUM_MAP(eTextureAddressMode_Mirror_Once, D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE);
+        } ENUM_MAP_DECL_END(eTextureAddressMode, D3D12_TEXTURE_ADDRESS_MODE);
 
         ENUM_MAP_DECL_BEGIN(ePrimitiveType, D3D12_PRIMITIVE_TOPOLOGY) {     
             ENUM_MAP(ePrimitiveType_PointList, D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
@@ -402,6 +489,63 @@ namespace sly {
         D3D_DECL_CAST(D3D12_STREAM_OUTPUT_DESC, RenderStateStreamOutput, 
             D3DAssign(NumEntries, (UINT)src.streamOutputDeclaration.size());
             D3DAssign(NumStrides, (UINT)src.bufferStrides.size());
+        );
+
+        D3D_DECL_CAST(D3D12_ROOT_SIGNATURE_DESC, RootSignatureDesc,
+            D3DAssign(NumParameters, (UINT)src.parameters.size());
+            D3DAssign(NumStaticSamplers, (UINT)src.staticSamplers.size());
+            D3DAssign(Flags, src.flags);     
+        );
+
+        D3D_DECL_CAST(D3D12_ROOT_DESCRIPTOR, RootDescriptorDesc,
+            D3DAssign(ShaderRegister, src.shaderRegister);  
+            D3DAssign(RegisterSpace, src.registerSpace);  
+        );
+
+        D3D_DECL_CAST(D3D12_DESCRIPTOR_RANGE, RootDescriptorRangeDesc,
+            D3DAssign(NumDescriptors, src.numDescriptors);
+            D3DAssign(BaseShaderRegister, src.baseShaderRegister);
+            D3DAssign(RegisterSpace, src.registerSpace);
+            D3DAssign(OffsetInDescriptorsFromTableStart, src.offsetInDescriptorsFromTableStart);
+            D3DAssign(RangeType, src.rangeType);  
+        );
+
+        D3D_DECL_CAST(D3D12_ROOT_CONSTANTS, RootConstantsDesc,
+            D3DAssign(ShaderRegister, src.shaderRegister);  
+            D3DAssign(RegisterSpace, src.registerSpace);   
+            D3DAssign(Num32BitValues, src.num32BitValues);       
+        );
+
+        D3D_DECL_CAST(D3D12_ROOT_PARAMETER, RootParameterDesc,
+            D3DAssign(ParameterType, src.parameterType);
+            D3DAssign(ShaderVisibility, src.shaderVisibility);
+
+            switch(src.parameterType) {
+                case eRootParameterType_32Bit_Constants:
+                    D3DAssign(Constants, src.constants);
+                    break;
+                case eRootParameterType_Cbv:
+                case eRootParameterType_Srv:
+                case eRootParameterType_Uav:
+                    D3DAssign(Descriptor, src.descriptor);
+                    break;          
+            }
+        );
+                   
+        D3D_DECL_CAST(D3D12_STATIC_SAMPLER_DESC, StaticSamplerDesc,
+            D3DAssign(Filter, src.filter);
+            D3DAssign( AddressU, src.addressU);
+            D3DAssign( AddressV, src.addressV);
+            D3DAssign( AddressW, src.addressW);
+            D3DAssign( MipLODBias, src.mipLODBias);
+            D3DAssign( MaxAnisotropy, src.maxAnisotropy);
+            D3DAssign( ComparisonFunc, src.comparisonFunc);
+            D3DAssign( BorderColor, src.borderColor);
+            D3DAssign( MinLOD, src.minLOD);
+            D3DAssign( MaxLOD, src.maxLOD);
+            D3DAssign( ShaderRegister, src.shaderRegister);
+            D3DAssign( RegisterSpace, src.registerSpace);
+            D3DAssign( ShaderVisibility, src.shaderVisibility);
         );
 
         D3D_DECL_CAST(D3D12_GRAPHICS_PIPELINE_STATE_DESC, RenderStateDesc,

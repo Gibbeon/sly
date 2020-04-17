@@ -118,7 +118,8 @@
         "gsl_byte": "cpp",
         "gsl_util": "cpp",
         "filesystem": "cpp",
-        "resumable": "cpp"
+        "resumable": "cpp",
+        "*.def": "cpp"
     },
     "search.exclude": {
         "**/3rdparty": true

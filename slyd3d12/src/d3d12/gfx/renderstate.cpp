@@ -1,6 +1,7 @@
 #include "sly/d3d12/gfx/renderstate.h"
 #include "sly/d3d12/gfx/shader.h"
 #include "sly/d3d12/gfx/convert.h"
+#include "sly/d3d12/gfx/rootsignature.h"
 #include "sly/d3d12/dxh.h"
 #include "sly/win32.h"
 
@@ -12,31 +13,33 @@ D3D12RenderStateImpl::D3D12RenderStateImpl(D3D12DeviceImpl& device) : _pipelineS
 
 sly::retval<void> D3D12RenderStateImpl::init(const RenderStateDesc& desc) {
     // root signature create needs to be pulled out of here
-    CD3DX12_ROOT_SIGNATURE_DESC rootSignature;
-    rootSignature.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+    
 
-    ID3DBlob* signature;
-    ID3DBlob* error;
+    D3D12_INPUT_ELEMENT_DESC inputElement[8];
+    sly::gfx::IRootSignature* pRootSignature = desc.pRootSignature;
 
-    ThrowIfFailed(D3D12SerializeRootSignature(&rootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
-    ThrowIfFailed(getID3D12Device().CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_ID3D12RootSignature, reinterpret_cast<vptr_t*>(&_rootSignature)));
-       
+    if(pRootSignature == nullptr) {
+        pRootSignature = getDevice().createRootSignature(desc.signature);
+    }
 
        // create a PSO convert 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC pso {};
 
     D3DAssign(pso, desc);
     
-    pso.InputLayout.pInputElementDescs = _inputElement;
-    pso.pRootSignature = _rootSignature;
+    pso.InputLayout.pInputElementDescs  = inputElement;
+    pso.pRootSignature                  = _rootSignature = reinterpret_cast<D3D12RootSignatureImpl*>(pRootSignature)->getID3D12RootSignature();
 
     for(size_t i = 0; i < desc.inputElements.size(); i++) {  
-        D3DAssign(const_cast<D3D12_INPUT_ELEMENT_DESC*>(pso.InputLayout.pInputElementDescs)[i], desc.inputElements[i]);
+        D3DAssign(inputElement[i], desc.inputElements[i]);
     }
 
     pso.CachedPSO = D3D12_CACHED_PIPELINE_STATE();
+
+    // warwp device only
+    //pso.Flags = D3D12_PIPELINE_STATE_FLAG_TOOL_DEBUG;
+
     pso.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-    pso.DSVFormat = DXGI_FORMAT_UNKNOWN;
 
     ThrowIfFailed(getID3D12Device().CreateGraphicsPipelineState(&pso, IID_ID3D12PipelineState, reinterpret_cast<vptr_t*>(&_pipelineState)));
 

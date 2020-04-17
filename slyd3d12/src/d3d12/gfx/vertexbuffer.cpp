@@ -50,7 +50,7 @@ void D3D12VertexBufferImpl::write(vptr_t data, size_t size, size_t stride) {
     if(size == 0) return;
 
     byte_t* dest;
-    D3D12_RANGE readRange = {0, 0};        // We do not intend to read from this resource on the CPU.
+    D3D12_RANGE readRange = {0, size};        // We do not intend to read from this resource on the CPU.
     _resource->Map(0, &readRange, reinterpret_cast<vptr_t*>(&dest));
     memcpy(dest, data, size);
     _resource->Unmap(0, nullptr);

@@ -5,6 +5,7 @@
 #include "sly/global.h"
 #include "sly/builder.h"
 #include "sly/gfx/enums.h"
+#include "sly/runtime/serializable.h"
 
 namespace sly {
     namespace gfx {

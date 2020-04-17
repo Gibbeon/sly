@@ -7,7 +7,9 @@ namespace sly {
     namespace gfx {  
         struct DeviceDesc {
         public:
-            u32 adapter;
+            u32 adapter = 0;
+            bool_t warp = false;
+            bool_t debug = true;
         };
         
         class DeviceBuilder : public Builder<DeviceDesc> {

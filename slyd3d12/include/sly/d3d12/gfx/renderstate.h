@@ -19,8 +19,6 @@ namespace sly {
             ID3D12RootSignature&  getID3D12RootSignature() { return *_rootSignature; }
         
         protected:
-            void initRootSignature();
-            void initPipelineState();
 
         private:                
             virtual IDevice& getDevice() { return *_device; } 
@@ -31,8 +29,6 @@ namespace sly {
             ID3D12RootSignature* _rootSignature;  
 
             bool_t _initialized;
-
-            D3D12_INPUT_ELEMENT_DESC _inputElement[8];
         };       
     }
 }

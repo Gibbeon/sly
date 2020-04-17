@@ -6,6 +6,7 @@
 #include "sly/d3d12/gfx/indexbuffer.h"
 #include "sly/d3d12/gfx/shader.h"
 #include "sly/d3d12/gfx/renderstate.h"
+#include "sly/d3d12/gfx/rootsignature.h"
 #include "sly/d3d12/gfx/texture.h"
 #include "sly/os/window.h"
 #include "sly/win32/os/window.h"
@@ -21,7 +22,7 @@ sly::retval<void> D3D12DeviceImpl::init(const DeviceDesc& desc)
 {
     UINT dxgiFactoryFlags = 0;
 
-    #ifdef _DEBUG
+    if(desc.debug)
     {
         if (SUCCEEDED(D3D12GetDebugInterface(IID_ID3D12Debug, reinterpret_cast<vptr_t*>(&_debugTask))))
         {
@@ -31,18 +32,28 @@ sly::retval<void> D3D12DeviceImpl::init(const DeviceDesc& desc)
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
         }
     }
-    #endif
 
     CreateDXGIFactory2(dxgiFactoryFlags, IID_IDXGIFactory4, reinterpret_cast<vptr_t*>(&_factory));
-
-    for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != _factory->EnumAdapters1(adapterIndex, &_adapter); ++adapterIndex)
-    {
-        DXGI_ADAPTER_DESC1 desc;
-        _adapter->GetDesc1(&desc);
-
-        if (SUCCEEDED(D3D12CreateDevice(_adapter, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<vptr_t*>(&_device))))
+ 
+    if(desc.warp) {
+        if (SUCCEEDED( _factory->EnumWarpAdapter(IID_IDXGIAdapter1, reinterpret_cast<vptr_t*>(&_adapter))))
         {
-            break;
+            if (!SUCCEEDED(D3D12CreateDevice(_adapter, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<vptr_t*>(&_device))))
+            {
+                return failed();
+            }
+        }
+    } else {
+
+        for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != _factory->EnumAdapters1(adapterIndex, &_adapter); ++adapterIndex)
+        {
+            DXGI_ADAPTER_DESC1 desc;
+            _adapter->GetDesc1(&desc);
+
+            if (SUCCEEDED(D3D12CreateDevice(_adapter, D3D_FEATURE_LEVEL_11_0, IID_ID3D12Device, reinterpret_cast<vptr_t*>(&_device))))
+            {
+                break;
+            }
         }
     }
 
@@ -76,6 +87,12 @@ sly::retval<ICommandList*> D3D12DeviceImpl::createCommandList(const CommandListD
     return list;
 }
 
+sly::retval<IRootSignature*> D3D12DeviceImpl::createRootSignature(const RootSignatureDesc& desc) {
+    auto rootSignature = new D3D12RootSignatureImpl(*this);
+    rootSignature->init(desc);
+
+    return rootSignature;
+}
 
 void D3D12DeviceImpl::createCommandQueue(ICommandQueue** queue, const CommandQueueDesc& desc) {
     (*queue) = new D3D12CommandQueueImpl(*this);

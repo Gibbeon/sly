@@ -16,6 +16,7 @@ namespace sly {
             virtual retval<IShader*> createShader(const ShaderDesc& desc = ShaderBuilder().build());
             virtual retval<IVertexBuffer*> createVertexBuffer(const BufferDesc& desc = BufferBuilder().build());
             virtual retval<IRenderState*> createRenderState(const RenderStateDesc& desc = RenderStateBuilder().build());
+            virtual retval<IRootSignature*> createRootSignature(const RootSignatureDesc& desc);
 
             //virtual void createRenderContext(IRenderContext** ppWindow, const RenderContextDesc& desc);
             virtual void createCommandQueue(ICommandQueue** queue, const CommandQueueDesc& desc);

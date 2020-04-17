@@ -50,6 +50,56 @@
                     "vertexCount": 5
                 },
                 "state": {
+                    "signature": {
+                        "flags": "eRootSignatureFlag_None",
+                        "parameters": [
+                            {
+                                "parameterType": "eRootParameterType_Descriptor_Table",
+                                "shaderVisibility": "eShaderVisibility_All",
+                                "descriptors": [{
+                                    "rangeType": "eDescriptorRangeType_Srv",
+                                    "numDescriptors": 2
+                                }]
+                            },
+                            {
+                                "parameterType": "eRootParameterType_32Bit_Constants",
+                                "shaderVisibility": "eShaderVisibility_All",
+                                "constants": {
+                                    "num32BitValues": 6
+                                }
+                            },
+                            {
+                                "parameterType": "eRootParameterType_Srv",
+                                "shaderVisibility": "eShaderVisibility_Pixel",
+                                "descriptor": {
+                                    "shaderRegister": 2
+                                }
+                            },
+                            {
+                                "parameterType": "eRootParameterType_Descriptor_Table",
+                                "shaderVisibility": "eShaderVisibility_All",
+                                "descriptors": [{
+                                    "rangeType": "eDescriptorRangeType_Uav",
+                                    "numDescriptors": 1
+                                }]
+                            }
+                        ],
+                        "staticSamplers": [
+                            {
+                                "filter": "eFiltertype_Min_Mag_Mip_Linear",
+                                "addressU": "eTextureAddressMode_Clamp",
+                                "addressV": "eTextureAddressMode_Clamp",
+                                "addressW": "eTextureAddressMode_Clamp"
+                            },
+                            {
+                                "shaderRegister": 2,
+                                "filter": "eFiltertype_Min_Mag_Mip_Point",
+                                "addressU": "eTextureAddressMode_Clamp",
+                                "addressV": "eTextureAddressMode_Clamp",
+                                "addressW": "eTextureAddressMode_Clamp"
+                            }
+                        ]
+                    },
                     "blend": {
                         "alphaToCoverageEnable": false,
                         "independentBlendEnable": false,
