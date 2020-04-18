@@ -48,3 +48,4 @@
 cmake_install.cmake
 cmakecache.txt
 makefile
+compile_commands.json

@@ -2,9 +2,9 @@
     "configurations": [
         {
             "name": "Win32",
+            "compileCommands": "${workspaceRoot}/compile_commands.json",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/usr/include/c++/4.2.1/tr1"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -15,13 +15,15 @@
             "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "msvc-x64"
+            "intelliSenseMode": "msvc-x64",
+            "configurationProvider": "vector-of-bool.cmake-tools"
         },
         {
             "name": "Mac",
             "intelliSenseMode": "clang-x64",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/usr/include/c++/4.2.1/tr1"
             ],
             "macFrameworkPath": [
                 "/System/Library/Frameworks"

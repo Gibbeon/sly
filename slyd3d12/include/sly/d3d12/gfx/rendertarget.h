@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "sly/d3d12.h"
@@ -7,13 +5,13 @@
 
 namespace sly {
     namespace gfx {
-    
+
         class D3D12RenderTargetImpl : public IRenderTarget {
         public:
-            D3D12RenderTargetImpl() {}
+            D3D12RenderTargetImpl() { }
 
-            virtual retval<void> init(ID3D12Resource* ptr, size_t buffer){
-                _resource = ptr;
+            virtual retval<void> init(ID3D12Resource* ptr, size_t buffer) {
+                _resource       = ptr;
                 _bufferLocation = buffer;
                 return success();
             }
@@ -24,22 +22,20 @@ namespace sly {
             }
 
             virtual void write(vptr_t data, size_t size, size_t stride) {
-                
             }
 
             ID3D12Resource& getID3D12Resource() { return *_resource; }
-            size_t getBufferLocation() {  return _bufferLocation; }
-            size_t getSizeInBytes() {  return _sizeInBytes; }
+            size_t          getBufferLocation() { return _bufferLocation; }
+            size_t          getSizeInBytes() { return _sizeInBytes; }
 
-            virtual IDevice& getDevice() { return *_device; } 
+            virtual IDevice& getDevice() { return *_device; }
 
         protected:
-
         private:
-            D3D12DeviceImpl* _device;
+            D3D12DeviceImpl*            _device;
             gsl::owner<ID3D12Resource*> _resource;
-            size_t _bufferLocation;
-            size_t _sizeInBytes;
+            size_t                      _bufferLocation;
+            size_t                      _sizeInBytes;
         };
-    }
-}
+    }   // namespace gfx
+}   // namespace sly

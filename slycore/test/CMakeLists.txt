@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(test)
+project(slycore_test)
 
 set(CMAKE_SUPPRESS_REGENERATION true)
 

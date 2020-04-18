@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(slycore)
 
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+
+#SET(CMAKE_CXX_CLANG_TIDY ON)
+
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 set(CMAKE_CXX_STANDARD 17)
 

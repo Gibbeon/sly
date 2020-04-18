@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(slyengine)
 
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 set(CMAKE_CXX_STANDARD 17)
 
@@ -29,7 +31,7 @@ include_directories(../packages/json/single_include)
 include_directories(../packages/glm)
 include_directories(../slycore/include)
 
-link_directories(../slycore/lib)
+target_link_directories(slycore PUBLIC ../lib)
  
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )

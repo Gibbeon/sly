@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(slyd3d12)
 
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 set(CMAKE_SUPPRESS_REGENERATION true)
 
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
@@ -29,23 +30,23 @@ include_directories(./../slycore/include)
 include_directories(./../slywin32/include)
 include_directories(../packages/glm)
  
- 
-link_directories(./../slycore/lib)
-link_directories(./../slywin32/lib)
+target_link_directories(slycore PUBLIC ../lib)
+target_link_directories(slywin32 PUBLIC ../lib)
 
 #this isn't best practice
 file(GLOB_RECURSE SOURCES "src/*.cpp" )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
-find_library(SLYCORE_LIB slycore PATHS ./../slycore/lib)
-find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)
+#find_library(SLYCORE_LIB slycore PATHS ./../slycore/lib)
+#find_library(SLYWIN32_LIB slywin32 PATHS ./../slywin32/lib)
 
-target_link_libraries(${PROJECT_NAME} ${SLYCORE_LIB})
-target_link_libraries(${PROJECT_NAME} ${SLYWIN32_LIB})
+target_link_libraries(${PROJECT_NAME} slycore.lib)
+target_link_libraries(${PROJECT_NAME} slywin32.iib)
 target_link_libraries(${PROJECT_NAME} d3d12.lib)
 target_link_libraries(${PROJECT_NAME} dxgi.lib)
 target_link_libraries(${PROJECT_NAME} d3dcompiler.lib)
+target_link_libraries(${PROJECT_NAME} dxguid.lib)
 
 if (MSVC)
 # For MSVC, CMake sets certain flags to defaults we want to override.

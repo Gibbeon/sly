@@ -1,8 +1,8 @@
 #pragma once
 
 #include "sly/d3d12.h"
-#include "sly/gfx/indexbuffer.h"
 #include "sly/d3d12/gfx/resource.h"
+#include "sly/gfx/indexbuffer.h"
 
 namespace sly {
     namespace gfx {
@@ -11,13 +11,10 @@ namespace sly {
             D3D12IndexBufferImpl(D3D12DeviceImpl& device);
             virtual void init(BufferDesc& desc);
 
-            virtual IDevice& getDevice() { return *_device; } 
-                
-        protected:
-        
-            D3D12DeviceImpl* _device;
-        
-        };
-    }
-}
+            virtual IDevice& getDevice() { return *_device; }
 
+        protected:
+            D3D12DeviceImpl* _device;
+        };
+    }   // namespace gfx
+}   // namespace sly

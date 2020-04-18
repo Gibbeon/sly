@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdbool.h>
 #include <limits.h>
 
 #if defined(_WIN32)
@@ -42,7 +43,11 @@ typedef u64 ulong_t;
 typedef void* vptr_t;
 
 #if !defined(_SIZE_T)
-typedef u64 size_t;
+    #if defined(_WIN64)
+        typedef unsigned long long size_t;
+    #else    
+        typedef unsigned int size_t;
+    #endif
 #endif
 
 #ifdef FALSE

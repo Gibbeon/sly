@@ -2,25 +2,23 @@
 
 #include "sly/global.h"
 
-namespace sly {    
-    class ISerializer {   
-    public:  
-
-        virtual ~ISerializer() {}  
+namespace sly {
+    class ISerializer {
+    public:
+        virtual ~ISerializer() { }
 
         virtual retval<void> close() = 0;
-        
+
         virtual retval<void> write(ISerializable& result) = 0;
 
-        virtual retval<void> write(gsl::czstring<> name, uint_t& value)  = 0;
-        virtual retval<void> write(gsl::czstring<> name, std::string& value)  = 0;
-        virtual retval<void> write(gsl::czstring<> name, gsl::czstring<> value)  = 0;
-        virtual retval<void> write(gsl::czstring<> name, vptr_t& value, size_t size)  = 0;
-        virtual retval<void> write(gsl::czstring<> name, ISerializable& result) = 0;
-        
+        virtual retval<void> write(gsl::czstring<> name, uint_t& value)              = 0;
+        virtual retval<void> write(gsl::czstring<> name, std::string& value)         = 0;
+        virtual retval<void> write(gsl::czstring<> name, gsl::czstring<> value)      = 0;
+        virtual retval<void> write(gsl::czstring<> name, vptr_t& value, size_t size) = 0;
+        virtual retval<void> write(gsl::czstring<> name, ISerializable& result)      = 0;
+
     protected:
-        ISerializer() {}
-        
+        ISerializer() { }
     };
 
     /*template<typename TType>
@@ -255,7 +253,6 @@ namespace sly {
         static Array<TEnumType> _values;
     };
 
-/*
     class IConverter {
     public:
         virtual ~IConverter() {} 
@@ -378,4 +375,4 @@ namespace sly {
     protected:
         IDeserializer() {}
     };*/
-}
+}   // namespace sly

@@ -122,6 +122,37 @@
         "*.def": "cpp"
     },
     "search.exclude": {
-        "**/3rdparty": true
-      },
+        "**/packages": true
+    },
+    "clang-format.executable": "C:/Program Files/LLVM/bin/clang-format.exe",
+    "editor.formatOnSave": true,
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+    "c-cpp-flylint.clang.executable": "C:/Program Files/LLVM/bin/clang.exe",
+    "c-cpp-flylint.clang.enable": true,
+    "c-cpp-flylint.enable": true,
+    "c-cpp-flylint.run": "onSave",
+    "c-cpp-flylint.cppcheck.enable": false,
+    "c-cpp-flylint.flexelint.enable": false,
+    "c-cpp-flylint.debug": true,
+    "c-cpp-flylint.clang.warnings": [
+        "no-c++98-compat",
+        "no-pragma-once-outside-header"
+    ],
+    "c-cpp-flylint.clang.standard": [
+        "c++17"
+    ],
+    "c-cpp-flylint.clang.extraArgs": [
+        "-fmacro-backtrace-limit=0"
+    ],
+    "c-cpp-flylint.clang.blocks": false,
+    "c-cpp-flylint.clang.includePaths": [
+        "./packages/json/single_include",
+        "./include",
+        "./packages/GSL/include",
+        "./packages/glm",
+        "./slycore/include",
+        "./slyengine/include",
+        "./slyd3d12/include",
+        "./slywin32/include"
+    ]
 }
